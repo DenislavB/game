@@ -77,10 +77,10 @@ func setup(id: String, mob_level: int, center: Vector2, r: float, respawn: float
 	model = ActorModel.new()
 	add_child(model)
 	var shape_name: String = def.get("shape", "humanoid")
+	model.build_creature(shape_name, Color(def.get("color", "#888888")), s)
 	if shape_name == "humanoid":
-		model.build_creature("humanoid", Color(def.get("color", "#888888")), s)
-	else:
-		model.build_creature(shape_name, Color(def.get("color", "#888888")), s)
+		var weapons := ["sword", "axe", "mace"]
+		model.set_weapon(weapons[hash(id) % weapons.size()])
 	_build_nameplate(s)
 
 

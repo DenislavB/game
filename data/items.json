@@ -1,96 +1,1037 @@
 {
-  "worn_shortsword": { "name": "Worn Shortsword", "slot": "mainhand", "wtype": "sword", "quality": "common", "req_level": 1, "dmg": [4, 7], "speed": 2.9, "value": 25 },
-  "apprentice_staff": { "name": "Apprentice Staff", "slot": "mainhand", "wtype": "staff", "quality": "common", "req_level": 1, "dmg": [3, 6], "speed": 3.2, "value": 25 },
-  "hunting_bow": { "name": "Hunting Bow", "slot": "ranged", "wtype": "bow", "quality": "common", "req_level": 1, "dmg": [5, 9], "speed": 2.4, "value": 30 },
-  "recruits_vest": { "name": "Recruit's Vest", "slot": "chest", "quality": "common", "req_level": 1, "armor": 12, "value": 15 },
-  "recruits_pants": { "name": "Recruit's Pants", "slot": "legs", "quality": "common", "req_level": 1, "armor": 10, "value": 12 },
-  "recruits_boots": { "name": "Recruit's Boots", "slot": "feet", "quality": "common", "req_level": 1, "armor": 7, "value": 10 },
-  "apprentice_robe": { "name": "Apprentice Robe", "slot": "chest", "quality": "common", "req_level": 1, "armor": 6, "value": 15 },
-  "apprentice_pants": { "name": "Apprentice Pants", "slot": "legs", "quality": "common", "req_level": 1, "armor": 5, "value": 12 },
-  "apprentice_boots": { "name": "Apprentice Boots", "slot": "feet", "quality": "common", "req_level": 1, "armor": 4, "value": 10 },
-  "scouts_tunic": { "name": "Scout's Tunic", "slot": "chest", "quality": "common", "req_level": 1, "armor": 9, "value": 15 },
-  "scouts_pants": { "name": "Scout's Pants", "slot": "legs", "quality": "common", "req_level": 1, "armor": 8, "value": 12 },
-  "scouts_boots": { "name": "Scout's Boots", "slot": "feet", "quality": "common", "req_level": 1, "armor": 5, "value": 10 },
-
-  "tough_jerky": { "name": "Tough Jerky", "slot": "none", "quality": "common", "req_level": 1, "stack": 20, "value": 5, "use": { "type": "food", "amount": 60 }, "desc": "Restores 60 health over 18 sec. Must remain seated." },
-  "fresh_bread": { "name": "Fresh Bread", "slot": "none", "quality": "common", "req_level": 1, "stack": 20, "value": 5, "use": { "type": "food", "amount": 60 }, "desc": "Restores 60 health over 18 sec. Must remain seated." },
-  "spring_water": { "name": "Spring Water", "slot": "none", "quality": "common", "req_level": 1, "stack": 20, "value": 5, "use": { "type": "drink", "amount": 75 }, "desc": "Restores 75 mana over 18 sec. Must remain seated." },
-  "hearty_bread": { "name": "Hearty Bread", "slot": "none", "quality": "common", "req_level": 12, "stack": 20, "value": 20, "use": { "type": "food", "amount": 240 }, "desc": "Restores 240 health over 18 sec. Must remain seated." },
-  "cool_spring_water": { "name": "Cool Spring Water", "slot": "none", "quality": "common", "req_level": 12, "stack": 20, "value": 20, "use": { "type": "drink", "amount": 280 }, "desc": "Restores 280 mana over 18 sec. Must remain seated." },
-  "roast_boar_meat": { "name": "Roast Boar Meat", "slot": "none", "quality": "common", "req_level": 22, "stack": 20, "value": 60, "use": { "type": "food", "amount": 550 }, "desc": "Restores 550 health over 18 sec. Must remain seated." },
-  "mountain_water": { "name": "Mountain Spring Water", "slot": "none", "quality": "common", "req_level": 22, "stack": 20, "value": 60, "use": { "type": "drink", "amount": 620 }, "desc": "Restores 620 mana over 18 sec. Must remain seated." },
-  "conjured_bread": { "name": "Conjured Bread", "slot": "none", "quality": "common", "req_level": 1, "stack": 20, "value": 0, "conjured": true, "use": { "type": "food", "scale_level": true, "amount": 60 }, "desc": "Conjured food. Restores health over 18 sec. Must remain seated." },
-  "conjured_water": { "name": "Conjured Water", "slot": "none", "quality": "common", "req_level": 1, "stack": 20, "value": 0, "conjured": true, "use": { "type": "drink", "scale_level": true, "amount": 75 }, "desc": "Conjured water. Restores mana over 18 sec. Must remain seated." },
-  "minor_healing_potion": { "name": "Minor Healing Potion", "slot": "none", "quality": "common", "req_level": 1, "stack": 5, "value": 25, "use": { "type": "potion_hp", "amount": [70, 90], "cooldown": 120 }, "desc": "Restores 70 to 90 health. 2 min cooldown." },
-  "lesser_healing_potion": { "name": "Lesser Healing Potion", "slot": "none", "quality": "common", "req_level": 8, "stack": 5, "value": 80, "use": { "type": "potion_hp", "amount": [170, 210], "cooldown": 120 }, "desc": "Restores 170 to 210 health. 2 min cooldown." },
-  "healing_potion": { "name": "Healing Potion", "slot": "none", "quality": "common", "req_level": 16, "stack": 5, "value": 200, "use": { "type": "potion_hp", "amount": [340, 420], "cooldown": 120 }, "desc": "Restores 340 to 420 health. 2 min cooldown." },
-  "minor_mana_potion": { "name": "Minor Mana Potion", "slot": "none", "quality": "common", "req_level": 1, "stack": 5, "value": 30, "use": { "type": "potion_mana", "amount": [95, 120], "cooldown": 120 }, "desc": "Restores 95 to 120 mana. 2 min cooldown." },
-  "lesser_mana_potion": { "name": "Lesser Mana Potion", "slot": "none", "quality": "common", "req_level": 10, "stack": 5, "value": 90, "use": { "type": "potion_mana", "amount": [220, 280], "cooldown": 120 }, "desc": "Restores 220 to 280 mana. 2 min cooldown." },
-
-  "cracked_boar_tusk": { "name": "Cracked Boar Tusk", "slot": "none", "quality": "poor", "stack": 10, "value": 8, "desc": "Vendors will buy this." },
-  "matted_wolf_pelt": { "name": "Matted Wolf Pelt", "slot": "none", "quality": "poor", "stack": 10, "value": 10, "desc": "Vendors will buy this." },
-  "scorpid_stinger_junk": { "name": "Chipped Scorpid Stinger", "slot": "none", "quality": "poor", "stack": 10, "value": 9, "desc": "Vendors will buy this." },
-  "tattered_cloth": { "name": "Tattered Cloth Scrap", "slot": "none", "quality": "poor", "stack": 10, "value": 7, "desc": "Vendors will buy this." },
-  "broken_fang": { "name": "Broken Fang", "slot": "none", "quality": "poor", "stack": 10, "value": 6, "desc": "Vendors will buy this." },
-  "raptor_claw_junk": { "name": "Dull Raptor Claw", "slot": "none", "quality": "poor", "stack": 10, "value": 14, "desc": "Vendors will buy this." },
-  "harpy_feather": { "name": "Harpy Feather", "slot": "none", "quality": "poor", "stack": 10, "value": 12, "desc": "Vendors will buy this." },
-  "bandit_mask": { "name": "Red Bandit Mask", "slot": "none", "quality": "poor", "stack": 10, "value": 11, "desc": "Vendors will buy this." },
-  "vulture_gizzard": { "name": "Vulture Gizzard", "slot": "none", "quality": "poor", "stack": 10, "value": 13, "desc": "Vendors will buy this." },
-  "chunk_of_boar_meat": { "name": "Chunk of Boar Meat", "slot": "none", "quality": "common", "stack": 10, "value": 15, "desc": "Raw meat. A cook could do something with this. Vendors will buy it." },
-
-  "copper_ore": { "name": "Copper Ore", "slot": "none", "quality": "common", "stack": 20, "value": 25, "desc": "Mined from copper veins." },
-  "tin_ore": { "name": "Tin Ore", "slot": "none", "quality": "common", "stack": 20, "value": 60, "desc": "Mined from tin veins." },
-  "silverleaf": { "name": "Silverleaf", "slot": "none", "quality": "common", "stack": 20, "value": 20, "desc": "A common herb." },
-  "duskpetal": { "name": "Duskpetal", "slot": "none", "quality": "common", "stack": 20, "value": 45, "desc": "A hardy herb that blooms at dusk." },
-  "light_leather": { "name": "Light Leather", "slot": "none", "quality": "common", "stack": 20, "value": 22, "desc": "Skinned from beasts." },
-  "medium_leather": { "name": "Medium Leather", "slot": "none", "quality": "common", "stack": 20, "value": 55, "desc": "Skinned from tougher beasts." },
-
-  "gnarled_club": { "name": "Gnarled Club", "slot": "mainhand", "wtype": "mace", "quality": "common", "req_level": 3, "dmg": [6, 10], "speed": 2.8, "value": 90 },
-  "sharpened_hatchet": { "name": "Sharpened Hatchet", "slot": "mainhand", "wtype": "axe", "quality": "common", "req_level": 5, "dmg": [8, 13], "speed": 2.7, "value": 180 },
-  "ashwood_staff": { "name": "Ashwood Staff", "slot": "mainhand", "wtype": "staff", "quality": "common", "req_level": 5, "dmg": [7, 12], "speed": 3.2, "stats": { "int": 2 }, "value": 180 },
-  "trainee_bow": { "name": "Trainee's Longbow", "slot": "ranged", "wtype": "bow", "quality": "common", "req_level": 5, "dmg": [9, 15], "speed": 2.5, "value": 200 },
-  "grunts_axe": { "name": "Grunt's Waraxe", "slot": "mainhand", "wtype": "axe", "quality": "uncommon", "req_level": 8, "dmg": [13, 20], "speed": 2.9, "stats": { "str": 3 }, "value": 650 },
-  "footmans_blade": { "name": "Footman's Blade", "slot": "mainhand", "wtype": "sword", "quality": "uncommon", "req_level": 8, "dmg": [12, 19], "speed": 2.7, "stats": { "str": 2, "sta": 2 }, "value": 650 },
-  "emberwood_staff": { "name": "Emberwood Staff", "slot": "mainhand", "wtype": "staff", "quality": "uncommon", "req_level": 9, "dmg": [11, 18], "speed": 3.3, "stats": { "int": 5, "spi": 3 }, "value": 700 },
-  "quillfang_bow": { "name": "Quillfang Shortbow", "slot": "ranged", "wtype": "bow", "quality": "uncommon", "req_level": 9, "dmg": [15, 24], "speed": 2.4, "stats": { "agi": 4 }, "value": 720 },
-  "dustplains_cleaver": { "name": "Dustplains Cleaver", "slot": "mainhand", "wtype": "axe", "quality": "uncommon", "req_level": 14, "dmg": [20, 31], "speed": 3.0, "stats": { "str": 6, "sta": 3 }, "value": 1900 },
-  "stonewatch_saber": { "name": "Stonewatch Saber", "slot": "mainhand", "wtype": "sword", "quality": "uncommon", "req_level": 16, "dmg": [23, 35], "speed": 2.8, "stats": { "str": 5, "agi": 5 }, "value": 2600 },
-  "windspeaker_staff": { "name": "Windspeaker's Staff", "slot": "mainhand", "wtype": "staff", "quality": "uncommon", "req_level": 15, "dmg": [19, 30], "speed": 3.4, "stats": { "int": 9, "spi": 5, "sta": 3 }, "value": 2400 },
-  "thornshot_bow": { "name": "Thornshot Recurve", "slot": "ranged", "wtype": "bow", "quality": "uncommon", "req_level": 15, "dmg": [24, 37], "speed": 2.6, "stats": { "agi": 8, "sta": 2 }, "value": 2400 },
-  "ravagers_greataxe": { "name": "Ravager's Greataxe", "slot": "mainhand", "wtype": "axe", "quality": "rare", "req_level": 19, "dmg": [31, 47], "speed": 3.3, "stats": { "str": 10, "sta": 5 }, "value": 6500, "desc": "Taken from the warlord of the Dustplains." },
-  "stormcallers_rod": { "name": "Stormcaller's Rod", "slot": "mainhand", "wtype": "staff", "quality": "rare", "req_level": 19, "dmg": [26, 40], "speed": 3.2, "stats": { "int": 14, "spi": 7 }, "value": 6500 },
-  "eagle_talon_bow": { "name": "Eagle Talon Longbow", "slot": "ranged", "wtype": "bow", "quality": "rare", "req_level": 19, "dmg": [33, 50], "speed": 2.7, "stats": { "agi": 13, "sta": 4 }, "value": 6500 },
-
-  "boarhide_vest": { "name": "Boarhide Vest", "slot": "chest", "quality": "common", "req_level": 4, "armor": 22, "stats": { "sta": 1 }, "value": 140 },
-  "sunscorched_leggings": { "name": "Sunscorched Leggings", "slot": "legs", "quality": "uncommon", "req_level": 6, "armor": 24, "stats": { "str": 2, "sta": 2 }, "value": 380 },
-  "vale_walker_boots": { "name": "Vale Walker Boots", "slot": "feet", "quality": "uncommon", "req_level": 6, "armor": 18, "stats": { "agi": 2, "spi": 1 }, "value": 380 },
-  "initiate_cowl": { "name": "Initiate's Cowl", "slot": "head", "quality": "uncommon", "req_level": 7, "armor": 16, "stats": { "int": 3, "spi": 2 }, "value": 420 },
-  "grunt_shoulderguards": { "name": "Grunt's Shoulderguards", "slot": "shoulder", "quality": "uncommon", "req_level": 8, "armor": 26, "stats": { "str": 3, "sta": 2 }, "value": 500 },
-  "woven_gloves": { "name": "Woven Gloves", "slot": "hands", "quality": "common", "req_level": 5, "armor": 10, "stats": { "int": 2 }, "value": 160 },
-  "trackers_gloves": { "name": "Tracker's Gloves", "slot": "hands", "quality": "uncommon", "req_level": 7, "armor": 15, "stats": { "agi": 3 }, "value": 420 },
-  "millbrook_belt": { "name": "Millbrook Belt", "slot": "waist", "quality": "common", "req_level": 4, "armor": 9, "stats": { "sta": 1 }, "value": 130 },
-  "toughened_belt": { "name": "Toughened Leather Belt", "slot": "waist", "quality": "uncommon", "req_level": 9, "armor": 16, "stats": { "sta": 3 }, "value": 520 },
-  "abbey_robe": { "name": "Abbey Acolyte Robe", "slot": "chest", "quality": "uncommon", "req_level": 7, "armor": 14, "stats": { "int": 4, "spi": 2 }, "value": 440 },
-  "wolfrider_tunic": { "name": "Wolfrider's Tunic", "slot": "chest", "quality": "uncommon", "req_level": 9, "armor": 30, "stats": { "agi": 3, "sta": 3 }, "value": 560 },
-  "plainsrunner_leggings": { "name": "Plainsrunner Leggings", "slot": "legs", "quality": "uncommon", "req_level": 13, "armor": 38, "stats": { "agi": 5, "sta": 3 }, "value": 1400 },
-  "centaur_hide_cloak": { "name": "Kharvani Hide Shoulders", "slot": "shoulder", "quality": "uncommon", "req_level": 14, "armor": 34, "stats": { "sta": 4, "str": 3 }, "value": 1600 },
-  "oasis_treads": { "name": "Oasis Treads", "slot": "feet", "quality": "uncommon", "req_level": 13, "armor": 27, "stats": { "spi": 4, "int": 3 }, "value": 1400 },
-  "dustwind_helm": { "name": "Dustwind Helm", "slot": "head", "quality": "uncommon", "req_level": 15, "armor": 42, "stats": { "sta": 6, "str": 4 }, "value": 2100 },
-  "sages_circlet": { "name": "Sage's Circlet", "slot": "head", "quality": "uncommon", "req_level": 15, "armor": 22, "stats": { "int": 7, "spi": 4 }, "value": 2100 },
-  "warlords_chestplate": { "name": "Warlord's Chestplate", "slot": "chest", "quality": "rare", "req_level": 18, "armor": 90, "stats": { "str": 8, "sta": 8 }, "value": 5200 },
-  "runeweave_robe": { "name": "Runeweave Robe", "slot": "legs", "quality": "rare", "req_level": 18, "armor": 30, "stats": { "int": 10, "spi": 6, "sta": 4 }, "value": 5200 },
-  "beastlord_spaulders": { "name": "Beastlord Spaulders", "slot": "shoulder", "quality": "rare", "req_level": 18, "armor": 55, "stats": { "agi": 8, "sta": 6 }, "value": 5200 },
-
-  "old_moonkin_feather": { "name": "Moon-touched Feather", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "scorpid_venom_sac": { "name": "Scorpid Venom Sac", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "boar_liver": { "name": "Plump Boar Liver", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "bandit_insignia": { "name": "Bandit Insignia", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "wolf_heart": { "name": "Blackwood Wolf Heart", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "kharvani_totem": { "name": "Kharvani War Totem", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "raptor_egg": { "name": "Speckled Raptor Egg", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "supply_crate": { "name": "Stolen Supply Crate", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "ember_crystal": { "name": "Ember Crystal", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "sealed_dispatch": { "name": "Sealed Dispatch", "slot": "none", "quality": "quest", "stack": 1, "value": 0, "quest_item": true },
-  "harpy_talon_quest": { "name": "Razorwind Talon", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true },
-  "tainted_water_sample": { "name": "Tainted Water Sample", "slot": "none", "quality": "quest", "stack": 20, "value": 0, "quest_item": true }
+  "worn_shortsword": {
+    "name": "Worn Shortsword",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      4,
+      7
+    ],
+    "speed": 2.9,
+    "value": 25
+  },
+  "apprentice_staff": {
+    "name": "Apprentice Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      3,
+      6
+    ],
+    "speed": 3.2,
+    "value": 25
+  },
+  "hunting_bow": {
+    "name": "Hunting Bow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      5,
+      9
+    ],
+    "speed": 2.4,
+    "value": 30
+  },
+  "recruits_vest": {
+    "name": "Recruit's Vest",
+    "slot": "chest",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 12,
+    "value": 15,
+    "color": "#8a6a48"
+  },
+  "recruits_pants": {
+    "name": "Recruit's Pants",
+    "slot": "legs",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 10,
+    "value": 12,
+    "color": "#6a5238"
+  },
+  "recruits_boots": {
+    "name": "Recruit's Boots",
+    "slot": "feet",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 7,
+    "value": 10,
+    "color": "#4a3826"
+  },
+  "apprentice_robe": {
+    "name": "Apprentice Robe",
+    "slot": "chest",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 6,
+    "value": 15,
+    "color": "#5a4a8a"
+  },
+  "apprentice_pants": {
+    "name": "Apprentice Pants",
+    "slot": "legs",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 5,
+    "value": 12,
+    "color": "#3e3462"
+  },
+  "apprentice_boots": {
+    "name": "Apprentice Boots",
+    "slot": "feet",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 4,
+    "value": 10,
+    "color": "#3a3050"
+  },
+  "scouts_tunic": {
+    "name": "Scout's Tunic",
+    "slot": "chest",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 9,
+    "value": 15,
+    "color": "#5a6e3a"
+  },
+  "scouts_pants": {
+    "name": "Scout's Pants",
+    "slot": "legs",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 8,
+    "value": 12,
+    "color": "#48582f"
+  },
+  "scouts_boots": {
+    "name": "Scout's Boots",
+    "slot": "feet",
+    "quality": "common",
+    "req_level": 1,
+    "armor": 5,
+    "value": 10,
+    "color": "#3c4826"
+  },
+  "tough_jerky": {
+    "name": "Tough Jerky",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 20,
+    "value": 5,
+    "use": {
+      "type": "food",
+      "amount": 60
+    },
+    "desc": "Restores 60 health over 18 sec. Must remain seated."
+  },
+  "fresh_bread": {
+    "name": "Fresh Bread",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 20,
+    "value": 5,
+    "use": {
+      "type": "food",
+      "amount": 60
+    },
+    "desc": "Restores 60 health over 18 sec. Must remain seated."
+  },
+  "spring_water": {
+    "name": "Spring Water",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 20,
+    "value": 5,
+    "use": {
+      "type": "drink",
+      "amount": 75
+    },
+    "desc": "Restores 75 mana over 18 sec. Must remain seated."
+  },
+  "hearty_bread": {
+    "name": "Hearty Bread",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 12,
+    "stack": 20,
+    "value": 20,
+    "use": {
+      "type": "food",
+      "amount": 240
+    },
+    "desc": "Restores 240 health over 18 sec. Must remain seated."
+  },
+  "cool_spring_water": {
+    "name": "Cool Spring Water",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 12,
+    "stack": 20,
+    "value": 20,
+    "use": {
+      "type": "drink",
+      "amount": 280
+    },
+    "desc": "Restores 280 mana over 18 sec. Must remain seated."
+  },
+  "roast_boar_meat": {
+    "name": "Roast Boar Meat",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 22,
+    "stack": 20,
+    "value": 60,
+    "use": {
+      "type": "food",
+      "amount": 550
+    },
+    "desc": "Restores 550 health over 18 sec. Must remain seated."
+  },
+  "mountain_water": {
+    "name": "Mountain Spring Water",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 22,
+    "stack": 20,
+    "value": 60,
+    "use": {
+      "type": "drink",
+      "amount": 620
+    },
+    "desc": "Restores 620 mana over 18 sec. Must remain seated."
+  },
+  "conjured_bread": {
+    "name": "Conjured Bread",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 20,
+    "value": 0,
+    "conjured": true,
+    "use": {
+      "type": "food",
+      "scale_level": true,
+      "amount": 60
+    },
+    "desc": "Conjured food. Restores health over 18 sec. Must remain seated."
+  },
+  "conjured_water": {
+    "name": "Conjured Water",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 20,
+    "value": 0,
+    "conjured": true,
+    "use": {
+      "type": "drink",
+      "scale_level": true,
+      "amount": 75
+    },
+    "desc": "Conjured water. Restores mana over 18 sec. Must remain seated."
+  },
+  "minor_healing_potion": {
+    "name": "Minor Healing Potion",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 5,
+    "value": 25,
+    "use": {
+      "type": "potion_hp",
+      "amount": [
+        70,
+        90
+      ],
+      "cooldown": 120
+    },
+    "desc": "Restores 70 to 90 health. 2 min cooldown."
+  },
+  "lesser_healing_potion": {
+    "name": "Lesser Healing Potion",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 8,
+    "stack": 5,
+    "value": 80,
+    "use": {
+      "type": "potion_hp",
+      "amount": [
+        170,
+        210
+      ],
+      "cooldown": 120
+    },
+    "desc": "Restores 170 to 210 health. 2 min cooldown."
+  },
+  "healing_potion": {
+    "name": "Healing Potion",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 16,
+    "stack": 5,
+    "value": 200,
+    "use": {
+      "type": "potion_hp",
+      "amount": [
+        340,
+        420
+      ],
+      "cooldown": 120
+    },
+    "desc": "Restores 340 to 420 health. 2 min cooldown."
+  },
+  "minor_mana_potion": {
+    "name": "Minor Mana Potion",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 1,
+    "stack": 5,
+    "value": 30,
+    "use": {
+      "type": "potion_mana",
+      "amount": [
+        95,
+        120
+      ],
+      "cooldown": 120
+    },
+    "desc": "Restores 95 to 120 mana. 2 min cooldown."
+  },
+  "lesser_mana_potion": {
+    "name": "Lesser Mana Potion",
+    "slot": "none",
+    "quality": "common",
+    "req_level": 10,
+    "stack": 5,
+    "value": 90,
+    "use": {
+      "type": "potion_mana",
+      "amount": [
+        220,
+        280
+      ],
+      "cooldown": 120
+    },
+    "desc": "Restores 220 to 280 mana. 2 min cooldown."
+  },
+  "cracked_boar_tusk": {
+    "name": "Cracked Boar Tusk",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 8,
+    "desc": "Vendors will buy this."
+  },
+  "matted_wolf_pelt": {
+    "name": "Matted Wolf Pelt",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 10,
+    "desc": "Vendors will buy this."
+  },
+  "scorpid_stinger_junk": {
+    "name": "Chipped Scorpid Stinger",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 9,
+    "desc": "Vendors will buy this."
+  },
+  "tattered_cloth": {
+    "name": "Tattered Cloth Scrap",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 7,
+    "desc": "Vendors will buy this."
+  },
+  "broken_fang": {
+    "name": "Broken Fang",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 6,
+    "desc": "Vendors will buy this."
+  },
+  "raptor_claw_junk": {
+    "name": "Dull Raptor Claw",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 14,
+    "desc": "Vendors will buy this."
+  },
+  "harpy_feather": {
+    "name": "Harpy Feather",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 12,
+    "desc": "Vendors will buy this."
+  },
+  "bandit_mask": {
+    "name": "Red Bandit Mask",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 11,
+    "desc": "Vendors will buy this."
+  },
+  "vulture_gizzard": {
+    "name": "Vulture Gizzard",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 13,
+    "desc": "Vendors will buy this."
+  },
+  "chunk_of_boar_meat": {
+    "name": "Chunk of Boar Meat",
+    "slot": "none",
+    "quality": "common",
+    "stack": 10,
+    "value": 15,
+    "desc": "Raw meat. A cook could do something with this. Vendors will buy it."
+  },
+  "copper_ore": {
+    "name": "Copper Ore",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 25,
+    "desc": "Mined from copper veins."
+  },
+  "tin_ore": {
+    "name": "Tin Ore",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 60,
+    "desc": "Mined from tin veins."
+  },
+  "silverleaf": {
+    "name": "Silverleaf",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 20,
+    "desc": "A common herb."
+  },
+  "duskpetal": {
+    "name": "Duskpetal",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 45,
+    "desc": "A hardy herb that blooms at dusk."
+  },
+  "light_leather": {
+    "name": "Light Leather",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 22,
+    "desc": "Skinned from beasts."
+  },
+  "medium_leather": {
+    "name": "Medium Leather",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 55,
+    "desc": "Skinned from tougher beasts."
+  },
+  "gnarled_club": {
+    "name": "Gnarled Club",
+    "slot": "mainhand",
+    "wtype": "mace",
+    "quality": "common",
+    "req_level": 3,
+    "dmg": [
+      6,
+      10
+    ],
+    "speed": 2.8,
+    "value": 90
+  },
+  "sharpened_hatchet": {
+    "name": "Sharpened Hatchet",
+    "slot": "mainhand",
+    "wtype": "axe",
+    "quality": "common",
+    "req_level": 5,
+    "dmg": [
+      8,
+      13
+    ],
+    "speed": 2.7,
+    "value": 180
+  },
+  "ashwood_staff": {
+    "name": "Ashwood Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "common",
+    "req_level": 5,
+    "dmg": [
+      7,
+      12
+    ],
+    "speed": 3.2,
+    "stats": {
+      "int": 2
+    },
+    "value": 180
+  },
+  "trainee_bow": {
+    "name": "Trainee's Longbow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "common",
+    "req_level": 5,
+    "dmg": [
+      9,
+      15
+    ],
+    "speed": 2.5,
+    "value": 200
+  },
+  "grunts_axe": {
+    "name": "Grunt's Waraxe",
+    "slot": "mainhand",
+    "wtype": "axe",
+    "quality": "uncommon",
+    "req_level": 8,
+    "dmg": [
+      13,
+      20
+    ],
+    "speed": 2.9,
+    "stats": {
+      "str": 3
+    },
+    "value": 650
+  },
+  "footmans_blade": {
+    "name": "Footman's Blade",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "uncommon",
+    "req_level": 8,
+    "dmg": [
+      12,
+      19
+    ],
+    "speed": 2.7,
+    "stats": {
+      "str": 2,
+      "sta": 2
+    },
+    "value": 650
+  },
+  "emberwood_staff": {
+    "name": "Emberwood Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "uncommon",
+    "req_level": 9,
+    "dmg": [
+      11,
+      18
+    ],
+    "speed": 3.3,
+    "stats": {
+      "int": 5,
+      "spi": 3
+    },
+    "value": 700
+  },
+  "quillfang_bow": {
+    "name": "Quillfang Shortbow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "uncommon",
+    "req_level": 9,
+    "dmg": [
+      15,
+      24
+    ],
+    "speed": 2.4,
+    "stats": {
+      "agi": 4
+    },
+    "value": 720
+  },
+  "dustplains_cleaver": {
+    "name": "Dustplains Cleaver",
+    "slot": "mainhand",
+    "wtype": "axe",
+    "quality": "uncommon",
+    "req_level": 14,
+    "dmg": [
+      20,
+      31
+    ],
+    "speed": 3.0,
+    "stats": {
+      "str": 6,
+      "sta": 3
+    },
+    "value": 1900
+  },
+  "stonewatch_saber": {
+    "name": "Stonewatch Saber",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "uncommon",
+    "req_level": 16,
+    "dmg": [
+      23,
+      35
+    ],
+    "speed": 2.8,
+    "stats": {
+      "str": 5,
+      "agi": 5
+    },
+    "value": 2600
+  },
+  "windspeaker_staff": {
+    "name": "Windspeaker's Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "uncommon",
+    "req_level": 15,
+    "dmg": [
+      19,
+      30
+    ],
+    "speed": 3.4,
+    "stats": {
+      "int": 9,
+      "spi": 5,
+      "sta": 3
+    },
+    "value": 2400
+  },
+  "thornshot_bow": {
+    "name": "Thornshot Recurve",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "uncommon",
+    "req_level": 15,
+    "dmg": [
+      24,
+      37
+    ],
+    "speed": 2.6,
+    "stats": {
+      "agi": 8,
+      "sta": 2
+    },
+    "value": 2400
+  },
+  "ravagers_greataxe": {
+    "name": "Ravager's Greataxe",
+    "slot": "mainhand",
+    "wtype": "axe",
+    "quality": "rare",
+    "req_level": 19,
+    "dmg": [
+      31,
+      47
+    ],
+    "speed": 3.3,
+    "stats": {
+      "str": 10,
+      "sta": 5
+    },
+    "value": 6500,
+    "desc": "Taken from the warlord of the Dustplains."
+  },
+  "stormcallers_rod": {
+    "name": "Stormcaller's Rod",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "rare",
+    "req_level": 19,
+    "dmg": [
+      26,
+      40
+    ],
+    "speed": 3.2,
+    "stats": {
+      "int": 14,
+      "spi": 7
+    },
+    "value": 6500
+  },
+  "eagle_talon_bow": {
+    "name": "Eagle Talon Longbow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "rare",
+    "req_level": 19,
+    "dmg": [
+      33,
+      50
+    ],
+    "speed": 2.7,
+    "stats": {
+      "agi": 13,
+      "sta": 4
+    },
+    "value": 6500
+  },
+  "boarhide_vest": {
+    "name": "Boarhide Vest",
+    "slot": "chest",
+    "quality": "common",
+    "req_level": 4,
+    "armor": 22,
+    "stats": {
+      "sta": 1
+    },
+    "value": 140,
+    "color": "#7a5a3c"
+  },
+  "sunscorched_leggings": {
+    "name": "Sunscorched Leggings",
+    "slot": "legs",
+    "quality": "uncommon",
+    "req_level": 6,
+    "armor": 24,
+    "stats": {
+      "str": 2,
+      "sta": 2
+    },
+    "value": 380,
+    "color": "#9a5a30"
+  },
+  "vale_walker_boots": {
+    "name": "Vale Walker Boots",
+    "slot": "feet",
+    "quality": "uncommon",
+    "req_level": 6,
+    "armor": 18,
+    "stats": {
+      "agi": 2,
+      "spi": 1
+    },
+    "value": 380,
+    "color": "#5a6e42"
+  },
+  "initiate_cowl": {
+    "name": "Initiate's Cowl",
+    "slot": "head",
+    "quality": "uncommon",
+    "req_level": 7,
+    "armor": 16,
+    "stats": {
+      "int": 3,
+      "spi": 2
+    },
+    "value": 420,
+    "color": "#6a5a9a"
+  },
+  "grunt_shoulderguards": {
+    "name": "Grunt's Shoulderguards",
+    "slot": "shoulder",
+    "quality": "uncommon",
+    "req_level": 8,
+    "armor": 26,
+    "stats": {
+      "str": 3,
+      "sta": 2
+    },
+    "value": 500,
+    "color": "#7a4a2e"
+  },
+  "woven_gloves": {
+    "name": "Woven Gloves",
+    "slot": "hands",
+    "quality": "common",
+    "req_level": 5,
+    "armor": 10,
+    "stats": {
+      "int": 2
+    },
+    "value": 160,
+    "color": "#8a80b0"
+  },
+  "trackers_gloves": {
+    "name": "Tracker's Gloves",
+    "slot": "hands",
+    "quality": "uncommon",
+    "req_level": 7,
+    "armor": 15,
+    "stats": {
+      "agi": 3
+    },
+    "value": 420,
+    "color": "#6a5838"
+  },
+  "millbrook_belt": {
+    "name": "Millbrook Belt",
+    "slot": "waist",
+    "quality": "common",
+    "req_level": 4,
+    "armor": 9,
+    "stats": {
+      "sta": 1
+    },
+    "value": 130,
+    "color": "#6a5030"
+  },
+  "toughened_belt": {
+    "name": "Toughened Leather Belt",
+    "slot": "waist",
+    "quality": "uncommon",
+    "req_level": 9,
+    "armor": 16,
+    "stats": {
+      "sta": 3
+    },
+    "value": 520,
+    "color": "#4e3c26"
+  },
+  "abbey_robe": {
+    "name": "Abbey Acolyte Robe",
+    "slot": "chest",
+    "quality": "uncommon",
+    "req_level": 7,
+    "armor": 14,
+    "stats": {
+      "int": 4,
+      "spi": 2
+    },
+    "value": 440,
+    "color": "#c8c0a0"
+  },
+  "wolfrider_tunic": {
+    "name": "Wolfrider's Tunic",
+    "slot": "chest",
+    "quality": "uncommon",
+    "req_level": 9,
+    "armor": 30,
+    "stats": {
+      "agi": 3,
+      "sta": 3
+    },
+    "value": 560,
+    "color": "#4e4252"
+  },
+  "plainsrunner_leggings": {
+    "name": "Plainsrunner Leggings",
+    "slot": "legs",
+    "quality": "uncommon",
+    "req_level": 13,
+    "armor": 38,
+    "stats": {
+      "agi": 5,
+      "sta": 3
+    },
+    "value": 1400,
+    "color": "#8a7444"
+  },
+  "centaur_hide_cloak": {
+    "name": "Kharvani Hide Shoulders",
+    "slot": "shoulder",
+    "quality": "uncommon",
+    "req_level": 14,
+    "armor": 34,
+    "stats": {
+      "sta": 4,
+      "str": 3
+    },
+    "value": 1600,
+    "color": "#6e5232"
+  },
+  "oasis_treads": {
+    "name": "Oasis Treads",
+    "slot": "feet",
+    "quality": "uncommon",
+    "req_level": 13,
+    "armor": 27,
+    "stats": {
+      "spi": 4,
+      "int": 3
+    },
+    "value": 1400,
+    "color": "#4a7a72"
+  },
+  "dustwind_helm": {
+    "name": "Dustwind Helm",
+    "slot": "head",
+    "quality": "uncommon",
+    "req_level": 15,
+    "armor": 42,
+    "stats": {
+      "sta": 6,
+      "str": 4
+    },
+    "value": 2100,
+    "color": "#8a7050"
+  },
+  "sages_circlet": {
+    "name": "Sage's Circlet",
+    "slot": "head",
+    "quality": "uncommon",
+    "req_level": 15,
+    "armor": 22,
+    "stats": {
+      "int": 7,
+      "spi": 4
+    },
+    "value": 2100,
+    "color": "#b09ac8"
+  },
+  "warlords_chestplate": {
+    "name": "Warlord's Chestplate",
+    "slot": "chest",
+    "quality": "rare",
+    "req_level": 18,
+    "armor": 90,
+    "stats": {
+      "str": 8,
+      "sta": 8
+    },
+    "value": 5200,
+    "color": "#606874"
+  },
+  "runeweave_robe": {
+    "name": "Runeweave Robe",
+    "slot": "legs",
+    "quality": "rare",
+    "req_level": 18,
+    "armor": 30,
+    "stats": {
+      "int": 10,
+      "spi": 6,
+      "sta": 4
+    },
+    "value": 5200,
+    "color": "#7a3a5a"
+  },
+  "beastlord_spaulders": {
+    "name": "Beastlord Spaulders",
+    "slot": "shoulder",
+    "quality": "rare",
+    "req_level": 18,
+    "armor": 55,
+    "stats": {
+      "agi": 8,
+      "sta": 6
+    },
+    "value": 5200,
+    "color": "#8a5a28"
+  },
+  "old_moonkin_feather": {
+    "name": "Moon-touched Feather",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "scorpid_venom_sac": {
+    "name": "Scorpid Venom Sac",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "boar_liver": {
+    "name": "Plump Boar Liver",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "bandit_insignia": {
+    "name": "Bandit Insignia",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "wolf_heart": {
+    "name": "Blackwood Wolf Heart",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "kharvani_totem": {
+    "name": "Kharvani War Totem",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "raptor_egg": {
+    "name": "Speckled Raptor Egg",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "supply_crate": {
+    "name": "Stolen Supply Crate",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "ember_crystal": {
+    "name": "Ember Crystal",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "sealed_dispatch": {
+    "name": "Sealed Dispatch",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 1,
+    "value": 0,
+    "quest_item": true
+  },
+  "harpy_talon_quest": {
+    "name": "Razorwind Talon",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "tainted_water_sample": {
+    "name": "Tainted Water Sample",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  }
 }

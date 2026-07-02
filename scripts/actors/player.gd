@@ -77,10 +77,11 @@ func _ready() -> void:
 		"shirt": Color(cls["color"]).darkened(0.35),
 		"pants": Color(cls["color"]).darkened(0.6),
 		"posture": race.get("posture", "upright"),
-		"tusks": Game.pc["race"] == "orc"
+		"tusks": Game.pc["race"] == "orc",
+		"dressed": false  # gear visuals come from what you actually equip
 	})
-	_update_weapon_visual()
-	Events.equipment_changed.connect(_update_weapon_visual)
+	_update_gear_visual()
+	Events.equipment_changed.connect(_update_gear_visual)
 
 	# Camera rig
 	cam_yaw = Node3D.new()
@@ -109,8 +110,7 @@ func _ready() -> void:
 		call_deferred("_summon_pet")
 
 
-func _update_weapon_visual() -> void:
-	var w := Game.weapon(true)
+func _update_gear_visual() -> void:
 	var iid: String = Game.pc["equipment"].get("mainhand", "")
 	var wtype: String = DB.item(iid).get("wtype", "sword") if iid != "" else \
 		DB.classes[Game.pc["class"]]["weapon"].get("type", "sword")
@@ -118,6 +118,7 @@ func _update_weapon_visual() -> void:
 		var rid: String = Game.pc["equipment"].get("ranged", "")
 		wtype = DB.item(rid).get("wtype", "bow") if rid != "" else "bow"
 	model.set_weapon(wtype)
+	model.apply_equipment(Game.pc["equipment"])
 
 
 func recompute_vitals(refill: bool) -> void:

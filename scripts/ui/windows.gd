@@ -240,7 +240,7 @@ func _rebuild_character() -> void:
 		if iid != "":
 			var b := UI.button(DB.item(iid)["name"])
 			b.add_theme_color_override("font_color", DB.quality_color(DB.item(iid).get("quality", "common")))
-			var s2 := slot
+			var s2: String = slot
 			b.pressed.connect(func(): Game.unequip(s2))
 			b.mouse_entered.connect(func(): Hud.inst.show_tooltip(UI.item_tooltip(iid) + "\n[color=#808080]Click to unequip[/color]"))
 			b.mouse_exited.connect(func(): Hud.inst.hide_tooltip())

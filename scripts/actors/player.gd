@@ -960,7 +960,9 @@ func _do_blink() -> void:
 	var to := from + fwd * 15.0
 	var query := PhysicsRayQueryParameters3D.create(from, to, 1)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	var dest := to if hit.is_empty() else Vector3(hit["position"]) - fwd * 1.0
+	var dest := to
+	if not hit.is_empty():
+		dest = (hit["position"] as Vector3) - fwd * 1.0
 	if Game.zone_node != null:
 		dest.y = Game.zone_node.ground_height(dest.x, dest.z) + 0.4
 	global_position = dest

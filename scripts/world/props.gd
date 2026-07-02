@@ -128,7 +128,7 @@ static func build_prop(type: String, rng: RandomNumberGenerator, color_hint: Str
 			for i in rng.randi_range(3, 5):
 				var p := Vector3(rng.randf_range(-0.6, 0.6), 0.25, rng.randf_range(-0.6, 0.6))
 				_mesh(n, _cyl(0.02, 0.02, 0.5, 4), Color("4a7a34"), p)
-				var fc := [Color("d8d8f0"), Color("e0c050"), Color("c05858")][rng.randi_range(0, 2)]
+				var fc: Color = [Color("d8d8f0"), Color("e0c050"), Color("c05858")][rng.randi_range(0, 2)]
 				_mesh(n, _sphere(0.12, 5), fc, p + Vector3(0, 0.28, 0))
 		"campfire":
 			for i in 5:

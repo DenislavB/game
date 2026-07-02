@@ -1,0 +1,93 @@
+{
+  "ss_cutting_teeth": {
+    "name": "Cutting Teeth", "zone": "sunscorch_mesa", "giver": "overseer_thrag", "turnin": "overseer_thrag",
+    "req_level": 1, "prereq": [],
+    "text": "You're green, whelp — greener than your skin. The mottled boars west of camp have been tearing up our feed stores. Go thin them out. Kill eight of them, and maybe I'll believe you can hold a weapon.",
+    "objectives": [{ "type": "kill", "mob": "mottled_boar", "count": 8, "label": "Mottled Boar slain" }],
+    "rewards": { "xp": 160, "money": 25 }
+  },
+  "ss_sting_of_the_scorpid": {
+    "name": "Sting of the Scorpid", "zone": "sunscorch_mesa", "giver": "overseer_thrag", "turnin": "overseer_thrag",
+    "req_level": 2, "prereq": ["ss_cutting_teeth"],
+    "text": "The scorpids in the flats east of here carry venom our healers can render into medicine. It's foul work — you'll have to cut the sacs out yourself. Bring me six venom sacs.",
+    "objectives": [{ "type": "collect", "item": "scorpid_venom_sac", "count": 6, "from": ["scorpid_lurker"], "chance": 0.6 }],
+    "rewards": { "xp": 250, "money": 50, "choice": ["boarhide_vest", "millbrook_belt"] }
+  },
+  "ss_livers_for_gorka": {
+    "name": "Livers for the Pot", "zone": "sunscorch_mesa", "giver": "gorka", "turnin": "gorka",
+    "req_level": 2, "prereq": [],
+    "text": "You smell that? That's tonight's stew, and it's missing the good part. Boar liver. Plump ones, not the shriveled kind. Bring me six and there's a hot meal and coin in it for you.",
+    "objectives": [{ "type": "collect", "item": "boar_liver", "count": 6, "from": ["mottled_boar"], "chance": 0.55 }],
+    "rewards": { "xp": 250, "money": 40, "items": ["tough_jerky", "tough_jerky"] }
+  },
+  "ss_report_to_emberford": {
+    "name": "Report to Emberford", "zone": "sunscorch_mesa", "giver": "overseer_thrag", "turnin": "rakka",
+    "req_level": 3, "prereq": ["ss_cutting_teeth"],
+    "text": "You've done what I asked, so I'll send you on before you get comfortable. Take this dispatch to Envoy Rakka in Emberford, northeast along the road. Don't read it. Don't lose it. Go.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Deliver the sealed dispatch to Envoy Rakka" }],
+    "rewards": { "xp": 200, "money": 30 }
+  },
+  "ss_vulture_culling": {
+    "name": "Vulture Culling", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 4, "prereq": [],
+    "text": "The dust vultures circle thicker every season. They've taken to picking at our caravan beasts before the beasts are even dead. Cull ten of them in the hills northeast of town.",
+    "objectives": [{ "type": "kill", "mob": "dust_vulture", "count": 10, "label": "Dust Vulture slain" }],
+    "rewards": { "xp": 430, "money": 90 }
+  },
+  "ss_burning_gulch": {
+    "name": "The Burning Gulch", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 4, "prereq": [],
+    "text": "Southeast of Emberford the ground itself smolders. Scouts say spirits of cinder walk there now. I need eyes on it. Travel to the Burning Gulch and see what stirs — then come back alive, preferably.",
+    "objectives": [{ "type": "explore", "x": 350, "z": -250, "r": 45, "label": "Burning Gulch explored" }],
+    "rewards": { "xp": 350, "money": 60 }
+  },
+  "ss_embers_of_trouble": {
+    "name": "Embers of Trouble", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 5, "prereq": ["ss_burning_gulch"],
+    "text": "So the cinder spirits are real. The shamans will want proof — and material. Each spirit carries a burning core, an ember crystal. Destroy the spirits and bring me eight crystals.",
+    "objectives": [{ "type": "collect", "item": "ember_crystal", "count": 8, "from": ["cinder_spirit"], "chance": 0.65 }],
+    "rewards": { "xp": 550, "money": 120, "choice": ["sunscorched_leggings", "woven_gloves", "vale_walker_boots"] }
+  },
+  "ss_raptor_menace": {
+    "name": "Raptor Menace", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 5, "prereq": [],
+    "text": "The canyon south of the road belongs to the raptors, and they know it. Two runners lost this month. Go into the canyon and kill eight of them. Watch your back — they hunt in twos.",
+    "objectives": [{ "type": "kill", "mob": "canyon_raptor", "count": 8, "label": "Canyon Raptor slain" }],
+    "rewards": { "xp": 550, "money": 110 }
+  },
+  "ss_eggs_for_the_overseer": {
+    "name": "Eggs of the Canyon", "zone": "sunscorch_mesa", "giver": "gorka", "turnin": "gorka",
+    "req_level": 6, "prereq": [],
+    "text": "Raptor eggs. Delicacy. The warchief's envoys pay in silver for them, and I pay YOU in silver, minus my cut. The raptors guard their nests in the southern canyon. Five speckled eggs, unbroken!",
+    "objectives": [{ "type": "collect", "item": "raptor_egg", "count": 5, "from": ["canyon_raptor"], "chance": 0.5 }],
+    "rewards": { "xp": 620, "money": 160 }
+  },
+  "ss_wings_over_the_mesa": {
+    "name": "Wings over the Mesa", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 7, "prereq": [],
+    "text": "Harpies have roosted on the northeast plateau. They raid our hunters, steal meat, and screech through the night. The Warchief's answer is simple: ten dead harpies. Deliver it.",
+    "objectives": [{ "type": "kill", "mob": "razorwind_harpy", "count": 10, "label": "Razorwind Harpy slain" }],
+    "rewards": { "xp": 750, "money": 180, "choice": ["grunt_shoulderguards", "initiate_cowl", "trackers_gloves"] }
+  },
+  "ss_talons": {
+    "name": "Talons of the Razorwind", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 8, "prereq": ["ss_wings_over_the_mesa"],
+    "text": "The shamans read omens in harpy talons — and the omens lately are bad. Bring me eight talons from the Razorwind flock so we know what the Matriarch is planning.",
+    "objectives": [{ "type": "collect", "item": "harpy_talon_quest", "count": 8, "from": ["razorwind_harpy"], "chance": 0.6 }],
+    "rewards": { "xp": 850, "money": 200 }
+  },
+  "ss_the_matriarch": {
+    "name": "The Matriarch", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "rakka",
+    "req_level": 9, "prereq": ["ss_talons"], "elite": true,
+    "text": "The omens were clear: Shriekwind the Matriarch is gathering her flock for a raid on Emberford itself. She is old, cruel, and strong — do not face her lightly, and do not face her alone if you can help it. Kill her atop the plateau.",
+    "objectives": [{ "type": "kill", "mob": "harpy_matriarch", "count": 1, "label": "Shriekwind the Matriarch slain" }],
+    "rewards": { "xp": 1300, "money": 500, "choice": ["grunts_axe", "emberwood_staff", "quillfang_bow"] }
+  },
+  "ss_to_the_dustplains": {
+    "name": "To the Dustplains", "zone": "sunscorch_mesa", "giver": "rakka", "turnin": "gash",
+    "req_level": 9, "prereq": [],
+    "text": "You've outgrown the Mesa. West of here the land opens into the Dustplains — contested ground, wide as the sky and twice as dangerous. Outrider Gash holds the Ashfall Post just across the border. Report to him.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Report to Outrider Gash at Ashfall Post" }],
+    "rewards": { "xp": 600, "money": 150 }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "orc": {
+    "name": "Orc",
+    "faction": "horde",
+    "start_zone": "sunscorch_mesa",
+    "description": "Bred for war on the red plains. Orcs shrug off stuns and hit like falling rocks.",
+    "stat_bonus": { "str": 3, "agi": 0, "sta": 2, "int": -3, "spi": 0 },
+    "racial": { "id": "blood_fury", "name": "Blood Fury", "desc": "+15% attack power for 15 sec, but healing received reduced. 2 min cooldown." },
+    "skin_colors": ["#5a8a3c", "#4a7a34", "#6b9a48"],
+    "posture": "hunched"
+  },
+  "human": {
+    "name": "Human",
+    "faction": "alliance",
+    "start_zone": "greenhollow_vale",
+    "description": "Stubborn survivors of the old kingdoms. Humans learn quickly and rally faster than most.",
+    "stat_bonus": { "str": 0, "agi": 0, "sta": 0, "int": 1, "spi": 2 },
+    "racial": { "id": "second_wind", "name": "Second Wind", "desc": "Restore 20% health over 10 sec. 3 min cooldown." },
+    "skin_colors": ["#d9a97c", "#c69368", "#e8c49a"],
+    "posture": "upright"
+  }
+}

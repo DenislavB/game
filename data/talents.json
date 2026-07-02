@@ -1,0 +1,107 @@
+{
+  "warrior": {
+    "Arms": [
+      { "id": "war_arms_deflection", "name": "Deflection", "tier": 1, "ranks": 5, "effect": { "mod": "dodge_pct", "per_rank": 1 }, "desc": "+1% dodge per rank." },
+      { "id": "war_arms_improved_hs", "name": "Improved Heroic Strike", "tier": 1, "ranks": 3, "effect": { "mod": "ability_cost", "ability": "heroic_strike", "per_rank": -1 }, "desc": "Reduces the rage cost of Heroic Strike by 1 per rank." },
+      { "id": "war_arms_tactical_mastery", "name": "Tactical Mastery", "tier": 2, "ranks": 5, "effect": { "mod": "ability_damage_pct", "ability": "rend", "per_rank": 0.06 }, "desc": "+6% Rend damage per rank." },
+      { "id": "war_arms_improved_charge", "name": "Improved Charge", "tier": 2, "ranks": 2, "effect": { "mod": "charge_rage", "per_rank": 5 }, "desc": "Charge generates 5 additional rage per rank." },
+      { "id": "war_arms_deep_wounds", "name": "Deep Wounds", "tier": 3, "ranks": 3, "effect": { "mod": "bleed_damage_pct", "per_rank": 0.1 }, "desc": "+10% bleed damage per rank." },
+      { "id": "war_arms_impale", "name": "Impale", "tier": 4, "ranks": 2, "effect": { "mod": "crit_damage_pct", "per_rank": 0.1 }, "desc": "Critical strikes deal 10% more damage per rank." },
+      { "id": "war_arms_axe_spec", "name": "Weapon Mastery", "tier": 5, "ranks": 5, "effect": { "mod": "melee_damage_pct", "per_rank": 0.02 }, "desc": "+2% melee damage per rank." },
+      { "id": "war_arms_sweeping", "name": "Sweeping Strikes", "tier": 6, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "whirlwind", "per_rank": 0.08 }, "desc": "+8% Whirlwind damage per rank." },
+      { "id": "war_arms_mortal_strike", "name": "Mortal Strike", "tier": 7, "ranks": 1, "effect": { "mod": "grants_ability", "ability": "mortal_strike" }, "desc": "Learn Mortal Strike: a vicious blow dealing 110% weapon damage plus a bonus." }
+    ],
+    "Fury": [
+      { "id": "war_fury_cruelty", "name": "Cruelty", "tier": 1, "ranks": 5, "effect": { "mod": "crit_pct", "per_rank": 1 }, "desc": "+1% melee critical strike chance per rank." },
+      { "id": "war_fury_booming", "name": "Booming Voice", "tier": 1, "ranks": 3, "effect": { "mod": "ability_power_pct", "ability": "battle_shout", "per_rank": 0.1 }, "desc": "Battle Shout grants 10% more attack power per rank." },
+      { "id": "war_fury_unbridled", "name": "Unbridled Wrath", "tier": 2, "ranks": 5, "effect": { "mod": "rage_on_hit", "per_rank": 1 }, "desc": "Auto-attacks generate 1 additional rage per rank." },
+      { "id": "war_fury_improved_bloodrage", "name": "Improved Bloodrage", "tier": 2, "ranks": 2, "effect": { "mod": "bloodrage_rage", "per_rank": 5 }, "desc": "Bloodrage generates 5 more rage per rank." },
+      { "id": "war_fury_enrage", "name": "Enrage", "tier": 3, "ranks": 5, "effect": { "mod": "enrage_damage_pct", "per_rank": 0.02 }, "desc": "After taking a critical hit, deal +2% damage per rank for 12 sec." },
+      { "id": "war_fury_flurry", "name": "Flurry", "tier": 4, "ranks": 5, "effect": { "mod": "flurry_haste_pct", "per_rank": 0.03 }, "desc": "After landing a critical strike, attack 3% faster per rank for 3 swings." },
+      { "id": "war_fury_bloodthirst_minor", "name": "Blood Craze", "tier": 5, "ranks": 3, "effect": { "mod": "heal_on_crit_pct", "per_rank": 0.01 }, "desc": "Heal 1% of max health per rank when you critically strike." },
+      { "id": "war_fury_rampage", "name": "Rampage", "tier": 6, "ranks": 5, "effect": { "mod": "attack_power_pct", "per_rank": 0.02 }, "desc": "+2% attack power per rank." },
+      { "id": "war_fury_deathwish", "name": "Death Wish", "tier": 7, "ranks": 1, "effect": { "mod": "deathwish", "per_rank": 1 }, "desc": "All damage you deal is increased by 15%, and all damage you take is increased by 5%." }
+    ],
+    "Protection": [
+      { "id": "war_prot_toughness", "name": "Toughness", "tier": 1, "ranks": 5, "effect": { "mod": "armor_pct", "per_rank": 0.04 }, "desc": "+4% armor per rank." },
+      { "id": "war_prot_iron_will", "name": "Iron Will", "tier": 1, "ranks": 3, "effect": { "mod": "stun_duration_pct", "per_rank": -0.1 }, "desc": "Reduces the duration of stuns and slows on you by 10% per rank." },
+      { "id": "war_prot_anticipation", "name": "Anticipation", "tier": 2, "ranks": 5, "effect": { "mod": "stat_flat", "stat": "sta", "per_rank": 4 }, "desc": "+4 Stamina per rank." },
+      { "id": "war_prot_improved_tc", "name": "Improved Thunder Clap", "tier": 2, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "thunder_clap", "per_rank": 0.15 }, "desc": "+15% Thunder Clap damage per rank." },
+      { "id": "war_prot_defiance", "name": "Defiance", "tier": 3, "ranks": 5, "effect": { "mod": "damage_taken_pct", "per_rank": -0.01 }, "desc": "Reduces all damage taken by 1% per rank." },
+      { "id": "war_prot_last_stand", "name": "Blood of the Mountain", "tier": 4, "ranks": 3, "effect": { "mod": "max_health_pct", "per_rank": 0.03 }, "desc": "+3% maximum health per rank." },
+      { "id": "war_prot_shield_wall_minor", "name": "Stone Skin", "tier": 5, "ranks": 5, "effect": { "mod": "armor_pct", "per_rank": 0.04 }, "desc": "+4% armor per rank." },
+      { "id": "war_prot_vitality", "name": "Vitality", "tier": 6, "ranks": 5, "effect": { "mod": "stat_pct", "stat": "sta", "per_rank": 0.02 }, "desc": "+2% Stamina per rank." },
+      { "id": "war_prot_unbreakable", "name": "Unbreakable", "tier": 7, "ranks": 1, "effect": { "mod": "unbreakable", "per_rank": 1 }, "desc": "Damage taken reduced by 10%, and you can no longer be stunned." }
+    ]
+  },
+  "mage": {
+    "Arcane": [
+      { "id": "mage_arc_subtlety", "name": "Arcane Focus", "tier": 1, "ranks": 5, "effect": { "mod": "spell_hit_pct", "per_rank": 2 }, "desc": "Reduces the chance your spells are resisted by 2% per rank." },
+      { "id": "mage_arc_clearcasting", "name": "Clearcasting", "tier": 1, "ranks": 5, "effect": { "mod": "clearcast_pct", "per_rank": 2 }, "desc": "Your damaging spells have a 2% chance per rank to make your next spell free." },
+      { "id": "mage_arc_mind", "name": "Arcane Mind", "tier": 2, "ranks": 5, "effect": { "mod": "stat_pct", "stat": "int", "per_rank": 0.02 }, "desc": "+2% Intellect per rank." },
+      { "id": "mage_arc_missiles", "name": "Improved Arcane Missiles", "tier": 2, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "arcane_missiles", "per_rank": 0.08 }, "desc": "+8% Arcane Missiles damage per rank." },
+      { "id": "mage_arc_meditation", "name": "Arcane Meditation", "tier": 3, "ranks": 5, "effect": { "mod": "combat_regen_pct", "per_rank": 0.05 }, "desc": "Allows 5% of your mana regeneration per rank to continue while casting." },
+      { "id": "mage_arc_instability", "name": "Arcane Instability", "tier": 4, "ranks": 3, "effect": { "mod": "school_damage_pct", "school": "arcane", "per_rank": 0.03 }, "desc": "+3% arcane damage per rank." },
+      { "id": "mage_arc_explosion", "name": "Improved Arcane Explosion", "tier": 5, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "arcane_explosion", "per_rank": 0.08 }, "desc": "+8% Arcane Explosion damage per rank." },
+      { "id": "mage_arc_mastery", "name": "Arcane Mastery", "tier": 6, "ranks": 5, "effect": { "mod": "spell_damage_pct", "per_rank": 0.02 }, "desc": "+2% spell damage per rank." },
+      { "id": "mage_arc_power", "name": "Arcane Power", "tier": 7, "ranks": 1, "effect": { "mod": "arcane_power", "per_rank": 1 }, "desc": "Your spells deal 20% more damage but cost 20% more mana." }
+    ],
+    "Fire": [
+      { "id": "mage_fire_impact", "name": "Ignite", "tier": 1, "ranks": 5, "effect": { "mod": "school_crit_bonus_pct", "school": "fire", "per_rank": 0.08 }, "desc": "Your fire critical strikes deal 8% more damage per rank." },
+      { "id": "mage_fire_improved_fb", "name": "Improved Fireball", "tier": 1, "ranks": 5, "effect": { "mod": "cast_time", "ability": "fireball", "per_rank": -0.1 }, "desc": "Reduces Fireball cast time by 0.1 sec per rank." },
+      { "id": "mage_fire_flame_throwing", "name": "Flame Throwing", "tier": 2, "ranks": 2, "effect": { "mod": "range_bonus", "school": "fire", "per_rank": 3 }, "desc": "+3m range on fire spells per rank." },
+      { "id": "mage_fire_improved_blast", "name": "Improved Fire Blast", "tier": 2, "ranks": 3, "effect": { "mod": "ability_cooldown", "ability": "fire_blast", "per_rank": -0.5 }, "desc": "Reduces Fire Blast cooldown by 0.5 sec per rank." },
+      { "id": "mage_fire_incinerate", "name": "Incinerate", "tier": 3, "ranks": 5, "effect": { "mod": "school_crit_pct", "school": "fire", "per_rank": 1 }, "desc": "+1% fire critical strike chance per rank." },
+      { "id": "mage_fire_firepower", "name": "Fire Power", "tier": 4, "ranks": 5, "effect": { "mod": "school_damage_pct", "school": "fire", "per_rank": 0.02 }, "desc": "+2% fire damage per rank." },
+      { "id": "mage_fire_burning_soul", "name": "Burning Soul", "tier": 5, "ranks": 3, "effect": { "mod": "cost_reduction_pct", "school": "fire", "per_rank": 0.05 }, "desc": "Fire spells cost 5% less mana per rank." },
+      { "id": "mage_fire_critical_mass", "name": "Critical Mass", "tier": 6, "ranks": 3, "effect": { "mod": "school_crit_pct", "school": "fire", "per_rank": 2 }, "desc": "+2% fire critical strike chance per rank." },
+      { "id": "mage_fire_pyroblast", "name": "Pyroblast", "tier": 7, "ranks": 1, "effect": { "mod": "grants_ability", "ability": "pyroblast" }, "desc": "Learn Pyroblast: an enormous fireball with a long cast time and devastating damage." }
+    ],
+    "Frost": [
+      { "id": "mage_frost_chill", "name": "Permafrost", "tier": 1, "ranks": 3, "effect": { "mod": "slow_bonus_pct", "school": "frost", "per_rank": 0.05 }, "desc": "Your frost slows are 5% stronger per rank." },
+      { "id": "mage_frost_improved_bolt", "name": "Improved Frostbolt", "tier": 1, "ranks": 5, "effect": { "mod": "cast_time", "ability": "frostbolt", "per_rank": -0.1 }, "desc": "Reduces Frostbolt cast time by 0.1 sec per rank." },
+      { "id": "mage_frost_elemental_precision", "name": "Elemental Precision", "tier": 2, "ranks": 3, "effect": { "mod": "spell_hit_pct", "per_rank": 2 }, "desc": "Reduces the chance your spells are resisted by 2% per rank." },
+      { "id": "mage_frost_ice_shards", "name": "Ice Shards", "tier": 2, "ranks": 5, "effect": { "mod": "school_crit_bonus_pct", "school": "frost", "per_rank": 0.1 }, "desc": "Your frost critical strikes deal 10% more damage per rank." },
+      { "id": "mage_frost_improved_nova", "name": "Improved Frost Nova", "tier": 3, "ranks": 2, "effect": { "mod": "ability_cooldown", "ability": "frost_nova", "per_rank": -2 }, "desc": "Reduces Frost Nova cooldown by 2 sec per rank." },
+      { "id": "mage_frost_shatter", "name": "Shatter", "tier": 4, "ranks": 5, "effect": { "mod": "shatter_crit_pct", "per_rank": 10 }, "desc": "+10% critical strike chance per rank against frozen (rooted) targets." },
+      { "id": "mage_frost_cold_mind", "name": "Frost Channeling", "tier": 5, "ranks": 3, "effect": { "mod": "cost_reduction_pct", "school": "frost", "per_rank": 0.05 }, "desc": "Frost spells cost 5% less mana per rank." },
+      { "id": "mage_frost_winters_chill", "name": "Winter's Chill", "tier": 6, "ranks": 5, "effect": { "mod": "school_damage_pct", "school": "frost", "per_rank": 0.02 }, "desc": "+2% frost damage per rank." },
+      { "id": "mage_frost_ice_barrier", "name": "Ice Barrier", "tier": 7, "ranks": 1, "effect": { "mod": "grants_ability", "ability": "ice_barrier" }, "desc": "Learn Ice Barrier: shield yourself with ice that absorbs damage." }
+    ]
+  },
+  "hunter": {
+    "Beast Mastery": [
+      { "id": "hunt_bm_endurance", "name": "Endurance Training", "tier": 1, "ranks": 5, "effect": { "mod": "pet_health_pct", "per_rank": 0.03 }, "desc": "+3% pet health per rank." },
+      { "id": "hunt_bm_improved_aspect", "name": "Improved Aspect of the Hawk", "tier": 1, "ranks": 5, "effect": { "mod": "ability_power_pct", "ability": "aspect_of_the_hawk", "per_rank": 0.06 }, "desc": "Aspect of the Hawk grants 6% more ranged power per rank." },
+      { "id": "hunt_bm_ferocity", "name": "Ferocity", "tier": 2, "ranks": 5, "effect": { "mod": "pet_damage_pct", "per_rank": 0.04 }, "desc": "+4% pet damage per rank." },
+      { "id": "hunt_bm_pathfinding", "name": "Pathfinding", "tier": 2, "ranks": 2, "effect": { "mod": "move_speed_pct", "per_rank": 0.03 }, "desc": "+3% movement speed per rank." },
+      { "id": "hunt_bm_unleashed_fury", "name": "Unleashed Fury", "tier": 3, "ranks": 5, "effect": { "mod": "pet_damage_pct", "per_rank": 0.04 }, "desc": "+4% pet damage per rank." },
+      { "id": "hunt_bm_intimidation", "name": "Thick Hide", "tier": 4, "ranks": 3, "effect": { "mod": "armor_pct", "per_rank": 0.03 }, "desc": "+3% armor per rank." },
+      { "id": "hunt_bm_spirit_bond", "name": "Spirit Bond", "tier": 5, "ranks": 2, "effect": { "mod": "regen_with_pet_pct", "per_rank": 0.01 }, "desc": "While your pet is alive, regenerate 1% of max health per rank every 10 sec." },
+      { "id": "hunt_bm_frenzy", "name": "Frenzy", "tier": 6, "ranks": 5, "effect": { "mod": "pet_attack_speed_pct", "per_rank": 0.04 }, "desc": "+4% pet attack speed per rank." },
+      { "id": "hunt_bm_bestial_wrath", "name": "Bestial Wrath", "tier": 7, "ranks": 1, "effect": { "mod": "grants_ability", "ability": "bestial_wrath" }, "desc": "Learn Bestial Wrath: send your pet into a killing frenzy." }
+    ],
+    "Marksmanship": [
+      { "id": "hunt_mm_eagle_eye", "name": "Lethal Shots", "tier": 1, "ranks": 5, "effect": { "mod": "ranged_crit_pct", "per_rank": 1 }, "desc": "+1% ranged critical strike chance per rank." },
+      { "id": "hunt_mm_efficiency", "name": "Efficiency", "tier": 1, "ranks": 5, "effect": { "mod": "cost_reduction_pct", "school": "all_shots", "per_rank": 0.02 }, "desc": "Shots cost 2% less mana per rank." },
+      { "id": "hunt_mm_improved_arcane", "name": "Improved Arcane Shot", "tier": 2, "ranks": 5, "effect": { "mod": "ability_cooldown", "ability": "arcane_shot", "per_rank": -0.2 }, "desc": "Reduces Arcane Shot cooldown by 0.2 sec per rank." },
+      { "id": "hunt_mm_hawk_eye", "name": "Hawk Eye", "tier": 2, "ranks": 3, "effect": { "mod": "ranged_range_bonus", "per_rank": 2 }, "desc": "+2m ranged attack range per rank." },
+      { "id": "hunt_mm_mortal_shots", "name": "Mortal Shots", "tier": 3, "ranks": 5, "effect": { "mod": "ranged_crit_bonus_pct", "per_rank": 0.06 }, "desc": "Your ranged critical strikes deal 6% more damage per rank." },
+      { "id": "hunt_mm_serpent", "name": "Improved Serpent Sting", "tier": 4, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "serpent_sting", "per_rank": 0.06 }, "desc": "+6% Serpent Sting damage per rank." },
+      { "id": "hunt_mm_barrage", "name": "Barrage", "tier": 5, "ranks": 3, "effect": { "mod": "ability_damage_pct", "ability": "multi_shot", "per_rank": 0.05 }, "desc": "+5% Multi-Shot damage per rank." },
+      { "id": "hunt_mm_ranged_spec", "name": "Ranged Weapon Specialization", "tier": 6, "ranks": 5, "effect": { "mod": "ranged_damage_pct", "per_rank": 0.02 }, "desc": "+2% ranged damage per rank." },
+      { "id": "hunt_mm_trueshot", "name": "Trueshot Focus", "tier": 7, "ranks": 1, "effect": { "mod": "trueshot", "per_rank": 1 }, "desc": "Your ranged attacks ignore 20% of the target's armor and deal 10% more damage." }
+    ],
+    "Survival": [
+      { "id": "hunt_surv_monster_slaying", "name": "Monster Slaying", "tier": 1, "ranks": 3, "effect": { "mod": "beast_damage_pct", "per_rank": 0.02 }, "desc": "+2% damage against beasts per rank." },
+      { "id": "hunt_surv_hawk_reflexes", "name": "Hawk Reflexes", "tier": 1, "ranks": 5, "effect": { "mod": "dodge_pct", "per_rank": 1 }, "desc": "+1% dodge per rank." },
+      { "id": "hunt_surv_savage_strikes", "name": "Savage Strikes", "tier": 2, "ranks": 2, "effect": { "mod": "melee_crit_pct", "per_rank": 5 }, "desc": "+5% melee critical strike chance per rank." },
+      { "id": "hunt_surv_survivalist", "name": "Survivalist", "tier": 2, "ranks": 5, "effect": { "mod": "max_health_pct", "per_rank": 0.02 }, "desc": "+2% maximum health per rank." },
+      { "id": "hunt_surv_trap_mastery", "name": "Deflection", "tier": 3, "ranks": 3, "effect": { "mod": "stun_duration_pct", "per_rank": -0.1 }, "desc": "Reduces the duration of stuns and slows on you by 10% per rank." },
+      { "id": "hunt_surv_lightweight", "name": "Lightweight Boots", "tier": 4, "ranks": 3, "effect": { "mod": "move_speed_pct", "per_rank": 0.02 }, "desc": "+2% movement speed per rank." },
+      { "id": "hunt_surv_killer_instinct", "name": "Killer Instinct", "tier": 5, "ranks": 3, "effect": { "mod": "crit_pct", "per_rank": 1 }, "desc": "+1% critical strike chance with all attacks per rank." },
+      { "id": "hunt_surv_lightning_reflexes", "name": "Lightning Reflexes", "tier": 6, "ranks": 5, "effect": { "mod": "stat_pct", "stat": "agi", "per_rank": 0.03 }, "desc": "+3% Agility per rank." },
+      { "id": "hunt_surv_wyvern", "name": "Predator's Wrath", "tier": 7, "ranks": 1, "effect": { "mod": "predators_wrath", "per_rank": 1 }, "desc": "Attacking a target below 35% health increases all your damage against it by 15%." }
+    ]
+  }
+}

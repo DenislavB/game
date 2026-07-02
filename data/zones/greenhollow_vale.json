@@ -1,0 +1,88 @@
+{
+  "id": "greenhollow_vale",
+  "name": "Greenhollow Vale",
+  "subtitle": "Home of the Humans",
+  "level_range": [1, 10],
+  "faction": "alliance",
+  "size": 800,
+  "seed": 4242,
+  "ambience": {
+    "sky_top": "#4f86c8", "sky_horizon": "#cfe4f2", "fog": "#b9cfd4", "fog_density": 0.0038,
+    "sun_color": "#fff2d8", "sun_energy": 1.15, "sun_angle": -52,
+    "ground_low": "#4f7d33", "ground_high": "#6b9440", "ground_rock": "#7a7a6a", "road": "#8a7350",
+    "water_color": "#2f6a8a"
+  },
+  "terrain": { "height_scale": 20, "noise_freq": 0.006, "base_height": 5 },
+  "water_level": 0.0,
+  "flatten": [
+    { "x": -240, "z": -180, "r": 55 },
+    { "x": 120, "z": 100, "r": 60 },
+    { "x": -40, "z": 220, "r": 50, "h": -3.5 },
+    { "x": 260, "z": -220, "r": 45 }
+  ],
+  "roads": [
+    [[-240, -180], [-100, -60], [20, 30], [120, 100]],
+    [[120, 100], [240, 80], [360, 60]],
+    [[-100, -60], [-60, 100], [-40, 180]]
+  ],
+  "props": [
+    { "type": "pine", "count": 200 },
+    { "type": "tree", "count": 90 },
+    { "type": "rock", "count": 80, "color": "#7a7a6a" },
+    { "type": "bush", "count": 120 },
+    { "type": "flowers", "count": 70 }
+  ],
+  "buildings": [
+    { "type": "church", "x": -240, "z": -196, "rot": 0 },
+    { "type": "human_house", "x": -262, "z": -172, "rot": 90 },
+    { "type": "human_house", "x": -218, "z": -170, "rot": -90 },
+    { "type": "well", "x": -240, "z": -172, "rot": 0 },
+    { "type": "tower", "x": 132, "z": 84, "rot": 0 },
+    { "type": "human_inn", "x": 100, "z": 108, "rot": 160 },
+    { "type": "human_house", "x": 138, "z": 116, "rot": 220 },
+    { "type": "human_house", "x": 112, "z": 82, "rot": 40 },
+    { "type": "well", "x": 120, "z": 102, "rot": 0 },
+    { "type": "campfire", "x": 262, "z": -222, "rot": 0 },
+    { "type": "tent", "x": 256, "z": -214, "rot": 120 }
+  ],
+  "npcs": [
+    { "id": "marshal_edric", "name": "Marshal Edric", "title": "Abbey Marshal", "race": "human", "x": -238, "z": -184, "rot": 20, "roles": ["quest"] },
+    { "id": "sister_maren", "name": "Sister Maren", "title": "Abbey Herbalist", "race": "human", "x": -246, "z": -190, "rot": 60, "roles": ["quest"] },
+    { "id": "aldous", "name": "Sir Aldous", "title": "Warrior Trainer", "race": "human", "x": -228, "z": -176, "rot": 300, "roles": ["trainer"], "trainer": "warrior" },
+    { "id": "elowen", "name": "Magus Elowen", "title": "Mage Trainer", "race": "human", "x": -252, "z": -178, "rot": 100, "roles": ["trainer"], "trainer": "mage" },
+    { "id": "thane", "name": "Ranger Thane", "title": "Hunter Trainer", "race": "human", "x": -234, "z": -168, "rot": 200, "roles": ["trainer"], "trainer": "hunter" },
+    { "id": "hale", "name": "Provisioner Hale", "title": "General Goods", "race": "human", "x": -244, "z": -170, "rot": 180, "roles": ["vendor"],
+      "stock": ["fresh_bread", "spring_water", "minor_healing_potion", "minor_mana_potion", "gnarled_club", "boarhide_vest", "millbrook_belt"] },
+    { "id": "bramwell", "name": "Captain Bramwell", "title": "Stonewatch Captain", "race": "human", "x": 128, "z": 90, "rot": 220, "roles": ["quest"] },
+    { "id": "joss", "name": "Miller Joss", "title": "Millbrook Miller", "race": "human", "x": 108, "z": 112, "rot": 300, "roles": ["quest"] },
+    { "id": "posy", "name": "Innkeeper Posy", "title": "Innkeeper", "race": "human", "x": 102, "z": 104, "rot": 340, "roles": ["vendor"],
+      "stock": ["fresh_bread", "spring_water", "hearty_bread", "cool_spring_water"] },
+    { "id": "ferrin", "name": "Smith Ferrin", "title": "Arms & Armor", "race": "human", "x": 136, "z": 112, "rot": 240, "roles": ["vendor"],
+      "stock": ["footmans_blade", "sharpened_hatchet", "ashwood_staff", "trainee_bow", "boarhide_vest", "vale_walker_boots", "woven_gloves", "lesser_healing_potion", "lesser_mana_potion"] },
+    { "id": "aldous2", "name": "Sergeant Brann", "title": "Warrior Trainer", "race": "human", "x": 116, "z": 88, "rot": 60, "roles": ["trainer"], "trainer": "warrior" },
+    { "id": "elowen2", "name": "Archmagus Fenn", "title": "Mage Trainer", "race": "human", "x": 124, "z": 114, "rot": 260, "roles": ["trainer"], "trainer": "mage" },
+    { "id": "thane2", "name": "Huntress Lyra", "title": "Hunter Trainer", "race": "human", "x": 142, "z": 98, "rot": 280, "roles": ["trainer"], "trainer": "hunter" },
+    { "id": "scout_perrin", "name": "Scout Perrin", "title": "Vale Scout", "race": "human", "x": 260, "z": -218, "rot": 300, "roles": ["quest"] }
+  ],
+  "spawns": [
+    { "mob": "forest_boar", "count": 16, "level": [1, 3], "x": -200, "z": -100, "r": 100, "respawn": 35 },
+    { "mob": "forest_boar", "count": 10, "level": [2, 4], "x": -80, "z": -220, "r": 90, "respawn": 35 },
+    { "mob": "blackwood_wolf", "count": 14, "level": [2, 5], "x": -140, "z": 60, "r": 120, "respawn": 45 },
+    { "mob": "meadow_deer", "count": 8, "level": [1, 3], "x": 0, "z": -100, "r": 140, "respawn": 60 },
+    { "mob": "webwood_spider", "count": 14, "level": [4, 6], "x": -60, "z": 240, "r": 110, "respawn": 50 },
+    { "mob": "red_bandit", "count": 14, "level": [6, 8], "x": 250, "z": -180, "r": 110, "respawn": 55 },
+    { "mob": "red_bandit_archer", "count": 8, "level": [6, 8], "x": 290, "z": -240, "r": 100, "respawn": 60 },
+    { "mob": "redbrand_captain", "count": 1, "level": [9, 9], "x": 320, "z": -280, "r": 8, "respawn": 300 },
+    { "mob": "blackwood_wolf", "count": 10, "level": [5, 7], "x": 120, "z": 280, "r": 110, "respawn": 50 }
+  ],
+  "gather_nodes": [
+    { "type": "copper_vein", "count": 10, "x": 0, "z": 0, "r": 360, "respawn": 180 },
+    { "type": "silverleaf", "count": 12, "x": 0, "z": 0, "r": 360, "respawn": 150 }
+  ],
+  "graveyard": { "x": -180, "z": -120 },
+  "player_start": { "x": -240, "z": -156, "rot": 180 },
+  "entrances": { "from_dustplains": { "x": 348, "z": 60, "rot": 90 } },
+  "exits": [
+    { "to": "dustplains", "spawn": "from_greenhollow", "x": 375, "z": 60, "r": 18, "label": "The Dustplains (10-20)" }
+  ]
+}

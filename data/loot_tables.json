@@ -1,0 +1,87 @@
+{
+  "none": { "money": [0, 0], "entries": [] },
+  "boar": { "money": [1, 4], "entries": [
+    { "item": "cracked_boar_tusk", "chance": 0.55, "count": [1, 2] },
+    { "item": "chunk_of_boar_meat", "chance": 0.35 },
+    { "pool": ["gnarled_club", "boarhide_vest", "millbrook_belt"], "chance": 0.04 }
+  ] },
+  "wolf": { "money": [2, 6], "entries": [
+    { "item": "matted_wolf_pelt", "chance": 0.6 },
+    { "item": "broken_fang", "chance": 0.3 },
+    { "pool": ["sharpened_hatchet", "vale_walker_boots", "woven_gloves"], "chance": 0.04 }
+  ] },
+  "scorpid": { "money": [1, 5], "entries": [
+    { "item": "scorpid_stinger_junk", "chance": 0.55 },
+    { "pool": ["gnarled_club", "boarhide_vest"], "chance": 0.04 }
+  ] },
+  "vulture": { "money": [1, 5], "entries": [
+    { "item": "vulture_gizzard", "chance": 0.5 },
+    { "item": "harpy_feather", "chance": 0.2 }
+  ] },
+  "raptor": { "money": [3, 8], "entries": [
+    { "item": "raptor_claw_junk", "chance": 0.55 },
+    { "pool": ["sunscorched_leggings", "trackers_gloves", "trainee_bow"], "chance": 0.05 }
+  ] },
+  "harpy": { "money": [4, 10], "entries": [
+    { "item": "harpy_feather", "chance": 0.6, "count": [1, 2] },
+    { "item": "tattered_cloth", "chance": 0.3 },
+    { "pool": ["initiate_cowl", "grunt_shoulderguards", "quillfang_bow", "emberwood_staff"], "chance": 0.05 }
+  ] },
+  "elemental": { "money": [4, 10], "entries": [
+    { "item": "tattered_cloth", "chance": 0.2 },
+    { "pool": ["initiate_cowl", "woven_gloves"], "chance": 0.05 }
+  ] },
+  "spider": { "money": [2, 6], "entries": [
+    { "item": "broken_fang", "chance": 0.4 },
+    { "item": "tattered_cloth", "chance": 0.25 },
+    { "pool": ["woven_gloves", "vale_walker_boots"], "chance": 0.04 }
+  ] },
+  "bandit": { "money": [5, 12], "entries": [
+    { "item": "bandit_mask", "chance": 0.5 },
+    { "item": "tattered_cloth", "chance": 0.35 },
+    { "pool": ["footmans_blade", "abbey_robe", "toughened_belt", "wolfrider_tunic"], "chance": 0.05 }
+  ] },
+  "deer": { "money": [0, 2], "entries": [
+    { "item": "chunk_of_boar_meat", "chance": 0.4 }
+  ] },
+  "bandit_boss": { "money": [40, 80], "entries": [
+    { "item": "footmans_blade", "chance": 0.35 },
+    { "pool": ["wolfrider_tunic", "toughened_belt", "quillfang_bow"], "chance": 0.6 }
+  ] },
+  "harpy_boss": { "money": [40, 80], "entries": [
+    { "item": "grunts_axe", "chance": 0.35 },
+    { "pool": ["grunt_shoulderguards", "emberwood_staff", "initiate_cowl"], "chance": 0.6 }
+  ] },
+  "strider": { "money": [6, 14], "entries": [
+    { "item": "vulture_gizzard", "chance": 0.45 },
+    { "item": "harpy_feather", "chance": 0.25 }
+  ] },
+  "prowler": { "money": [8, 18], "entries": [
+    { "item": "matted_wolf_pelt", "chance": 0.55 },
+    { "pool": ["plainsrunner_leggings", "oasis_treads", "dustplains_cleaver"], "chance": 0.04 }
+  ] },
+  "raptor2": { "money": [8, 18], "entries": [
+    { "item": "raptor_claw_junk", "chance": 0.55, "count": [1, 2] },
+    { "pool": ["plainsrunner_leggings", "thornshot_bow", "windspeaker_staff"], "chance": 0.04 }
+  ] },
+  "kharvani": { "money": [10, 24], "entries": [
+    { "item": "tattered_cloth", "chance": 0.4 },
+    { "item": "broken_fang", "chance": 0.25 },
+    { "pool": ["centaur_hide_cloak", "dustwind_helm", "sages_circlet", "stonewatch_saber"], "chance": 0.05 }
+  ] },
+  "scorpid2": { "money": [9, 20], "entries": [
+    { "item": "scorpid_stinger_junk", "chance": 0.6, "count": [1, 2] },
+    { "pool": ["oasis_treads", "dustwind_helm"], "chance": 0.04 }
+  ] },
+  "harpy2": { "money": [9, 20], "entries": [
+    { "item": "harpy_feather", "chance": 0.6, "count": [1, 3] },
+    { "pool": ["sages_circlet", "windspeaker_staff", "thornshot_bow"], "chance": 0.045 }
+  ] },
+  "khar_boss": { "money": [150, 300], "entries": [
+    { "pool": ["ravagers_greataxe", "stormcallers_rod", "eagle_talon_bow"], "chance": 1.0 },
+    { "pool": ["warlords_chestplate", "runeweave_robe", "beastlord_spaulders"], "chance": 0.5 }
+  ] },
+  "thunderer_boss": { "money": [120, 250], "entries": [
+    { "pool": ["warlords_chestplate", "runeweave_robe", "beastlord_spaulders"], "chance": 1.0 }
+  ] }
+}

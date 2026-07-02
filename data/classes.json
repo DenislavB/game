@@ -1,0 +1,51 @@
+{
+  "warrior": {
+    "name": "Warrior",
+    "resource": "rage",
+    "color": "#c79c6e",
+    "description": "Plate-clad melee. Builds rage by dealing and taking damage. Slow to kill, slower to die.",
+    "base_stats": { "str": 23, "agi": 20, "sta": 22, "int": 10, "spi": 11 },
+    "stats_per_level": { "str": 2.2, "agi": 1.0, "sta": 1.8, "int": 0.2, "spi": 0.4 },
+    "base_hp": 60,
+    "hp_per_level": 18,
+    "base_mana": 0,
+    "mana_per_level": 0,
+    "armor_mult": 1.3,
+    "weapon": { "type": "sword", "damage": [4, 7], "speed": 2.9 },
+    "starter_items": ["worn_shortsword", "recruits_vest", "recruits_pants", "recruits_boots", "tough_jerky", "tough_jerky"],
+    "trees": ["Arms", "Fury", "Protection"]
+  },
+  "mage": {
+    "name": "Mage",
+    "resource": "mana",
+    "color": "#69ccf0",
+    "description": "Cloth-wearing glass cannon. Every fight is a race between your mana bar and their health bar.",
+    "base_stats": { "str": 10, "agi": 10, "sta": 14, "int": 24, "spi": 22 },
+    "stats_per_level": { "str": 0.2, "agi": 0.2, "sta": 0.8, "int": 2.4, "spi": 2.0 },
+    "base_hp": 45,
+    "hp_per_level": 10,
+    "base_mana": 100,
+    "mana_per_level": 28,
+    "armor_mult": 0.8,
+    "weapon": { "type": "staff", "damage": [3, 6], "speed": 3.2 },
+    "starter_items": ["apprentice_staff", "apprentice_robe", "apprentice_pants", "apprentice_boots", "fresh_bread", "spring_water", "spring_water"],
+    "trees": ["Arcane", "Fire", "Frost"]
+  },
+  "hunter": {
+    "name": "Hunter",
+    "resource": "mana",
+    "color": "#abd473",
+    "description": "Ranged mail-wearer with a loyal beast. Keep your distance — a hunter in melee is a sad hunter.",
+    "base_stats": { "str": 14, "agi": 24, "sta": 18, "int": 14, "spi": 15 },
+    "stats_per_level": { "str": 0.6, "agi": 2.4, "sta": 1.3, "int": 1.0, "spi": 1.0 },
+    "base_hp": 52,
+    "hp_per_level": 14,
+    "base_mana": 80,
+    "mana_per_level": 20,
+    "armor_mult": 1.1,
+    "weapon": { "type": "bow", "damage": [5, 9], "speed": 2.4 },
+    "melee_weapon": { "type": "axe", "damage": [3, 5], "speed": 2.6 },
+    "starter_items": ["hunting_bow", "scouts_tunic", "scouts_pants", "scouts_boots", "tough_jerky", "spring_water"],
+    "trees": ["Beast Mastery", "Marksmanship", "Survival"]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "mottled_boar": { "name": "Mottled Boar", "family": "beast", "shape": "boar", "color": "#8a6a4a", "scale": 1.0, "aggressive": false, "loot": "boar", "skinnable": true, "speed": 5.5 },
+  "scorpid_lurker": { "name": "Scorpid Lurker", "family": "beast", "shape": "scorpid", "color": "#b0703a", "scale": 1.0, "aggressive": true, "aggro_radius": 9, "loot": "scorpid", "skinnable": true, "speed": 5.0 },
+  "dust_vulture": { "name": "Dust Vulture", "family": "beast", "shape": "bird", "color": "#6a5a4a", "scale": 1.0, "aggressive": false, "loot": "vulture", "skinnable": false, "speed": 6.0 },
+  "canyon_raptor": { "name": "Canyon Raptor", "family": "beast", "shape": "raptor", "color": "#a05838", "scale": 1.0, "aggressive": true, "aggro_radius": 12, "loot": "raptor", "skinnable": true, "speed": 7.0 },
+  "razorwind_harpy": { "name": "Razorwind Harpy", "family": "humanoid", "shape": "harpy", "color": "#7a5a8a", "scale": 1.0, "aggressive": true, "aggro_radius": 11, "loot": "harpy", "speed": 6.0 },
+  "cinder_spirit": { "name": "Cinder Spirit", "family": "elemental", "shape": "spirit", "color": "#e06820", "scale": 1.0, "aggressive": true, "aggro_radius": 10, "caster": { "school": "fire", "cast_time": 2.0, "range": 20 }, "loot": "elemental", "speed": 5.0 },
+  "harpy_matriarch": { "name": "Shriekwind the Matriarch", "family": "humanoid", "shape": "harpy", "color": "#9a4a9a", "scale": 1.3, "aggressive": true, "aggro_radius": 14, "elite": true, "loot": "harpy_boss", "speed": 6.0 },
+
+  "forest_boar": { "name": "Forest Boar", "family": "beast", "shape": "boar", "color": "#6a5138", "scale": 1.0, "aggressive": false, "loot": "boar", "skinnable": true, "speed": 5.5 },
+  "blackwood_wolf": { "name": "Blackwood Wolf", "family": "beast", "shape": "wolf", "color": "#3a3a42", "scale": 1.0, "aggressive": true, "aggro_radius": 10, "loot": "wolf", "skinnable": true, "speed": 7.0 },
+  "webwood_spider": { "name": "Webwood Spider", "family": "beast", "shape": "spider", "color": "#4a3a2a", "scale": 1.0, "aggressive": true, "aggro_radius": 9, "loot": "spider", "skinnable": false, "speed": 6.0 },
+  "red_bandit": { "name": "Redbrand Bandit", "family": "humanoid", "shape": "humanoid", "color": "#8a3030", "scale": 1.0, "aggressive": true, "aggro_radius": 11, "loot": "bandit", "speed": 6.0 },
+  "red_bandit_archer": { "name": "Redbrand Poacher", "family": "humanoid", "shape": "humanoid", "color": "#7a3838", "scale": 1.0, "aggressive": true, "aggro_radius": 13, "caster": { "school": "physical", "cast_time": 2.2, "range": 22 }, "loot": "bandit", "speed": 6.0 },
+  "redbrand_captain": { "name": "Captain Vance Redbrand", "family": "humanoid", "shape": "humanoid", "color": "#a02020", "scale": 1.15, "aggressive": true, "aggro_radius": 13, "elite": true, "loot": "bandit_boss", "speed": 6.0 },
+  "meadow_deer": { "name": "Meadow Deer", "family": "beast", "shape": "deer", "color": "#9a7a52", "scale": 1.0, "aggressive": false, "passive": true, "loot": "deer", "skinnable": true, "speed": 8.0 },
+
+  "plains_strider": { "name": "Plains Strider", "family": "beast", "shape": "bird", "color": "#c0a060", "scale": 1.3, "aggressive": false, "loot": "strider", "skinnable": false, "speed": 6.5 },
+  "dust_prowler": { "name": "Dust Prowler", "family": "beast", "shape": "wolf", "color": "#b08a50", "scale": 1.1, "aggressive": true, "aggro_radius": 13, "loot": "prowler", "skinnable": true, "speed": 7.5 },
+  "quill_raptor": { "name": "Quill Raptor", "family": "beast", "shape": "raptor", "color": "#5a8a5a", "scale": 1.1, "aggressive": true, "aggro_radius": 12, "loot": "raptor2", "skinnable": true, "speed": 7.0 },
+  "kharvani_raider": { "name": "Kharvani Raider", "family": "humanoid", "shape": "humanoid", "color": "#7a5a30", "scale": 1.1, "aggressive": true, "aggro_radius": 12, "loot": "kharvani", "speed": 6.0 },
+  "kharvani_windcaller": { "name": "Kharvani Windcaller", "family": "humanoid", "shape": "humanoid", "color": "#5a6a8a", "scale": 1.05, "aggressive": true, "aggro_radius": 13, "caster": { "school": "nature", "cast_time": 2.5, "range": 24 }, "loot": "kharvani", "speed": 5.5 },
+  "plains_scorpid": { "name": "Giant Plains Scorpid", "family": "beast", "shape": "scorpid", "color": "#907040", "scale": 1.4, "aggressive": true, "aggro_radius": 10, "loot": "scorpid2", "skinnable": true, "speed": 5.0 },
+  "dustwind_harpy": { "name": "Dustwind Harpy", "family": "humanoid", "shape": "harpy", "color": "#8a6a9a", "scale": 1.05, "aggressive": true, "aggro_radius": 12, "loot": "harpy2", "speed": 6.0 },
+  "warlord_khar": { "name": "Warlord Khar Duskmane", "family": "humanoid", "shape": "humanoid", "color": "#4a3020", "scale": 1.35, "aggressive": true, "aggro_radius": 15, "elite": true, "loot": "khar_boss", "speed": 6.0 },
+  "ancient_thunderer": { "name": "Ancient Thunderer", "family": "beast", "shape": "raptor", "color": "#3a5a7a", "scale": 1.6, "aggressive": true, "aggro_radius": 14, "elite": true, "loot": "thunderer_boss", "skinnable": true, "speed": 6.5 },
+  "plains_hare": { "name": "Plains Hare", "family": "critter", "shape": "hare", "color": "#b09a7a", "scale": 0.6, "aggressive": false, "passive": true, "loot": "none", "speed": 8.0 },
+
+  "hunter_wolf_pet": { "name": "Wolf", "family": "beast", "shape": "wolf", "color": "#6a6a72", "scale": 0.95, "aggressive": false, "loot": "none", "speed": 8.0 }
+}

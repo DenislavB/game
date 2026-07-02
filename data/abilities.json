@@ -1,0 +1,244 @@
+{
+  "heroic_strike": {
+    "name": "Heroic Strike", "class": "warrior", "level": 1, "school": "physical",
+    "cost": { "rage": 15 }, "range": 3.0, "cast": 0, "cooldown": 0,
+    "weapon_pct": 1.0, "flat": [4, 6], "flat_per_level": 1.4,
+    "icon": "sword", "desc": "A strong attack that deals weapon damage plus a bonus."
+  },
+  "battle_shout": {
+    "name": "Battle Shout", "class": "warrior", "level": 1, "school": "physical",
+    "cost": { "rage": 10 }, "range": 0, "cast": 0, "cooldown": 0,
+    "buff": { "stat": "attack_power", "amount": 12, "per_level": 2.0, "duration": 120 },
+    "icon": "shout", "desc": "Bellow a war cry, increasing your attack power for 2 min."
+  },
+  "rend": {
+    "name": "Rend", "class": "warrior", "level": 4, "school": "physical",
+    "cost": { "rage": 10 }, "range": 3.0, "cast": 0, "cooldown": 0,
+    "dot": { "tick": 4, "per_level": 0.9, "interval": 3, "duration": 15 },
+    "icon": "bleed", "desc": "Wound the target, causing bleed damage over 15 sec."
+  },
+  "charge": {
+    "name": "Charge", "class": "warrior", "level": 6, "school": "physical",
+    "cost": {}, "range": 25, "min_range": 8, "cast": 0, "cooldown": 15, "gcd": false,
+    "special": "charge", "generates_rage": 15, "stun": { "duration": 1.0 },
+    "out_of_combat_only": true,
+    "icon": "charge", "desc": "Charge an enemy, stunning it for 1 sec and generating 15 rage. Cannot be used in combat."
+  },
+  "thunder_clap": {
+    "name": "Thunder Clap", "class": "warrior", "level": 8, "school": "physical",
+    "cost": { "rage": 20 }, "range": 0, "cast": 0, "cooldown": 6,
+    "aoe": 8, "aoe_at": "self", "flat": [6, 9], "flat_per_level": 1.2,
+    "slow": { "pct": 0.15, "duration": 10 },
+    "icon": "clap", "desc": "Slam the ground, damaging nearby enemies and slowing them for 10 sec."
+  },
+  "hamstring": {
+    "name": "Hamstring", "class": "warrior", "level": 10, "school": "physical",
+    "cost": { "rage": 10 }, "range": 3.0, "cast": 0, "cooldown": 0,
+    "weapon_pct": 0.45, "slow": { "pct": 0.5, "duration": 15 },
+    "icon": "hamstring", "desc": "Maim the enemy, dealing 45% weapon damage and slowing its movement by 50% for 15 sec."
+  },
+  "bloodrage": {
+    "name": "Bloodrage", "class": "warrior", "level": 12, "school": "physical",
+    "cost": { "health_pct": 0.08 }, "range": 0, "cast": 0, "cooldown": 60, "gcd": false,
+    "generates_rage": 20,
+    "icon": "blood", "desc": "Sacrifice 8% of your health to generate 20 rage."
+  },
+  "sunder_armor": {
+    "name": "Sunder Armor", "class": "warrior", "level": 14, "school": "physical",
+    "cost": { "rage": 15 }, "range": 3.0, "cast": 0, "cooldown": 0,
+    "debuff": { "stat": "armor_pct", "amount": -0.08, "duration": 30, "max_stacks": 5 },
+    "icon": "sunder", "desc": "Sunder the target's armor, reducing it by 8% per stack. Stacks up to 5 times."
+  },
+  "execute": {
+    "name": "Execute", "class": "warrior", "level": 24, "school": "physical",
+    "cost": { "rage": 15, "consume_all_rage": true }, "range": 3.0, "cast": 0, "cooldown": 0,
+    "flat": [30, 38], "flat_per_level": 3.0, "bonus_per_extra_rage": 2.0,
+    "requires_target_hp_below": 0.2,
+    "icon": "execute", "desc": "Attempt to finish off a wounded foe (below 20% health). Consumes all remaining rage for extra damage."
+  },
+  "whirlwind": {
+    "name": "Whirlwind", "class": "warrior", "level": 36, "school": "physical",
+    "cost": { "rage": 25 }, "range": 0, "cast": 0, "cooldown": 10,
+    "aoe": 8, "aoe_at": "self", "weapon_pct": 1.0,
+    "icon": "whirlwind", "desc": "Whirl your weapon, striking all nearby enemies for weapon damage."
+  },
+  "mortal_strike": {
+    "name": "Mortal Strike", "class": "warrior", "level": 40, "school": "physical", "from_talent": true,
+    "cost": { "rage": 30 }, "range": 3.0, "cast": 0, "cooldown": 6,
+    "weapon_pct": 1.1, "flat": [40, 50], "flat_per_level": 2.0,
+    "icon": "mortal", "desc": "A vicious strike dealing 110% weapon damage plus a bonus."
+  },
+
+  "fireball": {
+    "name": "Fireball", "class": "mage", "level": 1, "school": "fire",
+    "cost": { "mana": 20, "mana_per_level": 3.2 }, "range": 30, "cast": 2.8, "cooldown": 0,
+    "flat": [8, 13], "flat_per_level": 3.4,
+    "dot": { "tick": 1, "per_level": 0.25, "interval": 2, "duration": 6 },
+    "icon": "fireball", "desc": "Hurl a ball of fire, dealing damage and leaving the target burning."
+  },
+  "frost_armor": {
+    "name": "Frost Armor", "class": "mage", "level": 1, "school": "frost",
+    "cost": { "mana": 15 }, "range": 0, "cast": 0, "cooldown": 0,
+    "buff": { "stat": "armor_pct", "amount": 0.3, "duration": 1800 },
+    "icon": "frostarmor", "desc": "Sheathe yourself in frost, increasing armor by 30% for 30 min."
+  },
+  "frostbolt": {
+    "name": "Frostbolt", "class": "mage", "level": 4, "school": "frost",
+    "cost": { "mana": 22, "mana_per_level": 3.0 }, "range": 30, "cast": 2.4, "cooldown": 0,
+    "flat": [10, 13], "flat_per_level": 2.9, "slow": { "pct": 0.4, "duration": 5 },
+    "icon": "frostbolt", "desc": "Launch a bolt of frost, damaging the target and slowing it by 40% for 5 sec."
+  },
+  "conjure_water": {
+    "name": "Conjure Water", "class": "mage", "level": 4, "school": "arcane",
+    "cost": { "mana": 40 }, "range": 0, "cast": 2.0, "cooldown": 0,
+    "special": "conjure_water",
+    "icon": "water", "desc": "Conjure 5 units of refreshing water, restoring mana when drunk."
+  },
+  "fire_blast": {
+    "name": "Fire Blast", "class": "mage", "level": 6, "school": "fire",
+    "cost": { "mana": 25, "mana_per_level": 2.8 }, "range": 20, "cast": 0, "cooldown": 8,
+    "flat": [12, 16], "flat_per_level": 3.0,
+    "icon": "fireblast", "desc": "Blast the enemy with instant fire damage."
+  },
+  "conjure_food": {
+    "name": "Conjure Food", "class": "mage", "level": 6, "school": "arcane",
+    "cost": { "mana": 40 }, "range": 0, "cast": 2.0, "cooldown": 0,
+    "special": "conjure_food",
+    "icon": "bread", "desc": "Conjure 5 loaves of bread, restoring health when eaten."
+  },
+  "arcane_missiles": {
+    "name": "Arcane Missiles", "class": "mage", "level": 8, "school": "arcane",
+    "cost": { "mana": 30, "mana_per_level": 3.5 }, "range": 30, "cast": 0, "cooldown": 0,
+    "channel": { "duration": 3.0, "ticks": 3 }, "flat": [7, 9], "flat_per_level": 2.4,
+    "icon": "missiles", "desc": "Channel waves of arcane energy at the target for 3 sec."
+  },
+  "frost_nova": {
+    "name": "Frost Nova", "class": "mage", "level": 10, "school": "frost",
+    "cost": { "mana": 30, "mana_per_level": 2.0 }, "range": 0, "cast": 0, "cooldown": 24,
+    "aoe": 9, "aoe_at": "self", "flat": [4, 6], "flat_per_level": 1.0, "root": { "duration": 6 },
+    "icon": "nova", "desc": "Blast nearby enemies with frost, freezing them in place for 6 sec."
+  },
+  "arcane_explosion": {
+    "name": "Arcane Explosion", "class": "mage", "level": 14, "school": "arcane",
+    "cost": { "mana": 35, "mana_per_level": 3.2 }, "range": 0, "cast": 0, "cooldown": 0,
+    "aoe": 10, "aoe_at": "self", "flat": [12, 16], "flat_per_level": 2.2,
+    "icon": "aexplosion", "desc": "Detonate arcane energy, damaging all nearby enemies."
+  },
+  "polymorph": {
+    "name": "Polymorph", "class": "mage", "level": 16, "school": "arcane",
+    "cost": { "mana": 40, "mana_per_level": 1.5 }, "range": 25, "cast": 1.5, "cooldown": 0,
+    "special": "polymorph", "polymorph_duration": 20,
+    "icon": "sheep", "desc": "Transform a beast or humanoid into a sheep for 20 sec. Any damage breaks the effect. Only one target can be polymorphed at a time."
+  },
+  "blink": {
+    "name": "Blink", "class": "mage", "level": 20, "school": "arcane",
+    "cost": { "mana": 30 }, "range": 0, "cast": 0, "cooldown": 15, "gcd": false,
+    "special": "blink",
+    "icon": "blink", "desc": "Teleport 15 meters forward, breaking roots and stuns."
+  },
+  "evocation": {
+    "name": "Evocation", "class": "mage", "level": 20, "school": "arcane",
+    "cost": {}, "range": 0, "cast": 0, "cooldown": 300, "gcd": false,
+    "channel": { "duration": 8.0, "ticks": 8 }, "special": "evocation",
+    "icon": "evocation", "desc": "Channel to restore 60% of your mana over 8 sec."
+  },
+  "pyroblast": {
+    "name": "Pyroblast", "class": "mage", "level": 30, "school": "fire", "from_talent": true,
+    "cost": { "mana": 60, "mana_per_level": 3.0 }, "range": 30, "cast": 6.0, "cooldown": 0,
+    "flat": [60, 75], "flat_per_level": 4.5,
+    "dot": { "tick": 4, "per_level": 0.5, "interval": 3, "duration": 12 },
+    "icon": "pyro", "desc": "An enormous ball of fire. Long cast, devastating impact."
+  },
+  "ice_barrier": {
+    "name": "Ice Barrier", "class": "mage", "level": 30, "school": "frost", "from_talent": true,
+    "cost": { "mana": 50, "mana_per_level": 2.5 }, "range": 0, "cast": 0, "cooldown": 30,
+    "absorb": 60, "absorb_per_level": 6, "buff_duration": 60,
+    "icon": "barrier", "desc": "Shield yourself with ice, absorbing damage for 1 min."
+  },
+
+  "raptor_strike": {
+    "name": "Raptor Strike", "class": "hunter", "level": 1, "school": "physical",
+    "cost": { "mana": 10, "mana_per_level": 1.2 }, "range": 3.0, "cast": 0, "cooldown": 6,
+    "weapon_pct": 1.0, "melee": true, "flat": [3, 5], "flat_per_level": 1.2,
+    "icon": "raptor", "desc": "A strong melee attack with your held weapon."
+  },
+  "serpent_sting": {
+    "name": "Serpent Sting", "class": "hunter", "level": 4, "school": "nature",
+    "cost": { "mana": 15, "mana_per_level": 1.8 }, "range": 30, "min_range": 6, "cast": 0, "cooldown": 0,
+    "dot": { "tick": 4, "per_level": 0.8, "interval": 3, "duration": 15 },
+    "icon": "sting", "desc": "Sting the target, dealing nature damage over 15 sec."
+  },
+  "arcane_shot": {
+    "name": "Arcane Shot", "class": "hunter", "level": 6, "school": "arcane",
+    "cost": { "mana": 20, "mana_per_level": 2.2 }, "range": 30, "min_range": 6, "cast": 0, "cooldown": 6,
+    "weapon_pct": 0.5, "ranged": true, "flat": [8, 11], "flat_per_level": 2.2,
+    "icon": "arcshot", "desc": "An instant shot of arcane energy."
+  },
+  "hunters_mark": {
+    "name": "Hunter's Mark", "class": "hunter", "level": 6, "school": "arcane",
+    "cost": { "mana": 15 }, "range": 35, "cast": 0, "cooldown": 0,
+    "debuff": { "stat": "damage_taken_pct", "amount": 0.05, "duration": 120 },
+    "icon": "mark", "desc": "Mark the target, increasing all damage it takes by 5% for 2 min."
+  },
+  "concussive_shot": {
+    "name": "Concussive Shot", "class": "hunter", "level": 8, "school": "physical",
+    "cost": { "mana": 18, "mana_per_level": 1.5 }, "range": 30, "min_range": 6, "cast": 0, "cooldown": 12,
+    "flat": [3, 5], "flat_per_level": 0.8, "slow": { "pct": 0.5, "duration": 4 },
+    "icon": "concussive", "desc": "Daze the target, slowing its movement by 50% for 4 sec."
+  },
+  "call_pet": {
+    "name": "Call Pet", "class": "hunter", "level": 10, "school": "nature",
+    "cost": {}, "range": 0, "cast": 3.0, "cooldown": 0, "out_of_combat_only": true,
+    "special": "call_pet",
+    "icon": "pet", "desc": "Call your loyal wolf to fight at your side."
+  },
+  "aspect_of_the_hawk": {
+    "name": "Aspect of the Hawk", "class": "hunter", "level": 10, "school": "nature",
+    "cost": { "mana": 10 }, "range": 0, "cast": 0, "cooldown": 0,
+    "buff": { "stat": "ranged_power", "amount": 15, "per_level": 1.5, "duration": 1800, "aspect": true },
+    "icon": "hawk", "desc": "Take on the aspect of the hawk, increasing ranged attack power for 30 min."
+  },
+  "mend_pet": {
+    "name": "Mend Pet", "class": "hunter", "level": 12, "school": "nature",
+    "cost": { "mana": 25, "mana_per_level": 2.0 }, "range": 20, "cast": 0, "cooldown": 0,
+    "channel": { "duration": 5.0, "ticks": 5 }, "special": "mend_pet", "heal_tick": 8, "heal_per_level": 2.0,
+    "icon": "mendpet", "desc": "Channel to heal your pet over 5 sec."
+  },
+  "multi_shot": {
+    "name": "Multi-Shot", "class": "hunter", "level": 18, "school": "physical",
+    "cost": { "mana": 30, "mana_per_level": 2.5 }, "range": 30, "min_range": 6, "cast": 0, "cooldown": 10,
+    "weapon_pct": 0.75, "ranged": true, "multi_targets": 3,
+    "icon": "multishot", "desc": "Fire at your target and up to 2 additional nearby enemies for 75% weapon damage."
+  },
+  "aspect_of_the_cheetah": {
+    "name": "Aspect of the Cheetah", "class": "hunter", "level": 20, "school": "nature",
+    "cost": { "mana": 15 }, "range": 0, "cast": 0, "cooldown": 0,
+    "buff": { "stat": "move_speed_pct", "amount": 0.3, "duration": 1800, "aspect": true, "breaks_on_hit": true },
+    "icon": "cheetah", "desc": "Move 30% faster. Taking any hit dazes you and cancels the aspect."
+  },
+  "rapid_fire": {
+    "name": "Rapid Fire", "class": "hunter", "level": 26, "school": "physical",
+    "cost": {}, "range": 0, "cast": 0, "cooldown": 300, "gcd": false,
+    "buff": { "stat": "attack_speed_pct", "amount": 0.4, "duration": 15 },
+    "icon": "rapidfire", "desc": "Increases attack speed by 40% for 15 sec."
+  },
+  "bestial_wrath": {
+    "name": "Bestial Wrath", "class": "hunter", "level": 40, "school": "nature", "from_talent": true,
+    "cost": { "mana": 40 }, "range": 0, "cast": 0, "cooldown": 120, "gcd": false,
+    "special": "bestial_wrath",
+    "icon": "wrath", "desc": "Send your pet into a rage, increasing its damage by 50% for 18 sec."
+  },
+
+  "blood_fury": {
+    "name": "Blood Fury", "race": "orc", "level": 1, "school": "physical",
+    "cost": {}, "range": 0, "cast": 0, "cooldown": 120, "gcd": false,
+    "buff": { "stat": "attack_power_pct", "amount": 0.15, "duration": 15 },
+    "icon": "bloodfury", "desc": "Racial: +15% attack power for 15 sec."
+  },
+  "second_wind": {
+    "name": "Second Wind", "race": "human", "level": 1, "school": "physical",
+    "cost": {}, "range": 0, "cast": 0, "cooldown": 180, "gcd": false,
+    "special": "second_wind",
+    "icon": "secondwind", "desc": "Racial: restore 20% of your health over 10 sec."
+  }
+}

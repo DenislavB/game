@@ -1,0 +1,111 @@
+{
+  "dp_welcome_horde": {
+    "name": "The Long Road West", "zone": "dustplains", "giver": "gash", "turnin": "jorah",
+    "req_level": 10, "prereq": [],
+    "text": "Fresh off the Mesa, eh? Good. The Crossing sits dead center of the plains — neutral ground, caravan folk, the only warm meal for miles. Caravan Master Jorah runs it. Tell him Ashfall Post still stands.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Report to Caravan Master Jorah at The Crossing" }],
+    "rewards": { "xp": 500, "money": 100 }
+  },
+  "dp_welcome_alliance": {
+    "name": "The Long Road East", "zone": "dustplains", "giver": "wills", "turnin": "jorah",
+    "req_level": 10, "prereq": [],
+    "text": "The Vale is behind you now. Out here the only law is the road, and the road runs to The Crossing. Caravan Master Jorah keeps the peace there — neutral ground, mind your manners. Let him know Fairwind Landing holds.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Report to Caravan Master Jorah at The Crossing" }],
+    "rewards": { "xp": 500, "money": 100 }
+  },
+  "dp_striders": {
+    "name": "Striders of the Plains", "zone": "dustplains", "giver": "jorah", "turnin": "jorah",
+    "req_level": 10, "prereq": [],
+    "text": "See those long-legged birds out west? Plains striders. Harmless-looking, until one kicks a hole in your wagon. Or your chest. The caravans need the western road thinned — ten striders.",
+    "objectives": [{ "type": "kill", "mob": "plains_strider", "count": 10, "label": "Plains Strider slain" }],
+    "rewards": { "xp": 850, "money": 200 }
+  },
+  "dp_prowler_pelts": {
+    "name": "Prowler Pelts", "zone": "dustplains", "giver": "jorah", "turnin": "jorah",
+    "req_level": 11, "prereq": [],
+    "text": "Dust prowler pelts fetch a fine price back east, and my buyers don't ask how I got them. The prowlers run northeast of here. Eight pelts, and I'll cut you in.",
+    "objectives": [{ "type": "collect", "item": "matted_wolf_pelt", "count": 8, "from": ["dust_prowler"], "chance": 0.6 }],
+    "rewards": { "xp": 950, "money": 240, "choice": ["plainsrunner_leggings", "oasis_treads"] }
+  },
+  "dp_oasis": {
+    "name": "The Shimmering Oasis", "zone": "dustplains", "giver": "talka", "turnin": "talka",
+    "req_level": 11, "prereq": [],
+    "text": "The spirits speak of the oasis south of here — the only sweet water for a day's walk in any direction. Something has been drinking it low. Go. Stand at the water's edge and tell me what you feel.",
+    "objectives": [{ "type": "explore", "x": 100, "z": 260, "r": 55, "label": "Shimmering Oasis visited" }],
+    "rewards": { "xp": 700, "money": 150 }
+  },
+  "dp_raptor_problem": {
+    "name": "The Raptor Problem", "zone": "dustplains", "giver": "nyra", "turnin": "nyra",
+    "req_level": 12, "prereq": [],
+    "text": "Quill raptors in the eastern scrub — smarter than the canyon breed, and they've learned what caravans carry. Twelve of them, scout. Make the east road safe enough to lie about.",
+    "objectives": [{ "type": "kill", "mob": "quill_raptor", "count": 12, "label": "Quill Raptor slain" }],
+    "rewards": { "xp": 1100, "money": 280 }
+  },
+  "dp_raptor_eggs": {
+    "name": "Eggs of the Quillfang", "zone": "dustplains", "giver": "jorah", "turnin": "jorah",
+    "req_level": 13, "prereq": ["dp_raptor_problem"],
+    "text": "Since you're already knee-deep in raptors: their eggs sell for more than the pelts, the meat, and your fee combined. Six speckled eggs from the eastern nests. Try not to think about the mothers.",
+    "objectives": [{ "type": "collect", "item": "raptor_egg", "count": 6, "from": ["quill_raptor"], "chance": 0.5 }],
+    "rewards": { "xp": 1200, "money": 320 }
+  },
+  "dp_kharvani_raiders": {
+    "name": "The Kharvani", "zone": "dustplains", "giver": "nyra", "turnin": "nyra",
+    "req_level": 13, "prereq": [],
+    "text": "The Kharvani clans have burned three caravans this season. They mass in the southwest, around their great totem. I don't like it any more than you will — but it's them or the road. Kill twelve raiders.",
+    "objectives": [{ "type": "kill", "mob": "kharvani_raider", "count": 12, "label": "Kharvani Raider slain" }],
+    "rewards": { "xp": 1300, "money": 340, "choice": ["centaur_hide_cloak", "dustwind_helm", "sages_circlet"] }
+  },
+  "dp_war_totems": {
+    "name": "War Totems", "zone": "dustplains", "giver": "talka", "turnin": "talka",
+    "req_level": 14, "prereq": ["dp_kharvani_raiders"],
+    "text": "The Kharvani carve war totems before a great raid — one for each warband sworn to fight. Count the totems and we count their army. Bring me eight from the raiders' camps.",
+    "objectives": [{ "type": "collect", "item": "kharvani_totem", "count": 8, "from": ["kharvani_raider", "kharvani_windcaller"], "chance": 0.55 }],
+    "rewards": { "xp": 1450, "money": 380 }
+  },
+  "dp_windcallers": {
+    "name": "Silence the Windcallers", "zone": "dustplains", "giver": "talka", "turnin": "talka",
+    "req_level": 14, "prereq": ["dp_kharvani_raiders"],
+    "text": "Eight totems. Eight warbands. This is no raid — it is a war, and the Kharvani windcallers are its voice, singing the clans together across the plains. Silence eight of them.",
+    "objectives": [{ "type": "kill", "mob": "kharvani_windcaller", "count": 8, "label": "Kharvani Windcaller slain" }],
+    "rewards": { "xp": 1500, "money": 400 }
+  },
+  "dp_long_patrol": {
+    "name": "The Long Patrol", "zone": "dustplains", "giver": "nyra", "turnin": "nyra",
+    "req_level": 14, "prereq": [],
+    "text": "I need a full sweep of the plains and only one set of boots to do it. Ride the circuit: the harpy bluffs in the northwest, the scorpid flats in the south, and the old watchstone in the far northeast. Report what you see.",
+    "objectives": [
+      { "type": "explore", "x": -350, "z": 300, "r": 60, "label": "Harpy Bluffs scouted" },
+      { "type": "explore", "x": 150, "z": -300, "r": 60, "label": "Scorpid Flats scouted" },
+      { "type": "explore", "x": 380, "z": 340, "r": 60, "label": "Old Watchstone scouted" }
+    ],
+    "rewards": { "xp": 1600, "money": 420, "items": ["healing_potion"] }
+  },
+  "dp_stingers": {
+    "name": "Stingers of the Flats", "zone": "dustplains", "giver": "jorah", "turnin": "jorah",
+    "req_level": 15, "prereq": [],
+    "text": "A plains scorpid took a caravan guard off his feet last week — through a boot, through the bone. The southern flats crawl with them. Ten dead scorpids and the south route reopens.",
+    "objectives": [{ "type": "kill", "mob": "plains_scorpid", "count": 10, "label": "Giant Plains Scorpid slain" }],
+    "rewards": { "xp": 1700, "money": 450 }
+  },
+  "dp_harpies": {
+    "name": "Thieves of the Bluffs", "zone": "dustplains", "giver": "nyra", "turnin": "nyra",
+    "req_level": 15, "prereq": [],
+    "text": "Dustwind harpies hold the northwestern bluffs and rob everything that walks below — grain, tools, once an entire mule. Ten harpies. The bluffs won't miss them.",
+    "objectives": [{ "type": "kill", "mob": "dustwind_harpy", "count": 10, "label": "Dustwind Harpy slain" }],
+    "rewards": { "xp": 1700, "money": 450, "choice": ["stonewatch_saber", "windspeaker_staff", "thornshot_bow"] }
+  },
+  "dp_the_warlord": {
+    "name": "Warlord of the Kharvani", "zone": "dustplains", "giver": "talka", "turnin": "talka",
+    "req_level": 17, "prereq": ["dp_war_totems", "dp_windcallers"], "elite": true,
+    "text": "Khar Duskmane. Warlord of the eight warbands. While he lives, the clans have one will, and that will is fire and ruin. He stands at the great totem in the far southwest, ringed by his best. This is a task for a small army — or one very careful soul. End him.",
+    "objectives": [{ "type": "kill", "mob": "warlord_khar", "count": 1, "label": "Warlord Khar Duskmane slain" }],
+    "rewards": { "xp": 3000, "money": 1200, "choice": ["ravagers_greataxe", "stormcallers_rod", "eagle_talon_bow"] }
+  },
+  "dp_ancient_thunderer": {
+    "name": "The Ancient Thunderer", "zone": "dustplains", "giver": "jorah", "turnin": "jorah",
+    "req_level": 18, "prereq": [], "elite": true,
+    "text": "There's a beast out by the old watchstone that the plains folk won't even name. A raptor old as the stones, big as a wagon, blue like a storm rolling in. Every year it takes a herd. No one's ever collected the bounty. It's a big bounty.",
+    "objectives": [{ "type": "kill", "mob": "ancient_thunderer", "count": 1, "label": "Ancient Thunderer slain" }],
+    "rewards": { "xp": 3200, "money": 1500, "choice": ["warlords_chestplate", "runeweave_robe", "beastlord_spaulders"] }
+  }
+}

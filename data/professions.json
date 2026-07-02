@@ -1,0 +1,17 @@
+{
+  "professions": {
+    "mining": { "name": "Mining", "max_skill": 300 },
+    "herbalism": { "name": "Herbalism", "max_skill": 300 },
+    "skinning": { "name": "Skinning", "max_skill": 300 }
+  },
+  "nodes": {
+    "copper_vein": { "name": "Copper Vein", "prof": "mining", "item": "copper_ore", "count": [1, 3], "skill_req": 1, "skill_gain_until": 75, "gather_time": 3.0, "color": "#b87333", "shape": "vein" },
+    "tin_vein": { "name": "Tin Vein", "prof": "mining", "item": "tin_ore", "count": [1, 3], "skill_req": 50, "skill_gain_until": 125, "gather_time": 3.0, "color": "#a8a8b0", "shape": "vein" },
+    "silverleaf": { "name": "Silverleaf", "prof": "herbalism", "item": "silverleaf", "count": [1, 3], "skill_req": 1, "skill_gain_until": 75, "gather_time": 2.5, "color": "#b8d8b0", "shape": "herb" },
+    "duskpetal": { "name": "Duskpetal", "prof": "herbalism", "item": "duskpetal", "count": [1, 3], "skill_req": 50, "skill_gain_until": 125, "gather_time": 2.5, "color": "#9a7ab8", "shape": "herb" }
+  },
+  "skinning": {
+    "light_leather": { "max_mob_level": 12, "skill_req": 1, "skill_gain_until": 75 },
+    "medium_leather": { "min_mob_level": 13, "skill_req": 50, "skill_gain_until": 150 }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "gh_boar_trouble": {
+    "name": "Boar Trouble", "zone": "greenhollow_vale", "giver": "marshal_edric", "turnin": "marshal_edric",
+    "req_level": 1, "prereq": [],
+    "text": "Welcome to Millbrook, recruit. I'd love to give you a hero's task, but what the Vale actually needs is fewer boars in the turnip fields. Kill eight forest boars north of the abbey. Everyone starts somewhere.",
+    "objectives": [{ "type": "kill", "mob": "forest_boar", "count": 8, "label": "Forest Boar slain" }],
+    "rewards": { "xp": 160, "money": 25 }
+  },
+  "gh_wolves_at_the_door": {
+    "name": "Wolves at the Door", "zone": "greenhollow_vale", "giver": "marshal_edric", "turnin": "marshal_edric",
+    "req_level": 2, "prereq": ["gh_boar_trouble"],
+    "text": "The Blackwood pack has grown bold — they took a mule not fifty paces from the abbey gate. Thin the pack. Eight wolves, east of here among the pines.",
+    "objectives": [{ "type": "kill", "mob": "blackwood_wolf", "count": 8, "label": "Blackwood Wolf slain" }],
+    "rewards": { "xp": 250, "money": 50, "choice": ["boarhide_vest", "millbrook_belt"] }
+  },
+  "gh_hearts_of_the_pack": {
+    "name": "Hearts of the Pack", "zone": "greenhollow_vale", "giver": "sister_maren", "turnin": "sister_maren",
+    "req_level": 3, "prereq": [],
+    "text": "Don't look at me like that — a wolf's heart, properly prepared, is the base of a tonic that has kept this abbey's sick alive through three winters. I need six hearts. The Blackwood pack runs east of the abbey.",
+    "objectives": [{ "type": "collect", "item": "wolf_heart", "count": 6, "from": ["blackwood_wolf"], "chance": 0.55 }],
+    "rewards": { "xp": 300, "money": 60, "items": ["minor_healing_potion"] }
+  },
+  "gh_report_to_stonewatch": {
+    "name": "Report to Stonewatch", "zone": "greenhollow_vale", "giver": "marshal_edric", "turnin": "bramwell",
+    "req_level": 3, "prereq": ["gh_boar_trouble"],
+    "text": "Captain Bramwell at Stonewatch Keep has been asking for able hands. Carry this dispatch to him — follow the road northeast, past the crossroads. Keep to the road and the wolves will mostly leave you be. Mostly.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Deliver the dispatch to Captain Bramwell" }],
+    "rewards": { "xp": 200, "money": 30 }
+  },
+  "gh_eight_legged_terrors": {
+    "name": "Eight-Legged Terrors", "zone": "greenhollow_vale", "giver": "joss", "turnin": "joss",
+    "req_level": 4, "prereq": [],
+    "text": "The old millpond north of the keep is webbed over like a larder. Webwood spiders, big as dogs. I can't work the mill with those things skittering about. Ten of them dead, please and thank you.",
+    "objectives": [{ "type": "kill", "mob": "webwood_spider", "count": 10, "label": "Webwood Spider slain" }],
+    "rewards": { "xp": 430, "money": 90 }
+  },
+  "gh_old_millpond": {
+    "name": "The Old Millpond", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "bramwell",
+    "req_level": 4, "prereq": [],
+    "text": "Something's wrong with the millpond — the water's gone dark and the fish float belly-up. Before I send a report to the capital I need someone to actually look at it. Go north and survey the pond.",
+    "objectives": [{ "type": "explore", "x": -40, "z": 220, "r": 45, "label": "Old Millpond surveyed" }],
+    "rewards": { "xp": 350, "money": 60 }
+  },
+  "gh_tainted_waters": {
+    "name": "Tainted Waters", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "sister_maren",
+    "req_level": 5, "prereq": ["gh_old_millpond"],
+    "text": "So it's as bad as they said. The spiders nesting around the pond are fat with whatever fouls the water — their ichor will tell us what it is. Collect six samples from the webwood spiders and bring them to Sister Maren at the abbey.",
+    "objectives": [{ "type": "collect", "item": "tainted_water_sample", "count": 6, "from": ["webwood_spider"], "chance": 0.6 }],
+    "rewards": { "xp": 550, "money": 120, "choice": ["vale_walker_boots", "woven_gloves", "sunscorched_leggings"] }
+  },
+  "gh_redbrand_gang": {
+    "name": "The Redbrand Gang", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "bramwell",
+    "req_level": 6, "prereq": [],
+    "text": "Deserters from the last war, turned brigand. The Redbrands hold the southeast hills and tax the road like they own it. They've had their warnings. Kill ten of them.",
+    "objectives": [{ "type": "kill", "mob": "red_bandit", "count": 10, "label": "Redbrand Bandit slain" }],
+    "rewards": { "xp": 620, "money": 140 }
+  },
+  "gh_proof_of_banditry": {
+    "name": "Proof of Banditry", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "bramwell",
+    "req_level": 7, "prereq": ["gh_redbrand_gang"],
+    "text": "The capital wants proof before they'll send soldiers — bureaucrats count insignias, not bodies. Every Redbrand wears one. Bring me eight.",
+    "objectives": [{ "type": "collect", "item": "bandit_insignia", "count": 8, "from": ["red_bandit", "red_bandit_archer"], "chance": 0.6 }],
+    "rewards": { "xp": 750, "money": 180, "choice": ["abbey_robe", "wolfrider_tunic", "toughened_belt"] }
+  },
+  "gh_poachers": {
+    "name": "Poachers in the Pines", "zone": "greenhollow_vale", "giver": "scout_perrin", "turnin": "scout_perrin",
+    "req_level": 7, "prereq": [],
+    "text": "The Redbrands don't just rob travelers — their poachers are stripping the Vale bare. Deer, boar, anything with a hide. I've counted their camps from this ridge. Six poachers dead and the woods breathe easier.",
+    "objectives": [{ "type": "kill", "mob": "red_bandit_archer", "count": 6, "label": "Redbrand Poacher slain" }],
+    "rewards": { "xp": 750, "money": 170 }
+  },
+  "gh_supplies_for_the_front": {
+    "name": "Stolen Supplies", "zone": "greenhollow_vale", "giver": "joss", "turnin": "joss",
+    "req_level": 7, "prereq": [],
+    "text": "Last month's grain shipment never reached the keep — the Redbrands have it stacked in their camp, bold as brass. Steal back four supply crates. They're heavy, so you'll be making them drop it the hard way.",
+    "objectives": [{ "type": "collect", "item": "supply_crate", "count": 4, "from": ["red_bandit", "red_bandit_archer"], "chance": 0.45 }],
+    "rewards": { "xp": 800, "money": 190 }
+  },
+  "gh_captain_redbrand": {
+    "name": "Captain Redbrand", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "bramwell",
+    "req_level": 9, "prereq": ["gh_proof_of_banditry"], "elite": true,
+    "text": "Vance Redbrand. Once a captain of the realm, now the most wanted man in the Vale. He keeps to the fortified camp in the far southeast hills, behind all his men. Cut off the head. Bring friends — or be very sure of yourself.",
+    "objectives": [{ "type": "kill", "mob": "redbrand_captain", "count": 1, "label": "Captain Vance Redbrand slain" }],
+    "rewards": { "xp": 1300, "money": 500, "choice": ["footmans_blade", "quillfang_bow", "emberwood_staff"] }
+  },
+  "gh_to_the_dustplains": {
+    "name": "To the Dustplains", "zone": "greenhollow_vale", "giver": "bramwell", "turnin": "wills",
+    "req_level": 9, "prereq": [],
+    "text": "You've done more for the Vale than most do in a lifetime. The frontier needs you now. East past the hills lies the Dustplains — open, lawless, contested. Sergeant Wills holds Fairwind Landing just over the border. Report to her.",
+    "objectives": [{ "type": "deliver", "item": "sealed_dispatch", "label": "Report to Sergeant Wills at Fairwind Landing" }],
+    "rewards": { "xp": 600, "money": 150 }
+  }
+}

@@ -146,7 +146,7 @@ func _physics_process(delta: float) -> void:
 func _swing() -> void:
 	if kind == "imp":
 		# Firebolt: a small ranged spell, no armor mitigation.
-		model.play_attack()
+		model.play_attack("bolt")
 		if randf() * 100.0 < Formulas.spell_resist_chance(level, attack_target.level, 0.0):
 			Events.combat_text.emit(attack_target.global_position + Vector3(0, 2, 0), "Resist", "mob_miss")
 			return
@@ -154,7 +154,7 @@ func _swing() -> void:
 		if is_instance_valid(attack_target) and attack_target.alive:
 			attack_target.add_threat(self, pet_damage() * threat_mult())
 		return
-	model.play_attack()
+	model.play_attack("claw")
 	var outcome := Formulas.attack_roll(level, attack_target.level, 5.0, 5.0)
 	if outcome == "miss" or outcome == "dodge":
 		Events.combat_text.emit(attack_target.global_position + Vector3(0, 2, 0), outcome.capitalize(), "mob_miss")

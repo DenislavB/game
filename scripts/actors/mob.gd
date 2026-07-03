@@ -43,6 +43,7 @@ var skinned := false
 var _plate: Node3D
 var _hp_bar: MeshInstance3D
 var _name_label: Label3D
+var _swing_style := "claw"
 
 
 func setup(id: String, mob_level: int, center: Vector2, r: float, respawn: float, zone_ref: Zone) -> void:
@@ -80,7 +81,11 @@ func setup(id: String, mob_level: int, center: Vector2, r: float, respawn: float
 	model.build_creature(shape_name, Color(def.get("color", "#888888")), s)
 	if shape_name == "humanoid":
 		var weapons := ["sword", "axe", "mace"]
-		model.set_weapon(weapons[hash(id) % weapons.size()])
+		var wtype: String = weapons[hash(id) % weapons.size()]
+		model.set_weapon(wtype)
+		_swing_style = { "sword": "slash", "axe": "chop", "mace": "smash" }.get(wtype, "slash")
+	else:
+		_swing_style = "claw"
 	_build_nameplate(s)
 
 
@@ -297,11 +302,11 @@ func _aggro_tick(delta: float) -> void:
 		velocity.z = 0
 		if _cast_t < 0.0 and _attack_t <= 0.0:
 			_cast_t = float(caster.get("cast_time", 2.0))
-			model.casting = true
+			model.start_cast("bolt")
 		if _cast_t >= 0.0:
 			_cast_t -= delta
 			if _cast_t < 0.0:
-				model.casting = false
+				model.stop_cast()
 				_attack_t = 1.2
 				var dmg := Formulas.mob_damage(level, elite)
 				var roll := randf_range(dmg.x, dmg.y) * 1.15
@@ -330,11 +335,11 @@ func _aggro_tick(delta: float) -> void:
 func _interrupt_own_cast() -> void:
 	if _cast_t >= 0.0:
 		_cast_t = -1.0
-		model.casting = false
+		model.stop_cast()
 
 
 func _swing_at(target: Unit) -> void:
-	model.play_attack()
+	model.play_attack(_swing_style)
 	var outcome := Formulas.attack_roll(level, target.level, target.dodge_value(), 5.0)
 	match outcome:
 		"miss":

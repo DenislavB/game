@@ -477,6 +477,27 @@ func _tick_autoattack(delta: float) -> void:
 			_melee_swing(true)
 
 
+func _melee_style() -> String:
+	match current_form():
+		"bear": return "smash"
+		"cat": return "claw"
+	var iid: String = Game.pc["equipment"].get("mainhand", "")
+	var wtype := ""
+	if iid != "":
+		wtype = str(DB.item(iid).get("wtype", ""))
+	if wtype == "":
+		var cls: Dictionary = DB.classes[Game.pc["class"]]
+		var wdef: Dictionary = cls["weapon"]
+		if Game.pc["class"] == "hunter" and cls.has("melee_weapon"):
+			wdef = cls["melee_weapon"]
+		wtype = str(wdef.get("type", "sword"))
+	match wtype:
+		"axe": return "chop"
+		"mace": return "smash"
+		"dagger": return "stab"
+		_: return "slash"
+
+
 func _facing(u: Unit) -> bool:
 	var to_u := (u.global_position - global_position).normalized()
 	if -global_transform.basis.z.dot(to_u) < 0.0:
@@ -486,7 +507,7 @@ func _facing(u: Unit) -> bool:
 
 
 func _melee_swing(ranged: bool) -> void:
-	model.play_attack()
+	model.play_attack("shoot" if ranged else _melee_style())
 	var mob := target as Mob
 	var kind := "ranged" if ranged else "melee"
 	var crit := Game.crit_pct(kind)
@@ -625,7 +646,7 @@ func use_ability(id: String) -> void:
 		casting_id = id
 		cast_total = cast_time
 		cast_t = cast_time
-		model.casting = true
+		model.start_cast(_anim_style(id, a))
 		Events.cast_started.emit(a["name"], cast_time)
 	elif a.has("channel"):
 		_pay_cost(a)
@@ -633,7 +654,7 @@ func use_ability(id: String) -> void:
 		channel_id = id
 		channel_t = float(a["channel"]["duration"])
 		channel_tick_t = channel_t / float(a["channel"]["ticks"])
-		model.casting = true
+		model.start_cast(_anim_style(id, a))
 		Events.cast_started.emit(a["name"], channel_t)
 	else:
 		_pay_cost(a)
@@ -660,6 +681,53 @@ func _needs_enemy(a: Dictionary) -> bool:
 		return false
 	return a.has("weapon_pct") or a.has("flat") or a.has("dot") or a.has("debuff") \
 		or a.has("slow") or a.has("root") or a.has("stun") or a.has("channel")
+
+
+func _anim_style(id: String, a: Dictionary) -> String:
+	## Maps an ability onto one of ActorModel's attack/cast animation tags.
+	var sp := str(a.get("special", ""))
+	match sp:
+		"judgement", "growl":
+			return "smash"
+		"charge":
+			return ""
+		"life_tap", "second_wind", "stoneform", "forsaken_will", "blink", \
+		"bear_form", "cat_form":
+			return "buff_self"
+		"call_pet", "summon_imp", "summon_voidwalker":
+			return "summon"
+		"lay_on_hands":
+			return "heal"
+		"conjure_food", "conjure_water":
+			return "buff_self"
+		"drain_life":
+			return "channel_drain"
+		"tranquility":
+			return "channel_heal"
+	var req_form := str(a.get("requires_form", ""))
+	if req_form == "bear":
+		return "claw" if a.get("aoe_at", "") == "self" else "smash"
+	if req_form == "cat":
+		return "claw"
+	if a.has("channel"):
+		return "channel_bolt"
+	if a.has("heal") or (a.has("hot") and not (a.has("flat") or a.has("dot") or a.has("weapon_pct"))):
+		return "heal"
+	if a.has("buff") and not (a.has("flat") or a.has("weapon_pct") or a.has("dot")):
+		return "buff_self"
+	if a.get("aoe_at", "") == "self" and a.has("weapon_pct"):
+		return "spin"
+	if a.get("aoe_at", "") == "self" and (a.has("flat") or a.has("dot")):
+		return "slam_ground" if str(a.get("school", "physical")) == "physical" else "burst"
+	if a.get("ranged", false) or a.has("min_range"):
+		return "shoot"
+	if a.has("weapon_pct"):
+		return _melee_style()
+	if str(a.get("school", "physical")) == "physical" and a.has("flat"):
+		return _melee_style()
+	if float(a.get("cast", 0)) > 0.0 or a.has("dot") or a.has("flat"):
+		return "bolt"
+	return "slash"
 
 
 func _range_bonus(a: Dictionary) -> float:
@@ -743,7 +811,7 @@ func _tick_cast(delta: float) -> void:
 		if cast_t <= 0.0:
 			var id := casting_id
 			casting_id = ""
-			model.casting = false
+			model.stop_cast()
 			Events.cast_stopped.emit()
 			if id == "_gather":
 				if _gathering_node != null and is_instance_valid(_gathering_node) \
@@ -761,7 +829,7 @@ func _tick_cast(delta: float) -> void:
 				channel_id = id
 				channel_t = float(a["channel"]["duration"])
 				channel_tick_t = channel_t / float(a["channel"]["ticks"])
-				model.casting = true
+				model.start_cast(_anim_style(id, a))
 				Events.cast_started.emit(a["name"], channel_t)
 			else:
 				_resolve_ability(id, a)
@@ -774,7 +842,7 @@ func _tick_cast(delta: float) -> void:
 			_channel_tick(channel_id, a2)
 		if channel_t <= 0.0:
 			channel_id = ""
-			model.casting = false
+			model.stop_cast()
 			Events.cast_stopped.emit()
 
 
@@ -786,11 +854,11 @@ func _break_cast_on_move() -> void:
 func _cancel_cast() -> void:
 	if casting_id != "":
 		casting_id = ""
-		model.casting = false
+		model.stop_cast()
 		Events.cast_stopped.emit()
 	if channel_id != "":
 		channel_id = ""
-		model.casting = false
+		model.stop_cast()
 		Events.cast_stopped.emit()
 	if _gathering_node != null:
 		_gathering_node = null
@@ -799,7 +867,9 @@ func _cancel_cast() -> void:
 # ================================================================= resolution
 
 func _resolve_ability(id: String, a: Dictionary) -> void:
-	model.play_attack()
+	var style := _anim_style(id, a)
+	if style != "":
+		model.play_attack(style)
 	var mob: Mob = target as Mob if target is Mob else null
 	var lvl_scale := maxf(level - int(a["level"]), 0)
 	match str(a.get("special", "")):
@@ -1213,7 +1283,7 @@ func _try_gather(gnode: GatherNode) -> void:
 	casting_id = "_gather"
 	cast_total = float(gnode.def.get("gather_time", 3.0))
 	cast_t = cast_total
-	model.casting = true
+	model.start_cast("gather")
 
 
 func _try_loot(mob: Mob) -> void:

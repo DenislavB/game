@@ -15,9 +15,14 @@ var casting := false
 
 var _phase := 0.0
 var _attack_t := 0.0
+var _attack_dur := 0.32
+var _attack_style := "slash"
+var _cast_style := "bolt"
 var _time := 0.0
-var _biped_arms: Array = []      # [arm_l, arm_r] pivots
-var _legs: Array = []            # leg pivots (2 or 4)
+var _biped_arms: Array = []      # [arm_l, arm_r] shoulder pivots
+var _biped_elbows: Array = []    # elbow pivots, index-matched to _biped_arms (humanoid only)
+var _legs: Array = []            # leg/hip pivots (2 or 4)
+var _biped_knees: Array = []     # knee pivots, index-matched to _legs (humanoid only)
 var _wings: Array = []
 var _tail: Node3D = null
 var _hand: Node3D = null
@@ -84,13 +89,16 @@ func build_humanoid(cfg: Dictionary) -> void:
 	_def_skin = skin
 	var boot_col := Color("3a2c1e")
 
-	# --- Legs (front of the model is -Z) ---
+	# --- Legs (front of the model is -Z). Each leg is hip -> knee -> foot
+	# so it can bend at the knee instead of swinging as one rigid bar.
 	for side in [-1, 1]:
 		var hip := _pivot(rig, Vector3(side * 0.17, 0.95, 0))
-		_leg_meshes.append(_part(hip, Props._box(0.22, 0.5, 0.24), pants, Vector3(0, -0.25, 0)))
-		_leg_meshes.append(_part(hip, Props._box(0.18, 0.42, 0.2), pants.darkened(0.15), Vector3(0, -0.68, 0)))
-		_boot_meshes.append(_part(hip, Props._box(0.21, 0.16, 0.3), boot_col, Vector3(0, -0.88, -0.05)))
+		_leg_meshes.append(_part(hip, Props._box(0.22, 0.46, 0.24), pants, Vector3(0, -0.23, 0)))
+		var knee := _pivot(hip, Vector3(0, -0.46, 0))
+		_leg_meshes.append(_part(knee, Props._box(0.18, 0.42, 0.2), pants.darkened(0.15), Vector3(0, -0.21, 0)))
+		_boot_meshes.append(_part(knee, Props._box(0.21, 0.16, 0.3), boot_col, Vector3(0, -0.44, -0.05)))
 		_legs.append(hip)
+		_biped_knees.append(knee)
 
 	# --- Torso ---
 	var torso := _pivot(rig, Vector3(0, 0.95, 0))
@@ -129,18 +137,21 @@ func build_humanoid(cfg: Dictionary) -> void:
 	_helm = _part(head, Props._box(0.37, 0.24, 0.38), Color("8a8a92"), Vector3(0, 0.44, 0))
 	_helm.visible = false
 
-	# --- Arms + hand attachment ---
+	# --- Arms + hand attachment. Each arm is shoulder -> elbow -> hand so
+	# swings and casts can bend naturally instead of windmilling straight.
 	for side in [-1, 1]:
 		var shoulder := _pivot(torso, Vector3(side * 0.41, 0.66, 0))
 		var pauldron := _part(shoulder, Props._box(0.26, 0.18, 0.3), shirt.darkened(0.2), Vector3(side * 0.02, 0.04, 0))
 		pauldron.visible = cfg.get("dressed", true)  # NPCs/mobs look dressed; player earns them
 		_pauldrons.append(pauldron)
-		_part(shoulder, Props._box(0.16, 0.36, 0.18), shirt, Vector3(0, -0.2, 0))            # sleeve
-		_part(shoulder, Props._box(0.13, 0.34, 0.15), skin, Vector3(0, -0.53, 0))            # forearm
-		_glove_meshes.append(_part(shoulder, Props._box(0.14, 0.13, 0.16), skin, Vector3(0, -0.75, 0)))
+		_part(shoulder, Props._box(0.16, 0.34, 0.18), shirt, Vector3(0, -0.17, 0))           # upper arm / sleeve
+		var elbow := _pivot(shoulder, Vector3(0, -0.34, 0))
+		_part(elbow, Props._box(0.13, 0.32, 0.15), skin, Vector3(0, -0.16, 0))               # forearm
+		_glove_meshes.append(_part(elbow, Props._box(0.14, 0.13, 0.16), skin, Vector3(0, -0.3, 0)))
 		_biped_arms.append(shoulder)
+		_biped_elbows.append(elbow)
 		if side > 0:
-			_hand = _pivot(shoulder, Vector3(0, -0.78, -0.02))
+			_hand = _pivot(elbow, Vector3(0, -0.32, -0.02))
 
 	if hunched:
 		torso.rotation.x = -0.26  # lean forward (toward -Z)
@@ -404,9 +415,37 @@ func _quad_legs(spread_x: float, w: float, len: float, color: Color, pairs: int 
 
 
 # ---------------------------------------------------------------- animation
+#
+# Rotation.x convention on every shoulder/elbow/hip/knee pivot: 0 = hanging
+# straight down, positive = swings forward toward -Z (the model's front).
+# Shoulders and hips may swing through a wide range; elbows and knees are
+# driven as an always-forward flex (elbow >= 0, knee <= 0) on top of that,
+# so they bend like real joints instead of pivoting a single rigid bar.
 
-func play_attack() -> void:
-	_attack_t = 0.35
+func play_attack(style: String = "slash") -> void:
+	_attack_style = style
+	_attack_dur = _duration_for(style)
+	_attack_t = _attack_dur
+
+
+func start_cast(style: String = "bolt") -> void:
+	casting = true
+	_cast_style = style
+
+
+func stop_cast() -> void:
+	casting = false
+
+
+func _duration_for(style: String) -> float:
+	match style:
+		"chop": return 0.42
+		"smash", "slam_ground": return 0.46
+		"stab": return 0.22
+		"claw": return 0.3
+		"shoot": return 0.4
+		"spin": return 0.5
+		_: return 0.32  # slash, bolt, heal, burst, buff_self
 
 
 func play_death() -> void:
@@ -429,40 +468,184 @@ func _process(delta: float) -> void:
 	_time += delta
 	if sitting:
 		rig.position.y = _base_y - 0.45
+		var si := 0
 		for leg in _legs:
-			leg.rotation.x = 1.3  # legs out in front (-Z)
+			leg.rotation.x = 1.2  # thighs out in front (-Z)
+			if si < _biped_knees.size():
+				_biped_knees[si].rotation.x = -1.1  # shins bent under, cross-legged
+			si += 1
 		return
+
 	_phase += delta * (11.0 if moving else 0.0)
-	var swing := sin(_phase) * (0.65 if moving else 0.0)
 	if not moving:
-		swing = 0.0
 		rig.position.y = _base_y + sin(_time * 2.0) * 0.02
 	else:
 		rig.position.y = _base_y + absf(sin(_phase)) * 0.05
-	var i := 0
-	for leg in _legs:
-		leg.rotation.x = swing * (1.0 if i % 2 == 0 else -1.0)
-		i += 1
+
+	_animate_legs()
+
 	if _attack_t > 0.0:
 		_attack_t -= delta
-		var k := sin((0.35 - _attack_t) / 0.35 * PI)
+		var k := clampf(1.0 - _attack_t / _attack_dur, 0.0, 1.0)
 		if _biped_arms.size() > 1:
-			# Positive X rotation swings the arm forward (toward -Z).
-			_biped_arms[1].rotation.x = 2.2 * k
+			_apply_attack_pose(_attack_style, k)
 		else:
 			# Quadruped lunge: pitch about the creature's lateral axis.
-			rig.rotation.z = -0.35 * k
-	elif casting and _biped_arms.size() > 1:
-		_biped_arms[0].rotation.x = lerpf(_biped_arms[0].rotation.x, 2.4, delta * 8.0)
-		_biped_arms[1].rotation.x = lerpf(_biped_arms[1].rotation.x, 2.4, delta * 8.0)
+			rig.rotation.z = -0.35 * sin(k * PI)
+	elif casting:
+		_apply_cast_pose(_cast_style, delta)
 	else:
-		var j := 0
-		for arm in _biped_arms:
-			arm.rotation.x = swing * (1.0 if j % 2 == 1 else -1.0) * 0.7
-			j += 1
+		_animate_arms_idle(delta)
 		if _is_quadruped:
 			rig.rotation.z = 0
+
+	if not (_attack_t > 0.0 and _attack_style == "spin"):
+		rig.rotation.y = lerp_angle(rig.rotation.y, 0.0, delta * 6.0)
+
 	for wing in _wings:
 		wing.rotation.z = sin(_time * 6.0) * 0.35 * (1 if wing.position.x > 0 else -1)
 	if _tail != null:
 		_tail.rotation.y = sin(_time * 3.0) * 0.15
+
+
+func _animate_legs() -> void:
+	var hip_amt := 0.65 if moving else 0.0
+	var knee_amt := 0.9 if moving else 0.0
+	var use_knees := _biped_knees.size() == _legs.size() and not _biped_knees.is_empty()
+	var i := 0
+	for leg in _legs:
+		var theta := _phase if i % 2 == 0 else _phase + PI
+		leg.rotation.x = sin(theta) * hip_amt
+		if use_knees:
+			# Bends only during the swing half of the stride (foot lifted),
+			# straight through stance (foot planted, leg pushing).
+			_biped_knees[i].rotation.x = -maxf(0.0, cos(theta)) * knee_amt
+		i += 1
+
+
+func _animate_arms_idle(delta: float) -> void:
+	var arm_amt := (0.65 if moving else 0.0) * 0.7
+	var j := 0
+	for arm in _biped_arms:
+		var s := sin(_phase) * arm_amt * (1.0 if j % 2 == 1 else -1.0)
+		arm.rotation.x = s
+		arm.rotation.z = lerp_angle(arm.rotation.z, 0.0, delta * 6.0)
+		if j < _biped_elbows.size():
+			_biped_elbows[j].rotation.x = absf(s) * 0.5
+		j += 1
+
+
+# ---------------------------------------------------------------- pose helpers
+
+func _set_arm(idx: int, shoulder_x: float, elbow_x: float, shoulder_z: float = 0.0) -> void:
+	if idx < _biped_arms.size():
+		_biped_arms[idx].rotation.x = shoulder_x
+		_biped_arms[idx].rotation.z = shoulder_z
+	if idx < _biped_elbows.size():
+		_biped_elbows[idx].rotation.x = elbow_x
+
+
+func _lerp_arm(idx: int, shoulder_x: float, elbow_x: float, t: float, shoulder_z: float = 0.0) -> void:
+	if idx < _biped_arms.size():
+		var arm: Node3D = _biped_arms[idx]
+		arm.rotation.x = lerp_angle(arm.rotation.x, shoulder_x, t)
+		arm.rotation.z = lerp_angle(arm.rotation.z, shoulder_z, t)
+	if idx < _biped_elbows.size():
+		var elbow: Node3D = _biped_elbows[idx]
+		elbow.rotation.x = lerp_angle(elbow.rotation.x, elbow_x, t)
+
+
+# ---------------------------------------------------------------- attack styles
+#
+# k runs 0 -> 1 across the swing. Directional strikes (slash/chop/smash/
+# stab/claw/shoot/slam_ground) interpolate linearly from a wind-up pose to
+# a strike pose. Symmetric flourishes (bolt/heal/burst/buff_self/spin) use
+# sin(k*PI) so they rise and fully return to neutral with no pop at the end.
+
+func _apply_attack_pose(style: String, k: float) -> void:
+	match style:
+		"slash":
+			_set_arm(1, lerpf(-0.5, 1.9, k), lerpf(1.3, 0.2, k))
+			_set_arm(0, lerpf(0.3, -0.4, k), 0.3)
+		"chop":
+			_set_arm(1, lerpf(-2.3, 1.6, k), lerpf(0.9, 0.1, k))
+			_set_arm(0, lerpf(-0.6, 0.4, k), 0.4)
+		"smash":
+			var acc := k * k * k
+			_set_arm(1, lerpf(-2.4, 1.8, acc), lerpf(0.8, 0.2, acc))
+			_set_arm(0, lerpf(-2.4, 1.8, acc), lerpf(0.8, 0.2, acc))
+		"stab":
+			_set_arm(1, lerpf(0.5, 0.9, k), lerpf(1.7, 0.15, k))
+			_set_arm(0, 0.4, 0.5)
+		"claw":
+			_set_arm(0, lerpf(-0.3, 1.1, k), 1.0)
+			_set_arm(1, lerpf(1.0, -0.3, k), 1.0)
+		"shoot":
+			_set_arm(1, 0.9, 0.25)
+			if k < 0.75:
+				var dk := k / 0.75
+				_set_arm(0, lerpf(0.7, -0.5, dk), lerpf(0.3, 1.3, dk))
+			else:
+				var rk := (k - 0.75) / 0.25
+				_set_arm(0, lerpf(-0.5, 0.4, rk), lerpf(1.3, 0.5, rk))
+		"slam_ground":
+			_set_arm(0, lerpf(-1.8, 1.6, k), lerpf(0.6, 0.1, k))
+			_set_arm(1, lerpf(-1.8, 1.6, k), lerpf(0.6, 0.1, k))
+		"spin":
+			rig.rotation.y = k * TAU
+			var spread := sin(k * PI)
+			_set_arm(0, 0.5, 0.3, spread * 1.1)
+			_set_arm(1, 0.5, 0.3, -spread * 1.1)
+		"buff_self":
+			var f := sin(k * PI)
+			_set_arm(0, f * 0.7, f * 0.4)
+			_set_arm(1, f * 0.7, f * 0.4)
+		"heal":
+			var fh := sin(k * PI)
+			_set_arm(0, fh * 0.9, fh * 0.5, fh * 0.3)
+			_set_arm(1, fh * 0.9, fh * 0.5, -fh * 0.3)
+		"burst":
+			var fb := sin(k * PI)
+			_set_arm(0, fb * 0.4, fb * 0.15, fb * 1.2)
+			_set_arm(1, fb * 0.4, fb * 0.15, -fb * 1.2)
+		_:  # "bolt" and unmatched: quick two-handed cast snap
+			var fk := sin(k * PI)
+			_set_arm(0, fk * 1.3, fk * 0.35)
+			_set_arm(1, fk * 1.5, fk * 0.35)
+
+
+# ---------------------------------------------------------------- cast styles
+#
+# Held continuously (via start_cast/stop_cast) for the duration of a cast
+# bar or channel; eases toward a target pose every frame rather than
+# snapping, so it reads as a sustained pose instead of a single strike.
+
+func _apply_cast_pose(style: String, delta: float) -> void:
+	if _biped_arms.size() < 2:
+		return
+	var t := delta * 8.0
+	match style:
+		"heal":
+			_lerp_arm(0, 0.9, 0.5, t, 0.3)
+			_lerp_arm(1, 0.9, 0.5, t, -0.3)
+		"burst":
+			_lerp_arm(0, 0.4, 0.15, t, 1.2)
+			_lerp_arm(1, 0.4, 0.15, t, -1.2)
+		"channel_bolt":
+			_lerp_arm(0, 1.2, 0.3, t)
+			_lerp_arm(1, 1.4, 0.3, t)
+		"channel_heal":
+			_lerp_arm(0, 1.0, 0.6, t)
+			_lerp_arm(1, 1.0, 0.6, t)
+		"channel_drain":
+			_lerp_arm(0, 1.1, 0.5, t)
+			_lerp_arm(1, 1.3, 0.4, t)
+		"summon":
+			_lerp_arm(0, 0.5, 0.2, t, 0.8)
+			_lerp_arm(1, 0.5, 0.2, t, -0.8)
+		"gather":
+			_lerp_arm(0, 1.5, 1.0, t)
+			_lerp_arm(1, 1.5, 1.0, t)
+		_:  # "bolt" and unmatched: hands raised forward, aiming
+			_lerp_arm(0, 1.3, 0.35, t)
+			_lerp_arm(1, 1.5, 0.35, t)

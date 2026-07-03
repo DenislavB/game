@@ -142,9 +142,12 @@ func _scroll_box(w: PanelContainer, height: float) -> VBoxContainer:
 
 
 func _clear(box: Container) -> void:
+	# queue_free(), not free(): these rebuilds are frequently triggered from
+	# inside a child's own "pressed" callback, and the emitting node is
+	# locked until that signal finishes - an immediate free() on it errors.
 	for c in box.get_children():
 		box.remove_child(c)
-		c.free()
+		c.queue_free()
 
 
 func any_open() -> bool:
@@ -306,8 +309,8 @@ func _rebuild_quest_log() -> void:
 	quest_list_box.add_child(UI.label("Active Quests (%d)" % Game.pc["quests"].size(), 14, UI.COL_GOLD))
 	for qid in Game.pc["quests"]:
 		var q := DB.quest(str(qid))
-		var ready := Game.quest_ready(str(qid))
-		var b := UI.button("[%d%s] %s%s" % [int(q.get("req_level", 1)), "+" if q.get("elite", false) else "", q["name"], " ✓" if ready else ""])
+		var is_ready := Game.quest_ready(str(qid))
+		var b := UI.button("[%d%s] %s%s" % [int(q.get("req_level", 1)), "+" if q.get("elite", false) else "", q["name"], " ✓" if is_ready else ""])
 		var qid2 := str(qid)
 		b.pressed.connect(func():
 			_selected_quest = qid2
@@ -525,9 +528,9 @@ func _rebuild_dialog() -> void:
 	for qid in DB.quests_by_turnin.get(_dialog_npc.npc_id, []):
 		if Game.pc["quests"].has(qid):
 			var q := DB.quest(str(qid))
-			var ready := Game.quest_ready(str(qid))
-			var b := UI.button("?  %s%s" % [q["name"], "  (Complete)" if ready else "  (in progress)"])
-			b.add_theme_color_override("font_color", UI.COL_GOLD if ready else Color(0.6, 0.6, 0.6))
+			var is_ready := Game.quest_ready(str(qid))
+			var b := UI.button("?  %s%s" % [q["name"], "  (Complete)" if is_ready else "  (in progress)"])
+			b.add_theme_color_override("font_color", UI.COL_GOLD if is_ready else Color(0.6, 0.6, 0.6))
 			var qid2 := str(qid)
 			b.pressed.connect(func():
 				_dialog_quest = qid2

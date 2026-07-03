@@ -179,22 +179,22 @@ func _build_tracker() -> void:
 
 
 func _build_action_bar() -> void:
-	var wrap := VBoxContainer.new()
-	wrap.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	wrap.offset_left = -290
-	wrap.offset_top = -110
-	root.add_child(wrap)
+	var bar_wrap := VBoxContainer.new()
+	bar_wrap.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	bar_wrap.offset_left = -290
+	bar_wrap.offset_top = -110
+	root.add_child(bar_wrap)
 
 	xp_bar = UI.bar(UI.COL_XP, 8)
 	xp_bar.custom_minimum_size = Vector2(580, 8)
 	xp_label = UI.label("", 10)
 	xp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	wrap.add_child(xp_bar)
-	wrap.add_child(xp_label)
+	bar_wrap.add_child(xp_bar)
+	bar_wrap.add_child(xp_label)
 
 	var bar_box := HBoxContainer.new()
 	bar_box.add_theme_constant_override("separation", 4)
-	wrap.add_child(bar_box)
+	bar_wrap.add_child(bar_box)
 	for i in Game.ACTION_SLOTS:
 		var slot := _make_action_slot(i)
 		bar_box.add_child(slot["button"])
@@ -443,10 +443,10 @@ func _refresh_tracker() -> void:
 			break
 		shown += 1
 		var q := DB.quest(qid)
-		var ready := Game.quest_ready(qid)
-		var title: String = q["name"] + (" (Complete)" if ready else "")
-		tracker_box.add_child(UI.label(title, 13, Color(1, 0.85, 0.4) if ready else Color(0.95, 0.9, 0.7)))
-		if not ready:
+		var is_ready := Game.quest_ready(qid)
+		var title: String = q["name"] + (" (Complete)" if is_ready else "")
+		tracker_box.add_child(UI.label(title, 13, Color(1, 0.85, 0.4) if is_ready else Color(0.95, 0.9, 0.7)))
+		if not is_ready:
 			for o in Game.objective_status(qid):
 				var line: String = " - %s: %d/%d" % [o["label"], o["cur"], o["need"]]
 				tracker_box.add_child(UI.label(line, 12, Color(0.6, 0.6, 0.6) if o["done"] else Color(0.85, 0.85, 0.85)))
@@ -536,7 +536,7 @@ func _update_buff_row(p) -> void:
 	_buff_row_t = 0.3
 	for c in buff_row.get_children():
 		buff_row.remove_child(c)
-		c.free()
+		c.queue_free()
 	for b in p.buffs:
 		var bp := PanelContainer.new()
 		var sb := UI.panel_style()

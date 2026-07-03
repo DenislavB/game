@@ -1,12 +1,65 @@
 {
   "_comment": "Planned zones not yet built. Each will get a full JSON in data/zones/ and quests in data/quests/ using the same schema as the three existing zones.",
   "stubs": [
-    { "id": "thornreach_coast", "name": "Thornreach Coast", "level_range": [18, 26], "faction": "contested", "theme": "Overgrown jungle coastline, troll-like ruins, pirate coves." },
-    { "id": "graystone_hills", "name": "Graystone Hills", "level_range": [22, 30], "faction": "contested", "theme": "Rocky highlands, dwarven-style digsites, gryphon roosts." },
-    { "id": "mirefen", "name": "The Mirefen", "level_range": [28, 36], "faction": "contested", "theme": "Vast swamp, sunken towers, oversized insects and oozes." },
-    { "id": "shattered_steppe", "name": "Shattered Steppe", "level_range": [34, 42], "faction": "contested", "theme": "Broken badlands, warring ogre clans, buried titan machinery." },
-    { "id": "frostpine_reach", "name": "Frostpine Reach", "level_range": [40, 48], "faction": "contested", "theme": "Snowbound pine forest, wendigo caves, abandoned keeps." },
-    { "id": "ashen_wastes", "name": "The Ashen Wastes", "level_range": [46, 54], "faction": "contested", "theme": "Volcanic desert, cults of the burning below, glass storms." },
-    { "id": "duskmourn", "name": "Duskmourn", "level_range": [52, 60], "faction": "contested", "theme": "Blighted dead forest, endgame elite camps, the Duskgate citadel." }
+    {
+      "id": "graystone_hills",
+      "name": "Graystone Hills",
+      "level_range": [
+        22,
+        30
+      ],
+      "faction": "contested",
+      "theme": "Rocky highlands, dwarven-style digsites, gryphon roosts."
+    },
+    {
+      "id": "mirefen",
+      "name": "The Mirefen",
+      "level_range": [
+        28,
+        36
+      ],
+      "faction": "contested",
+      "theme": "Vast swamp, sunken towers, oversized insects and oozes."
+    },
+    {
+      "id": "shattered_steppe",
+      "name": "Shattered Steppe",
+      "level_range": [
+        34,
+        42
+      ],
+      "faction": "contested",
+      "theme": "Broken badlands, warring ogre clans, buried titan machinery."
+    },
+    {
+      "id": "frostpine_reach",
+      "name": "Frostpine Reach",
+      "level_range": [
+        40,
+        48
+      ],
+      "faction": "contested",
+      "theme": "Snowbound pine forest, wendigo caves, abandoned keeps."
+    },
+    {
+      "id": "ashen_wastes",
+      "name": "The Ashen Wastes",
+      "level_range": [
+        46,
+        54
+      ],
+      "faction": "contested",
+      "theme": "Volcanic desert, cults of the burning below, glass storms."
+    },
+    {
+      "id": "duskmourn",
+      "name": "Duskmourn",
+      "level_range": [
+        52,
+        60
+      ],
+      "faction": "contested",
+      "theme": "Blighted dead forest, endgame elite camps, the Duskgate citadel."
+    }
   ]
 }

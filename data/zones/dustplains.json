@@ -121,6 +121,20 @@
         -170,
         -300
       ]
+    ],
+    [
+      [
+        100,
+        230
+      ],
+      [
+        100,
+        350
+      ],
+      [
+        100,
+        460
+      ]
     ]
   ],
   "props": [
@@ -585,6 +599,11 @@
       "x": -425,
       "z": 50,
       "rot": -90
+    },
+    "from_thornreach": {
+      "x": 100,
+      "z": 448,
+      "rot": 0
     }
   },
   "exits": [
@@ -603,6 +622,14 @@
       "z": 50,
       "r": 18,
       "label": "Greenhollow Vale (1-10)"
+    },
+    {
+      "to": "thornreach_coast",
+      "spawn": "from_dustplains",
+      "x": 100,
+      "z": 466,
+      "r": 18,
+      "label": "Thornreach Coast (18-26)"
     }
   ]
 }

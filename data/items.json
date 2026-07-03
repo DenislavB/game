@@ -1072,5 +1072,342 @@
     ],
     "speed": 3.3,
     "value": 25
+  },
+  "iron_ore": {
+    "name": "Iron Ore",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 120,
+    "desc": "Mined from iron deposits."
+  },
+  "junglebloom": {
+    "name": "Junglebloom",
+    "slot": "none",
+    "quality": "common",
+    "stack": 20,
+    "value": 90,
+    "desc": "A vivid flower of the deep jungle."
+  },
+  "cracked_crab_shell": {
+    "name": "Cracked Crab Shell",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 22,
+    "desc": "Vendors will buy this."
+  },
+  "panther_fang": {
+    "name": "Panther Fang",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 26,
+    "desc": "Vendors will buy this."
+  },
+  "notched_cutlass": {
+    "name": "Notched Cutlass",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 30,
+    "desc": "Too dull to use, still worth coin."
+  },
+  "waterlogged_rum": {
+    "name": "Waterlogged Rum",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 28,
+    "desc": "The sea got to it first. Vendors will still buy it."
+  },
+  "hexer_bead": {
+    "name": "Carved Hexer Bead",
+    "slot": "none",
+    "quality": "poor",
+    "stack": 10,
+    "value": 24,
+    "desc": "Vendors will buy this."
+  },
+  "sleek_panther_pelt": {
+    "name": "Sleek Panther Pelt",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "hexer_fetish": {
+    "name": "Bloodpalm Fetish",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "pirate_earring": {
+    "name": "Gold Pirate Earring",
+    "slot": "none",
+    "quality": "quest",
+    "stack": 20,
+    "value": 0,
+    "quest_item": true
+  },
+  "corsair_cutlass": {
+    "name": "Corsair Cutlass",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "uncommon",
+    "req_level": 20,
+    "dmg": [
+      34,
+      52
+    ],
+    "speed": 2.7,
+    "stats": {
+      "agi": 7,
+      "str": 4
+    },
+    "value": 8200
+  },
+  "bloodpalm_waraxe": {
+    "name": "Bloodpalm Waraxe",
+    "slot": "mainhand",
+    "wtype": "axe",
+    "quality": "uncommon",
+    "req_level": 21,
+    "dmg": [
+      38,
+      58
+    ],
+    "speed": 3.1,
+    "stats": {
+      "str": 9,
+      "sta": 4
+    },
+    "value": 9000
+  },
+  "tideward_staff": {
+    "name": "Tideward Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "uncommon",
+    "req_level": 21,
+    "dmg": [
+      30,
+      47
+    ],
+    "speed": 3.4,
+    "stats": {
+      "int": 13,
+      "spi": 7
+    },
+    "value": 9000
+  },
+  "saltfang_longbow": {
+    "name": "Saltfang Longbow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "uncommon",
+    "req_level": 22,
+    "dmg": [
+      38,
+      58
+    ],
+    "speed": 2.6,
+    "stats": {
+      "agi": 11,
+      "sta": 3
+    },
+    "value": 9600
+  },
+  "hexers_kris": {
+    "name": "Hexer's Kris",
+    "slot": "mainhand",
+    "wtype": "dagger",
+    "quality": "uncommon",
+    "req_level": 22,
+    "dmg": [
+      22,
+      34
+    ],
+    "speed": 1.9,
+    "stats": {
+      "int": 9,
+      "sta": 4
+    },
+    "value": 9600
+  },
+  "blacktide_saber": {
+    "name": "Blacktide Saber",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "rare",
+    "req_level": 25,
+    "dmg": [
+      46,
+      70
+    ],
+    "speed": 2.8,
+    "stats": {
+      "str": 12,
+      "agi": 8,
+      "sta": 6
+    },
+    "value": 21000,
+    "desc": "Pried from the captain's cold, wet hand."
+  },
+  "zulmara_hexstaff": {
+    "name": "Zul'mara's Hexstaff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "rare",
+    "req_level": 25,
+    "dmg": [
+      38,
+      60
+    ],
+    "speed": 3.3,
+    "stats": {
+      "int": 18,
+      "spi": 9,
+      "sta": 5
+    },
+    "value": 21000
+  },
+  "coralspine_bow": {
+    "name": "Coralspine Bow",
+    "slot": "ranged",
+    "wtype": "bow",
+    "quality": "rare",
+    "req_level": 25,
+    "dmg": [
+      48,
+      72
+    ],
+    "speed": 2.7,
+    "stats": {
+      "agi": 16,
+      "sta": 6
+    },
+    "value": 21000
+  },
+  "junglestalker_tunic": {
+    "name": "Junglestalker Tunic",
+    "slot": "chest",
+    "quality": "uncommon",
+    "req_level": 20,
+    "armor": 72,
+    "stats": {
+      "agi": 8,
+      "sta": 5
+    },
+    "value": 7200,
+    "color": "#3f6e2f"
+  },
+  "tidewalker_boots": {
+    "name": "Tidewalker Boots",
+    "slot": "feet",
+    "quality": "uncommon",
+    "req_level": 20,
+    "armor": 48,
+    "stats": {
+      "spi": 6,
+      "int": 4
+    },
+    "value": 6800,
+    "color": "#3a7a8a"
+  },
+  "corsair_sash": {
+    "name": "Corsair Sash",
+    "slot": "waist",
+    "quality": "uncommon",
+    "req_level": 21,
+    "armor": 40,
+    "stats": {
+      "agi": 5,
+      "sta": 4
+    },
+    "value": 7000,
+    "color": "#8a2f3a"
+  },
+  "bloodpalm_shoulderpads": {
+    "name": "Bloodpalm Shoulderpads",
+    "slot": "shoulder",
+    "quality": "uncommon",
+    "req_level": 21,
+    "armor": 58,
+    "stats": {
+      "str": 6,
+      "sta": 5
+    },
+    "value": 7600,
+    "color": "#5a8aa0"
+  },
+  "coral_helm": {
+    "name": "Coral Helm",
+    "slot": "head",
+    "quality": "uncommon",
+    "req_level": 22,
+    "armor": 62,
+    "stats": {
+      "sta": 8,
+      "str": 5
+    },
+    "value": 8400,
+    "color": "#d87a6a"
+  },
+  "hexweave_gloves": {
+    "name": "Hexweave Gloves",
+    "slot": "hands",
+    "quality": "uncommon",
+    "req_level": 22,
+    "armor": 34,
+    "stats": {
+      "int": 8,
+      "spi": 4
+    },
+    "value": 8000,
+    "color": "#4a4a8a"
+  },
+  "saltfang_leggings": {
+    "name": "Saltfang Leggings",
+    "slot": "legs",
+    "quality": "uncommon",
+    "req_level": 23,
+    "armor": 68,
+    "stats": {
+      "agi": 8,
+      "sta": 6
+    },
+    "value": 9200,
+    "color": "#6a3a3a"
+  },
+  "tidelord_breastplate": {
+    "name": "Tidelord Breastplate",
+    "slot": "chest",
+    "quality": "rare",
+    "req_level": 26,
+    "armor": 130,
+    "stats": {
+      "str": 12,
+      "sta": 11
+    },
+    "value": 18000,
+    "color": "#3a5a7a"
+  },
+  "siren_circlet": {
+    "name": "Siren's Circlet",
+    "slot": "head",
+    "quality": "rare",
+    "req_level": 25,
+    "armor": 40,
+    "stats": {
+      "int": 14,
+      "spi": 8,
+      "sta": 5
+    },
+    "value": 17000,
+    "color": "#7ad8d0"
   }
 }

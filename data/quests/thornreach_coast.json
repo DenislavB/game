@@ -1,0 +1,100 @@
+{
+  "tc_crabs": {
+    "name": "Pinched", "zone": "thornreach_coast", "giver": "teel", "turnin": "teel",
+    "req_level": 18, "prereq": [],
+    "text": "Welcome to Saltreach Landing — mind the crabs. I mean that literally: the shore crabs out by the lagoon have grown big as barrels and twice as bad-tempered, and my dock hands refuse to unload anything. Thin them out. Ten should make the point.",
+    "objectives": [{ "type": "kill", "mob": "shore_crab", "count": 10, "label": "Giant Shore Crab slain" }],
+    "rewards": { "xp": 1900, "money": 500 }
+  },
+  "tc_panthers": {
+    "name": "Eyes in the Thicket", "zone": "thornreach_coast", "giver": "brint", "turnin": "brint",
+    "req_level": 18, "prereq": [],
+    "text": "The jungle west of here watches you back. Thicket panthers — silent, patient, and fond of lone travelers. Two porters gone this month. Kill ten and the road to Ruinwatch might deserve the name 'road' again.",
+    "objectives": [{ "type": "kill", "mob": "thicket_panther", "count": 10, "label": "Thicket Panther slain" }],
+    "rewards": { "xp": 1900, "money": 500 }
+  },
+  "tc_pelts": {
+    "name": "Sleek and Black", "zone": "thornreach_coast", "giver": "teel", "turnin": "teel",
+    "req_level": 19, "prereq": ["tc_panthers"],
+    "text": "Panther pelts from Thornreach fetch triple back home — black as a moonless sea, soft as sin. Since you're already killing them, skin me eight good ones and we'll both retire a little earlier.",
+    "objectives": [{ "type": "collect", "item": "sleek_panther_pelt", "count": 8, "from": ["thicket_panther"], "chance": 0.6 }],
+    "rewards": { "xp": 2100, "money": 600, "choice": ["junglestalker_tunic", "tidewalker_boots"] }
+  },
+  "tc_lagoon": {
+    "name": "The Siren Lagoon", "zone": "thornreach_coast", "giver": "brint", "turnin": "brint",
+    "req_level": 19, "prereq": [],
+    "text": "There's a lagoon east of the landing, water so clear you can count the coral. Sailors say something sings out there at night. I say sailors drink. Go look — carefully — and tell me which of us is right.",
+    "objectives": [{ "type": "explore", "x": 250, "z": 150, "r": 60, "label": "Siren Lagoon explored" }],
+    "rewards": { "xp": 1700, "money": 450 }
+  },
+  "tc_raptors": {
+    "name": "Emerald Death", "zone": "thornreach_coast", "giver": "brint", "turnin": "brint",
+    "req_level": 20, "prereq": [],
+    "text": "The emerald raptors here make the plains breed look like chickens. They hunt in packs, they flank, and I swear one of them waited for me to reload. Twelve dead raptors, and watch your back — because they will.",
+    "objectives": [{ "type": "kill", "mob": "jungle_raptor", "count": 12, "label": "Emerald Raptor slain" }],
+    "rewards": { "xp": 2400, "money": 700 }
+  },
+  "tc_ruins": {
+    "name": "The Old Stones", "zone": "thornreach_coast", "giver": "jinba", "turnin": "jinba",
+    "req_level": 20, "prereq": [],
+    "text": "My people built those ruins when your people were still learning to swim, friend. Now da Bloodpalm squat in dem and call it destiny. Go. Look upon the old stones southwest of my camp. Know what we were, before you judge what we became.",
+    "objectives": [{ "type": "explore", "x": -320, "z": 300, "r": 55, "label": "Bloodpalm Ruins explored" }],
+    "rewards": { "xp": 2000, "money": 500 }
+  },
+  "tc_headhunters": {
+    "name": "Headhunters", "zone": "thornreach_coast", "giver": "jinba", "turnin": "jinba",
+    "req_level": 21, "prereq": ["tc_ruins"],
+    "text": "Da headhunters took my brother's head for their totem wall. I do not ask you to understand what I feel. I ask you to kill twelve of dem, and let da jungle sort out da philosophy.",
+    "objectives": [{ "type": "kill", "mob": "bloodpalm_headhunter", "count": 12, "label": "Bloodpalm Headhunter slain" }],
+    "rewards": { "xp": 2700, "money": 800, "choice": ["bloodpalm_shoulderpads", "coral_helm"] }
+  },
+  "tc_fetishes": {
+    "name": "Bad Medicine", "zone": "thornreach_coast", "giver": "jinba", "turnin": "jinba",
+    "req_level": 22, "prereq": ["tc_headhunters"],
+    "text": "Da hexers weave curses into carved fetishes — little hungry things dat drink luck and health from every soul at da Landing. Bring me eight. I will unmake dem properly, with respect. And some fire.",
+    "objectives": [{ "type": "collect", "item": "hexer_fetish", "count": 8, "from": ["bloodpalm_hexer", "bloodpalm_headhunter"], "chance": 0.55 }],
+    "rewards": { "xp": 2900, "money": 850 }
+  },
+  "tc_hexers": {
+    "name": "Silence the Hexers", "zone": "thornreach_coast", "giver": "jinba", "turnin": "jinba",
+    "req_level": 22, "prereq": ["tc_headhunters"],
+    "text": "Da fetishes are fingers; da hexers are da hand. Eight of dem chant in da deep ruins day and night. While dey chant, da curse grows. Make da jungle quiet again.",
+    "objectives": [{ "type": "kill", "mob": "bloodpalm_hexer", "count": 8, "label": "Bloodpalm Hexer slain" }],
+    "rewards": { "xp": 2900, "money": 850, "choice": ["hexweave_gloves", "tideward_staff"] }
+  },
+  "tc_pirates": {
+    "name": "The Saltfang Problem", "zone": "thornreach_coast", "giver": "teel", "turnin": "teel",
+    "req_level": 22, "prereq": [],
+    "text": "Every crate that leaves this dock has a one-in-three chance of ending up in Saltfang Cove, southeast past the lagoon. They're not even subtle about it — I can hear them singing from here on a calm night. Twelve freebooters. Send the tide in angry.",
+    "objectives": [{ "type": "kill", "mob": "saltfang_pirate", "count": 12, "label": "Saltfang Freebooter slain" }],
+    "rewards": { "xp": 2900, "money": 850 }
+  },
+  "tc_earrings": {
+    "name": "Proof in Gold", "zone": "thornreach_coast", "giver": "teel", "turnin": "teel",
+    "req_level": 23, "prereq": ["tc_pirates"],
+    "text": "The trade council won't fund a garrison without 'evidence of organized piracy.' Every Saltfang wears a gold earring — one ship, one ring, that's their code. Bring me ten. That's organized enough for any council.",
+    "objectives": [{ "type": "collect", "item": "pirate_earring", "count": 10, "from": ["saltfang_pirate", "saltfang_sharpshooter"], "chance": 0.6 }],
+    "rewards": { "xp": 3100, "money": 950, "choice": ["saltfang_leggings", "corsair_sash", "corsair_cutlass"] }
+  },
+  "tc_sharpshooters": {
+    "name": "Down from the Rigging", "zone": "thornreach_coast", "giver": "brint", "turnin": "brint",
+    "req_level": 23, "prereq": ["tc_pirates"],
+    "text": "Their sharpshooters perch in the cove rigging and put a ball through anything that walks the beach. I've counted eight nests. I'd deal with it myself, but they know my silhouette by now. They don't know yours yet.",
+    "objectives": [{ "type": "kill", "mob": "saltfang_sharpshooter", "count": 8, "label": "Saltfang Sharpshooter slain" }],
+    "rewards": { "xp": 3100, "money": 950 }
+  },
+  "tc_blacktide": {
+    "name": "Captain Blacktide", "zone": "thornreach_coast", "giver": "teel", "turnin": "teel",
+    "req_level": 24, "prereq": ["tc_earrings"], "elite": true,
+    "text": "Blacktide. Three navies want him hanged and one wants him promoted. He holds court at the far end of the cove behind every cutthroat gold can buy. This is no errand — bring friends, or bring a very good plan. End the Saltfang fleet at its head.",
+    "objectives": [{ "type": "kill", "mob": "captain_blacktide", "count": 1, "label": "Captain Blacktide slain" }],
+    "rewards": { "xp": 5200, "money": 2500, "choice": ["blacktide_saber", "coralspine_bow", "tidelord_breastplate"] }
+  },
+  "tc_zulmara": {
+    "name": "The High Hexer", "zone": "thornreach_coast", "giver": "jinba", "turnin": "jinba",
+    "req_level": 24, "prereq": ["tc_fetishes", "tc_hexers"], "elite": true,
+    "text": "Zul'mara. She taught me da craft, long ago, before she taught herself worse things. Every fetish, every curse, every head on da totem wall — her will, her voice. I cannot face her. You can. Deep in da ruins, past da old gate. Do not go alone.",
+    "objectives": [{ "type": "kill", "mob": "high_hexer_zulmara", "count": 1, "label": "High Hexer Zul'mara slain" }],
+    "rewards": { "xp": 5200, "money": 2500, "choice": ["zulmara_hexstaff", "siren_circlet", "tidelord_breastplate"] }
+  }
+}

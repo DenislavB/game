@@ -29,6 +29,7 @@ First zone load takes a few seconds — the terrain mesh is generated at runtime
 | Right-click | Interact / loot / attack |
 | 1–0 | Action bar |
 | B / C / L / N | Bags / Character / Quest log / Talents |
+| M | Zone map (roads, camps, quest NPCs, elite lairs, your position) |
 | X | Sit (eat & drink faster) |
 | Space | Jump |
 | Esc | Cancel cast → clear target → close windows |

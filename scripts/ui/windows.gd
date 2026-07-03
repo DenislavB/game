@@ -11,6 +11,8 @@ var vendor_win: PanelContainer
 var trainer_win: PanelContainer
 var loot_win: PanelContainer
 var dialog_win: PanelContainer
+var map_win: PanelContainer
+var map_canvas: Control
 
 var vendor_open := false
 var _vendor_npc: Npc = null
@@ -77,6 +79,11 @@ func _ready() -> void:
 
 	dialog_win = _make_window("Quest", Vector2(540, 180), Vector2(520, 0))
 	dialog_box = _scroll_box(dialog_win, 460)
+
+	map_win = _make_window("Zone Map  (M)", Vector2(460, 80), Vector2(640, 0))
+	map_canvas = ZoneMapCanvas.new()
+	map_canvas.custom_minimum_size = Vector2(600, 600)
+	_win_content(map_win).add_child(map_canvas)
 
 	Events.inventory_changed.connect(func():
 		if bags_win.visible: _rebuild_bags()
@@ -151,14 +158,14 @@ func _clear(box: Container) -> void:
 
 
 func any_open() -> bool:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win]:
 		if w.visible:
 			return true
 	return false
 
 
 func close_all() -> void:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win]:
 		w.visible = false
 	vendor_open = false
 	Events.close_loot.emit()
@@ -183,6 +190,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		talent_win.visible = not talent_win.visible
 		if talent_win.visible:
 			_rebuild_talents()
+	elif event.is_action_pressed("toggle_map"):
+		map_win.visible = not map_win.visible
 	elif event.is_action_pressed("ui_escape") and any_open():
 		close_all()
 		get_viewport().set_input_as_handled()
@@ -621,3 +630,120 @@ func _rebuild_dialog_detail() -> void:
 		_dialog_quest = ""
 		_rebuild_dialog())
 	dialog_box.add_child(back)
+
+
+# ---------------------------------------------------------------- zone map
+
+class ZoneMapCanvas:
+	extends Control
+	## Live top-down schematic of the current zone, drawn straight from the
+	## zone JSON: water, roads, camps, buildings, NPCs (with quest markers),
+	## elite lairs, exits, active explore objectives, and the player arrow.
+
+	var _s := 800.0
+	var _k := 1.0
+
+	func _process(_delta: float) -> void:
+		if is_visible_in_tree():
+			queue_redraw()
+
+	func _mp(x: float, z: float) -> Vector2:
+		return Vector2((x + _s * 0.5) * _k, (z + _s * 0.5) * _k)
+
+	func _draw() -> void:
+		var side := minf(size.x, size.y)
+		draw_rect(Rect2(0, 0, side, side), Color(0.11, 0.1, 0.08))
+		var zdef: Dictionary = DB.zones.get(Game.current_zone_id, {})
+		if zdef.is_empty() or Game.pc.is_empty():
+			return
+		_s = float(zdef["size"])
+		_k = side / _s
+		var amb: Dictionary = zdef["ambience"]
+		var font := get_theme_default_font()
+
+		# Ground tint and border.
+		draw_rect(Rect2(0, 0, side, side), Color(str(amb["ground_low"])).darkened(0.55))
+		draw_rect(Rect2(0, 0, side, side), Color(str(amb["ground_high"])).darkened(0.2), false, 2.0)
+
+		# Water bodies (flattened depressions below water level).
+		for f in zdef.get("flatten", []):
+			if float(f.get("h", 1.0)) < 0.0:
+				draw_circle(_mp(float(f["x"]), float(f["z"])), float(f["r"]) * _k,
+					Color(str(amb["water_color"]), 0.55))
+
+		# Roads.
+		for road in zdef.get("roads", []):
+			var pts := PackedVector2Array()
+			for p in road:
+				pts.append(_mp(float(p[0]), float(p[1])))
+			draw_polyline(pts, Color(str(amb["road"])).lightened(0.15), 2.5)
+
+		# Camps (flattened but not underwater) as soft circles.
+		for f2 in zdef.get("flatten", []):
+			if float(f2.get("h", 1.0)) >= 0.0:
+				draw_circle(_mp(float(f2["x"]), float(f2["z"])), float(f2["r"]) * _k,
+					Color(1, 0.95, 0.8, 0.07))
+
+		# Buildings.
+		for b in zdef.get("buildings", []):
+			var bp := _mp(float(b["x"]), float(b["z"]))
+			draw_rect(Rect2(bp - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.75, 0.6, 0.4))
+
+		# Elite lairs (single-spawn entries).
+		for spawn in zdef.get("spawns", []):
+			if int(spawn.get("count", 0)) == 1:
+				var sp := _mp(float(spawn["x"]), float(spawn["z"]))
+				draw_circle(sp, 4.0, Color(0.85, 0.15, 0.15))
+				draw_arc(sp, 6.5, 0, TAU, 16, Color(0.85, 0.15, 0.15, 0.6), 1.5)
+
+		# NPCs, with classic quest punctuation.
+		for n in zdef.get("npcs", []):
+			var np := _mp(float(n["x"]), float(n["z"]))
+			var marker := Game.npc_quest_marker(str(n["id"]))
+			if marker == "!":
+				draw_string(font, np + Vector2(-3, -4), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1, 0.82, 0))
+			elif marker.begins_with("?"):
+				draw_string(font, np + Vector2(-4, -4), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 14,
+					Color(1, 0.82, 0) if marker == "?" else Color(0.6, 0.6, 0.6))
+			draw_circle(np, 2.5, Color(0.55, 0.9, 0.55))
+
+		# Exits.
+		for e in zdef.get("exits", []):
+			var ep := _mp(float(e["x"]), float(e["z"]))
+			draw_circle(ep, 5.0, Color(0.95, 0.85, 0.5, 0.9))
+			draw_string(font, ep + Vector2(-40, 16), str(e.get("label", e["to"])),
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.95, 0.88, 0.65))
+
+		# Active explore objectives in this zone.
+		for qid in Game.pc["quests"]:
+			var q: Dictionary = DB.quest(str(qid))
+			if str(q.get("zone", "")) != Game.current_zone_id:
+				continue
+			var state: Dictionary = Game.pc["quests"][qid]
+			var objs: Array = q.get("objectives", [])
+			for i in objs.size():
+				var obj: Dictionary = objs[i]
+				if str(obj.get("type", "")) == "explore" and int(state["progress"][i]) == 0:
+					draw_arc(_mp(float(obj["x"]), float(obj["z"])), float(obj["r"]) * _k,
+						0, TAU, 40, Color(1, 0.82, 0, 0.8), 1.5)
+
+		# Graveyard.
+		var g: Dictionary = zdef.get("graveyard", {})
+		if not g.is_empty():
+			var gp := _mp(float(g["x"]), float(g["z"]))
+			draw_line(gp + Vector2(-4, 0), gp + Vector2(4, 0), Color(0.85, 0.85, 0.85), 2.0)
+			draw_line(gp + Vector2(0, -5), gp + Vector2(0, 3), Color(0.85, 0.85, 0.85), 2.0)
+
+		# The player, as an arrow pointing where you face.
+		var p = Game.player
+		if p != null and is_instance_valid(p):
+			var pp := _mp(p.global_position.x, p.global_position.z)
+			var fwd3: Vector3 = -p.global_transform.basis.z
+			var dir := Vector2(fwd3.x, fwd3.z).normalized()
+			var perp := Vector2(-dir.y, dir.x)
+			draw_colored_polygon(PackedVector2Array([
+				pp + dir * 9.0, pp - dir * 4.0 + perp * 5.0, pp - dir * 4.0 - perp * 5.0
+			]), Color(1, 1, 1))
+			draw_string(font, Vector2(6, side - 8),
+				"%s   (%d, %d)" % [str(zdef.get("name", "")), int(p.global_position.x), int(p.global_position.z)],
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.9, 0.85, 0.7))

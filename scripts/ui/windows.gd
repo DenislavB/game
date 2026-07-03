@@ -524,6 +524,7 @@ func _rebuild_loot() -> void:
 		var e2: Dictionary = entry
 		b.pressed.connect(func():
 			if Game.add_item(iid, count) == 0:
+				SFX.play("loot")
 				_loot_mob.loot.erase(e2)
 				_rebuild_loot())
 		b.mouse_entered.connect(func(): Hud.inst.show_tooltip(UI.item_tooltip(iid)))
@@ -535,6 +536,7 @@ func _rebuild_loot() -> void:
 	var all_b := UI.button("Take All", func():
 		if _loot_mob == null or not is_instance_valid(_loot_mob):
 			return
+		SFX.play("loot")
 		Game.add_money(_loot_mob.loot_money)
 		_loot_mob.loot_money = 0
 		for e in _loot_mob.loot.duplicate():

@@ -152,6 +152,12 @@ func place_at_spawn(rng: RandomNumberGenerator) -> void:
 func add_threat(source: Node, amount: float) -> void:
 	if not alive or _evade_invuln:
 		return
+	# Critters and prey animals bolt instead of fighting back.
+	if passive_mob:
+		if not has_flag("fear"):
+			apply_buff({ "id": "scared", "name": "Fleeing", "kind": "debuff",
+				"duration": 6.0, "fear": true })
+		return
 	threat[source] = float(threat.get(source, 0.0)) + amount
 	if state != State.AGGRO:
 		state = State.AGGRO

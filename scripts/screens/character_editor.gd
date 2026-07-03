@@ -22,7 +22,6 @@ var holder: Node3D
 var camera: Camera3D
 var _zoom := 4.5
 var _dragging := false
-var _spin := true
 
 var controls_box: VBoxContainer
 var status_label: Label
@@ -78,16 +77,14 @@ func _build_stage() -> void:
 	camera.current = true
 
 
-func _process(delta: float) -> void:
-	if _spin and not _dragging:
-		holder.rotation.y += delta * 0.4
+func _process(_delta: float) -> void:
 	camera.position.z = _zoom
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
-		if mb.button_index == MOUSE_BUTTON_LEFT:
+		if mb.button_index == MOUSE_BUTTON_RIGHT:
 			_dragging = mb.pressed
 		elif mb.button_index == MOUSE_BUTTON_WHEEL_UP and mb.pressed:
 			_zoom = maxf(_zoom - 0.4, 2.0)
@@ -116,7 +113,7 @@ func _build_ui() -> void:
 	var v := VBoxContainer.new()
 	panel.add_child(v)
 	v.add_child(UI.header("Character Editor"))
-	v.add_child(UI.label("Drag to rotate, wheel to zoom.", 11, Color(0.6, 0.58, 0.5)))
+	v.add_child(UI.label("Hold right mouse button and drag to rotate. Wheel to zoom.", 11, Color(0.6, 0.58, 0.5)))
 	v.add_child(HSeparator.new())
 
 	var tabs := HBoxContainer.new()

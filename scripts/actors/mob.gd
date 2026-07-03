@@ -307,10 +307,14 @@ func _aggro_tick(delta: float) -> void:
 			_cast_t -= delta
 			if _cast_t < 0.0:
 				model.stop_cast()
+				model.play_attack("bolt")
 				_attack_t = 1.2
 				var dmg := Formulas.mob_damage(level, elite)
 				var roll := randf_range(dmg.x, dmg.y) * 1.15
-				combat_target.take_damage(roll, caster.get("school", "fire"), self)
+				var school := str(caster.get("school", "fire"))
+				FX.bolt(get_parent(), global_position + Vector3(0, 1.6, 0),
+					combat_target.global_position + Vector3(0, 1.2, 0), UI.school_color(school))
+				combat_target.take_damage(roll, school, self)
 	elif dist > melee_range:
 		_interrupt_own_cast()
 		if is_rooted():

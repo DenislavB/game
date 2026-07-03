@@ -147,6 +147,8 @@ func _swing() -> void:
 	if kind == "imp":
 		# Firebolt: a small ranged spell, no armor mitigation.
 		model.play_attack("bolt")
+		FX.bolt(get_parent(), global_position + Vector3(0, 1.0, 0),
+			attack_target.global_position + Vector3(0, 1.0, 0), Color("ff7030"))
 		if randf() * 100.0 < Formulas.spell_resist_chance(level, attack_target.level, 0.0):
 			Events.combat_text.emit(attack_target.global_position + Vector3(0, 2, 0), "Resist", "mob_miss")
 			return

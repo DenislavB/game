@@ -509,6 +509,9 @@ func _facing(u: Unit) -> bool:
 func _melee_swing(ranged: bool) -> void:
 	model.play_attack("shoot" if ranged else _melee_style())
 	var mob := target as Mob
+	if ranged:
+		FX.bolt(get_parent(), global_position + Vector3(0, 1.5, 0),
+			mob.global_position + Vector3(0, 1.2, 0), Color.WHITE, true)
 	var kind := "ranged" if ranged else "melee"
 	var crit := Game.crit_pct(kind)
 	var outcome := Formulas.attack_roll(level, mob.level, 5.0, crit)
@@ -646,7 +649,7 @@ func use_ability(id: String) -> void:
 		casting_id = id
 		cast_total = cast_time
 		cast_t = cast_time
-		model.start_cast(_anim_style(id, a))
+		model.start_cast(_anim_style(id, a), UI.school_color(str(a.get("school", ""))))
 		Events.cast_started.emit(a["name"], cast_time)
 	elif a.has("channel"):
 		_pay_cost(a)
@@ -654,7 +657,7 @@ func use_ability(id: String) -> void:
 		channel_id = id
 		channel_t = float(a["channel"]["duration"])
 		channel_tick_t = channel_t / float(a["channel"]["ticks"])
-		model.start_cast(_anim_style(id, a))
+		model.start_cast(_anim_style(id, a), UI.school_color(str(a.get("school", ""))))
 		Events.cast_started.emit(a["name"], channel_t)
 	else:
 		_pay_cost(a)
@@ -829,7 +832,7 @@ func _tick_cast(delta: float) -> void:
 				channel_id = id
 				channel_t = float(a["channel"]["duration"])
 				channel_tick_t = channel_t / float(a["channel"]["ticks"])
-				model.start_cast(_anim_style(id, a))
+				model.start_cast(_anim_style(id, a), UI.school_color(str(a.get("school", ""))))
 				Events.cast_started.emit(a["name"], channel_t)
 			else:
 				_resolve_ability(id, a)
@@ -983,6 +986,8 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 	var victims: Array = []
 	if a.get("aoe_at", "") == "self":
 		victims = _mobs_within(float(a["aoe"]))
+		FX.burst(get_parent(), global_position + Vector3(0, 0.25, 0),
+			UI.school_color(str(a.get("school", ""))), float(a["aoe"]) * 0.45)
 	elif mob != null and mob.alive:
 		victims = [mob]
 		if a.has("multi_targets"):
@@ -1064,6 +1069,8 @@ func _spell_wide_mult() -> float:
 
 
 func _spell_hit(mob: Mob, _id: String, a: Dictionary, flat: float, school: String) -> void:
+	FX.bolt(get_parent(), global_position + Vector3(0, 1.5, 0) - global_transform.basis.z * 0.5,
+		mob.global_position + Vector3(0, 1.2, 0), UI.school_color(school))
 	var hit_bonus := Game.talent_mod("spell_hit_pct")
 	if randf() * 100.0 < Formulas.spell_resist_chance(level, mob.level, hit_bonus):
 		Events.combat_text.emit(mob.global_position + Vector3(0, 2.2, 0), "Resist", "miss")
@@ -1182,6 +1189,9 @@ func _channel_tick(id: String, a: Dictionary) -> void:
 				+ float(a.get("flat_per_level", 0)) * maxf(level - int(a["level"]), 0)
 			drain *= 1.0 + Game.talent_mod("ability_damage_pct", { "ability": id }) \
 				+ Game.talent_mod("school_damage_pct", { "school": "shadow" }) + _spell_wide_mult()
+			# The stolen life visibly flows from the victim to you.
+			FX.bolt(get_parent(), mob2.global_position + Vector3(0, 1.2, 0),
+				global_position + Vector3(0, 1.4, 0), Color(0.35, 0.9, 0.35))
 			mob2.take_damage(drain, "shadow", self)
 			heal(drain * 0.9, false)
 			return
@@ -1283,7 +1293,7 @@ func _try_gather(gnode: GatherNode) -> void:
 	casting_id = "_gather"
 	cast_total = float(gnode.def.get("gather_time", 3.0))
 	cast_t = cast_total
-	model.start_cast("gather")
+	model.start_cast("gather", Color(0.6, 0.9, 0.5))
 
 
 func _try_loot(mob: Mob) -> void:

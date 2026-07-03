@@ -12,6 +12,7 @@ var pc: Dictionary = {}
 var player = null                 # runtime Player node (set by Main); untyped on purpose
 var zone_node = null              # runtime Zone node (set when a zone builds); untyped on purpose
 var current_zone_id: String = ""
+var time_of_day := 10.0           # 0-24h; a full day passes in ~20 real minutes
 var _talent_cache: Dictionary = {}
 
 
@@ -620,6 +621,7 @@ func save_game() -> void:
 		pc["hp"] = player.hp
 		pc["mana"] = player.resource
 	pc["zone"] = current_zone_id
+	pc["tod"] = time_of_day
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(pc))
@@ -638,6 +640,7 @@ func load_game() -> bool:
 		return false
 	pc = parsed
 	current_zone_id = pc.get("zone", "sunscorch_mesa")
+	time_of_day = float(pc.get("tod", 10.0))
 	_talent_cache.clear()
 	return true
 

@@ -8,6 +8,17 @@ var terrain: ZoneTerrain
 var mobs_root: Node3D
 var _rng := RandomNumberGenerator.new()
 
+# Day/night cycle
+const DAY_SPEED := 24.0 / 1200.0  # full day in 20 real minutes
+var _sun: DirectionalLight3D
+var _env: Environment
+var _sky_mat: ProceduralSkyMaterial
+var _day_sun_color: Color
+var _day_sun_energy := 1.2
+var _day_sky_top: Color
+var _day_sky_horizon: Color
+var _day_fog: Color
+
 
 func build(zone_id: String) -> void:
 	zone_def = DB.zones[zone_id]
@@ -89,6 +100,38 @@ func _build_environment() -> void:
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 120.0
 	add_child(sun)
+
+	# Remember the zone's daytime look; _process blends toward night.
+	_sun = sun
+	_env = env
+	_sky_mat = sky_mat
+	_day_sun_color = Color(amb["sun_color"])
+	_day_sun_energy = float(amb["sun_energy"])
+	_day_sky_top = Color(amb["sky_top"])
+	_day_sky_horizon = Color(amb["sky_horizon"])
+	_day_fog = Color(amb["fog"])
+
+
+func _process(delta: float) -> void:
+	Game.time_of_day = fmod(Game.time_of_day + delta * DAY_SPEED, 24.0)
+	if _sun == null:
+		return
+	var h := Game.time_of_day
+	# 0 at night, 1 at high noon, smooth dawn (5-8h) and dusk (17-20h).
+	var daylight := clampf(sin((h - 6.0) / 12.0 * PI), 0.0, 1.0)
+	if h < 5.0 or h > 20.0:
+		daylight = 0.0
+	var night_top := Color("0d1626")
+	var night_horizon := Color("1a2a40")
+	var night_fog := Color("141c2a")
+	_sun.rotation_degrees.x = lerpf(-8.0, -70.0, daylight)
+	_sun.light_energy = lerpf(0.12, _day_sun_energy, daylight)
+	_sun.light_color = Color("8090c0").lerp(_day_sun_color, daylight)
+	_env.ambient_light_energy = lerpf(0.35, 1.0, daylight)
+	_env.fog_light_color = night_fog.lerp(_day_fog, daylight)
+	_sky_mat.sky_top_color = night_top.lerp(_day_sky_top, daylight)
+	_sky_mat.sky_horizon_color = night_horizon.lerp(_day_sky_horizon, daylight)
+	_sky_mat.ground_horizon_color = _sky_mat.sky_horizon_color
 
 
 func _build_water() -> void:

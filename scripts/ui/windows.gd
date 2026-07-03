@@ -744,6 +744,9 @@ class ZoneMapCanvas:
 			draw_colored_polygon(PackedVector2Array([
 				pp + dir * 9.0, pp - dir * 4.0 + perp * 5.0, pp - dir * 4.0 - perp * 5.0
 			]), Color(1, 1, 1))
+			var hh := int(Game.time_of_day)
+			var mm := int(fmod(Game.time_of_day, 1.0) * 60.0)
 			draw_string(font, Vector2(6, side - 8),
-				"%s   (%d, %d)" % [str(zdef.get("name", "")), int(p.global_position.x), int(p.global_position.z)],
+				"%s   (%d, %d)   %02d:%02d" % [str(zdef.get("name", "")),
+					int(p.global_position.x), int(p.global_position.z), hh, mm],
 				HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.9, 0.85, 0.7))

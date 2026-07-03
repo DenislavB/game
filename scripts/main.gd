@@ -21,6 +21,21 @@ func _ready() -> void:
 	menus.start_game.connect(_on_start_game)
 	menus.open_editor.connect(_on_open_editor)
 	Events.request_zone_travel.connect(_on_zone_travel)
+	Events.request_exit_to_menu.connect(_on_exit_to_menu)
+
+
+func _on_exit_to_menu() -> void:
+	Game.save_game()
+	Game.player = null
+	Game.zone_node = null
+	for n in [zone, hud, windows]:
+		if n != null and is_instance_valid(n):
+			n.queue_free()
+	zone = null
+	hud = null
+	windows = null
+	menus.visible = true
+	menus._rebuild()  # refresh so Continue reflects the fresh save
 
 
 func _on_open_editor() -> void:

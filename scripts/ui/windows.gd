@@ -13,6 +13,7 @@ var loot_win: PanelContainer
 var dialog_win: PanelContainer
 var map_win: PanelContainer
 var map_canvas: Control
+var system_win: PanelContainer
 
 var vendor_open := false
 var _vendor_npc: Npc = null
@@ -84,6 +85,28 @@ func _ready() -> void:
 	map_canvas = ZoneMapCanvas.new()
 	map_canvas.custom_minimum_size = Vector2(600, 600)
 	_win_content(map_win).add_child(map_canvas)
+
+	system_win = _make_window("Menu", Vector2(660, 300), Vector2(280, 0))
+	var sys_box := _win_content(system_win)
+	var resume_b := UI.button("Resume", func(): system_win.visible = false)
+	resume_b.custom_minimum_size = Vector2(240, 40)
+	sys_box.add_child(resume_b)
+	var save_b := UI.button("Save Game", func():
+		Game.save_game()
+		Events.game_message.emit("Game saved.")
+		system_win.visible = false)
+	save_b.custom_minimum_size = Vector2(240, 40)
+	sys_box.add_child(save_b)
+	var exit_b := UI.button("Exit to Main Menu", func():
+		system_win.visible = false
+		Events.request_exit_to_menu.emit())
+	exit_b.custom_minimum_size = Vector2(240, 40)
+	sys_box.add_child(exit_b)
+	var quit_b := UI.button("Save and Quit", func():
+		Game.save_game()
+		get_tree().quit())
+	quit_b.custom_minimum_size = Vector2(240, 40)
+	sys_box.add_child(quit_b)
 
 	Events.inventory_changed.connect(func():
 		if bags_win.visible: _rebuild_bags()
@@ -158,14 +181,14 @@ func _clear(box: Container) -> void:
 
 
 func any_open() -> bool:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win]:
 		if w.visible:
 			return true
 	return false
 
 
 func close_all() -> void:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win]:
 		w.visible = false
 	vendor_open = false
 	Events.close_loot.emit()
@@ -192,9 +215,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			_rebuild_talents()
 	elif event.is_action_pressed("toggle_map"):
 		map_win.visible = not map_win.visible
-	elif event.is_action_pressed("ui_escape") and any_open():
-		close_all()
-		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_escape"):
+		if any_open():
+			close_all()
+			get_viewport().set_input_as_handled()
+		else:
+			# Nothing to close: if the player also has nothing to cancel,
+			# Esc opens the system menu.
+			var p = Game.player
+			if p == null or (p.target == null and p.casting_id == "" and p.channel_id == ""):
+				system_win.visible = true
+				get_viewport().set_input_as_handled()
 
 
 # ---------------------------------------------------------------- bags

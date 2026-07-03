@@ -46,3 +46,4 @@ signal close_windows
 # World
 signal zone_changed(zone_id: String)
 signal request_zone_travel(zone_id: String, spawn: String)
+signal request_exit_to_menu

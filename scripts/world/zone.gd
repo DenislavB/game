@@ -6,6 +6,7 @@ extends Node3D
 var zone_def: Dictionary
 var terrain: ZoneTerrain
 var mobs_root: Node3D
+var rest_spots: Array = []  # Vector3 positions of campfires/inns (Well Rested)
 var _rng := RandomNumberGenerator.new()
 
 # Day/night cycle
@@ -198,9 +199,14 @@ func _scatter_props() -> void:
 
 func _place_buildings() -> void:
 	for b in zone_def.get("buildings", []):
-		var node := Props.build_building(b["type"])
+		var btype := str(b["type"])
+		# Campfires are props, not structures — zone files list them among
+		# buildings for placement, so route them to the right factory.
+		var node := Props.build_prop("campfire", _rng) if btype == "campfire" else Props.build_building(btype)
 		var x := float(b["x"])
 		var z := float(b["z"])
+		if btype in ["campfire", "human_inn", "orc_hall"]:
+			rest_spots.append(Vector3(x, 0, z))
 		node.position = Vector3(x, terrain.height_at(x, z) - 0.05, z)
 		node.rotation.y = deg_to_rad(float(b.get("rot", 0)))
 		if b.has("scale"):

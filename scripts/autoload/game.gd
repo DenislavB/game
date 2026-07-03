@@ -422,6 +422,8 @@ func buy_item(item_id: String) -> void:
 func gain_xp(amount: int) -> void:
 	if amount <= 0 or int(pc["level"]) >= Formulas.MAX_LEVEL:
 		return
+	if player != null and is_instance_valid(player) and player.has_buff("rested"):
+		amount = int(amount * 1.5)
 	pc["xp"] = int(pc["xp"]) + amount
 	Events.combat_log.emit("You gain %d experience." % amount)
 	while int(pc["level"]) < Formulas.MAX_LEVEL and int(pc["xp"]) >= Formulas.xp_to_level(int(pc["level"])):

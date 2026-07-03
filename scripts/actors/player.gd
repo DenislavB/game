@@ -384,6 +384,15 @@ func set_sitting(v: bool) -> void:
 	if not v:
 		remove_buff("food")
 		remove_buff("drink")
+	elif Game.zone_node != null:
+		# Resting by a fire or under an inn roof earns Well Rested.
+		for spot in Game.zone_node.rest_spots:
+			var sv := spot as Vector3
+			if Vector2(global_position.x - sv.x, global_position.z - sv.z).length() < 14.0:
+				if not has_buff("rested"):
+					apply_buff({ "id": "rested", "name": "Well Rested", "kind": "buff", "duration": 600.0 })
+					Events.game_message.emit("You feel well rested. (+50% XP for 10 min)")
+				break
 
 
 func _tick_regen(delta: float) -> void:

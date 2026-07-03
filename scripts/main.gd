@@ -11,12 +11,27 @@ var loading_layer: CanvasLayer
 var loading_label: Label
 
 
+var editor: CharacterEditor = null
+
+
 func _ready() -> void:
 	_build_loading_overlay()
 	menus = Menus.new()
 	add_child(menus)
 	menus.start_game.connect(_on_start_game)
+	menus.open_editor.connect(_on_open_editor)
 	Events.request_zone_travel.connect(_on_zone_travel)
+
+
+func _on_open_editor() -> void:
+	menus.visible = false
+	editor = CharacterEditor.new()
+	add_child(editor)
+	editor.closed.connect(func():
+		editor.queue_free()
+		editor = null
+		menus.visible = true
+		menus.show_menu())
 
 
 func _build_loading_overlay() -> void:

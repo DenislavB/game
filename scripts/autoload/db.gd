@@ -17,6 +17,15 @@ var quests_by_turnin: Dictionary = {}
 
 
 func _ready() -> void:
+	reload()
+
+
+func reload() -> void:
+	## Re-read all data files (used by the Character Editor after saving).
+	quests_by_giver.clear()
+	quests_by_turnin.clear()
+	zones.clear()
+	quests.clear()
 	races = _load_json("res://data/races.json")
 	classes = _load_json("res://data/classes.json")
 	abilities = _load_json("res://data/abilities.json")

@@ -84,6 +84,16 @@ scripts/
 scenes/Main.tscn       The only scene — everything else is built in code
 ```
 
+## Character Editor
+
+The main menu has a built-in **Character Editor** — a live turntable tool for restyling everything that walks around the world, no JSON editing needed:
+
+- **Races** tab: skin tones, hunched posture, tusk size, long ears, beard, eye color/glow, and body proportions (width/height/depth) per race. Preview in any class outfit with any weapon.
+- **NPCs** tab: pick a zone and an NPC, then override their skin/shirt/pants/hair colors (saved as an `appearance` block on that NPC in the zone file). "Reset" returns them to their generated look.
+- **Mobs** tab: recolor and resize any creature.
+
+**Save to Disk** writes straight back into `data/*.json` (works when running from the Godot editor; exported builds are read-only). **Discard Changes** reloads the data from disk.
+
 ## Adding content
 
 - **A new quest**: add an entry to `data/quests/<zone>.json` (giver/turnin reference NPC ids from the zone file). That's it — markers, tracker, dialog and rewards are automatic.

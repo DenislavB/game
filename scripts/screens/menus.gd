@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Main menu and character creation.
 
 signal start_game
+signal open_editor
 
 var menu_root: Control
 var create_root: Control
@@ -70,6 +71,9 @@ func _build_menu() -> void:
 			_rebuild())
 		delb.custom_minimum_size = Vector2(280, 44)
 		v.add_child(delb)
+	var editor_b := UI.button("Character Editor", func(): open_editor.emit())
+	editor_b.custom_minimum_size = Vector2(280, 44)
+	v.add_child(editor_b)
 	var quitb := UI.button("Quit", func(): get_tree().quit())
 	quitb.custom_minimum_size = Vector2(280, 44)
 	v.add_child(quitb)

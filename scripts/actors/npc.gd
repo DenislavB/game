@@ -38,14 +38,22 @@ func setup(ndef: Dictionary) -> void:
 	var shirt := Color.from_hsv(rng.randf(), 0.35, 0.55)
 	if trainer_class != "":
 		shirt = Color(DB.classes[trainer_class]["color"]).darkened(0.2)
+	# Hand-tuned looks from the Character Editor override the generated ones.
+	var app: Dictionary = ndef.get("appearance", {})
+	var skin_c := Color(str(app["skin"])) if app.has("skin") else Color(skins[rng.randi_range(0, skins.size() - 1)])
+	if app.has("shirt"):
+		shirt = Color(str(app["shirt"]))
+	var pants_c := Color(str(app["pants"])) if app.has("pants") else shirt.darkened(0.5)
+	var hair_c := Color(str(app["hair"])) if app.has("hair") else \
+		Color.from_hsv(rng.randf() * 0.15, 0.5, rng.randf_range(0.1, 0.5))
 	model = ActorModel.new()
 	add_child(model)
 	model.build_humanoid({
-		"skin": Color(skins[rng.randi_range(0, skins.size() - 1)]),
+		"skin": skin_c,
 		"shirt": shirt,
-		"pants": shirt.darkened(0.5),
+		"pants": pants_c,
 		"features": race.get("model", {}),
-		"hair": Color.from_hsv(rng.randf() * 0.15, 0.5, rng.randf_range(0.1, 0.5))
+		"hair": hair_c
 	})
 
 	var label := Label3D.new()

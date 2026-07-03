@@ -1033,5 +1033,44 @@
     "stack": 20,
     "value": 0,
     "quest_item": true
+  },
+  "squires_mace": {
+    "name": "Squire's Mace",
+    "slot": "mainhand",
+    "wtype": "mace",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      5,
+      8
+    ],
+    "speed": 3.2,
+    "value": 25
+  },
+  "acolytes_dagger": {
+    "name": "Acolyte's Dagger",
+    "slot": "mainhand",
+    "wtype": "dagger",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      3,
+      5
+    ],
+    "speed": 2.0,
+    "value": 25
+  },
+  "wildwood_staff": {
+    "name": "Wildwood Staff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "common",
+    "req_level": 1,
+    "dmg": [
+      4,
+      7
+    ],
+    "speed": 3.3,
+    "value": 25
   }
 }

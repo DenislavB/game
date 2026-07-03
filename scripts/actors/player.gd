@@ -68,19 +68,7 @@ func _ready() -> void:
 	cs.position.y = 0.95
 	add_child(cs)
 
-	var race: Dictionary = DB.races[Game.pc["race"]]
-	var cls: Dictionary = DB.classes[Game.pc["class"]]
-	model = ActorModel.new()
-	add_child(model)
-	model.build_humanoid({
-		"skin": Color(race["skin_colors"][0]),
-		"shirt": Color(cls["color"]).darkened(0.35),
-		"pants": Color(cls["color"]).darkened(0.6),
-		"posture": race.get("posture", "upright"),
-		"tusks": Game.pc["race"] == "orc",
-		"dressed": false  # gear visuals come from what you actually equip
-	})
-	_update_gear_visual()
+	_build_body_model()
 	Events.equipment_changed.connect(_update_gear_visual)
 
 	# Camera rig
@@ -106,8 +94,32 @@ func _ready() -> void:
 		resource = minf(float(Game.pc.get("mana", 0)), resource_max)
 	Events.player_level_up.connect(_on_level_up)
 	Events.player_stats_changed.connect(func(): recompute_vitals(false))
-	if Game.pc.get("has_pet", false) and Game.knows("call_pet"):
-		call_deferred("_summon_pet")
+	if Game.pc.get("has_pet", false):
+		call_deferred("_summon_pet", str(Game.pc.get("pet_kind", "wolf")))
+
+
+func _build_body_model() -> void:
+	## (Re)build the visible body — humanoid normally, creature in druid forms.
+	if model != null and is_instance_valid(model):
+		model.queue_free()
+	model = ActorModel.new()
+	add_child(model)
+	var form := current_form()
+	if form == "bear":
+		model.build_creature("bear", Color("6a4a2e"), 1.05)
+	elif form == "cat":
+		model.build_creature("cat", Color("c8883a"), 1.0)
+	else:
+		var race: Dictionary = DB.races[Game.pc["race"]]
+		var cls: Dictionary = DB.classes[Game.pc["class"]]
+		model.build_humanoid({
+			"skin": Color(race["skin_colors"][0]),
+			"shirt": Color(cls["color"]).darkened(0.35),
+			"pants": Color(cls["color"]).darkened(0.6),
+			"features": race.get("model", {}),
+			"dressed": false  # gear visuals come from what you actually equip
+		})
+	_update_gear_visual()
 
 
 func _update_gear_visual() -> void:
@@ -119,6 +131,23 @@ func _update_gear_visual() -> void:
 		wtype = DB.item(rid).get("wtype", "bow") if rid != "" else "bow"
 	model.set_weapon(wtype)
 	model.apply_equipment(Game.pc["equipment"])
+
+
+func current_form() -> String:
+	for b in buffs:
+		if str(b.get("form", "")) != "":
+			return str(b["form"])
+	return ""
+
+
+func _active_weapon(melee: bool) -> Dictionary:
+	## Druid forms fight with claws instead of the equipped weapon.
+	match current_form():
+		"bear":
+			return { "dmg": [3.0 + level * 0.9, 5.0 + level * 1.2], "speed": 2.5, "name": "Claws" }
+		"cat":
+			return { "dmg": [2.0 + level * 0.7, 4.0 + level * 1.0], "speed": 1.5, "name": "Claws" }
+	return Game.weapon(melee)
 
 
 func recompute_vitals(refill: bool) -> void:
@@ -436,7 +465,7 @@ func _tick_autoattack(delta: float) -> void:
 			if not _facing(target):
 				swing_t = 0.5  # retry shortly instead of spamming every frame
 				return
-			swing_t = Game.weapon(true)["speed"]
+			swing_t = _active_weapon(true)["speed"]
 			_melee_swing(false)
 	elif is_hunter and dist >= 6.0 and dist <= 30.0 + Game.talent_mod("ranged_range_bonus"):
 		var standing := Vector2(velocity.x, velocity.z).length() < 0.5
@@ -487,7 +516,7 @@ func _melee_swing(ranged: bool) -> void:
 
 
 func _weapon_damage(mob: Mob, weapon_pct: float, flat_bonus: float, ranged: bool, is_crit: bool, _school: String) -> float:
-	var w := Game.weapon(not ranged)
+	var w := _active_weapon(not ranged)
 	var base := randf_range(float(w["dmg"][0]), float(w["dmg"][1]))
 	base += Formulas.weapon_damage_bonus(attack_power_value(ranged), float(w["speed"]))
 	base = base * weapon_pct + flat_bonus
@@ -549,6 +578,20 @@ func use_ability(id: String) -> void:
 		Events.error_message.emit("You can't do that while in combat.")
 		return
 
+	# Druid shapeshift rules.
+	var form := current_form()
+	var req_form: String = str(a.get("requires_form", ""))
+	var special_name := str(a.get("special", ""))
+	if req_form != "" and form != req_form:
+		Events.error_message.emit("You must be in %s Form to do that." % req_form.capitalize())
+		return
+	if form != "" and req_form == "" and not (special_name in ["bear_form", "cat_form"]):
+		# No spellcasting while shapeshifted.
+		if a.get("cost", {}).has("mana") or float(a.get("cast", 0)) > 0 \
+				or str(a.get("school", "physical")) != "physical":
+			Events.error_message.emit("You can't do that while shapeshifted.")
+			return
+
 	var needs_enemy := _needs_enemy(a)
 	var mob: Mob = target as Mob if target is Mob else null
 	if needs_enemy:
@@ -599,16 +642,24 @@ func use_ability(id: String) -> void:
 
 
 func _needs_enemy(a: Dictionary) -> bool:
+	var sp := str(a.get("special", ""))
+	if sp in ["fear", "judgement", "growl", "drain_life", "charge", "polymorph"]:
+		return true
+	if sp in ["conjure_food", "conjure_water", "call_pet", "evocation", "second_wind",
+			"blink", "bestial_wrath", "mend_pet", "stoneform", "forsaken_will", "life_tap",
+			"lay_on_hands", "summon_imp", "summon_voidwalker", "bear_form", "cat_form", "tranquility"]:
+		return false
 	if a.get("aoe_at", "") == "self":
 		return false
-	if a.has("buff") or a.has("special") and str(a.get("special")) in \
-			["conjure_food", "conjure_water", "call_pet", "evocation", "second_wind", "blink", "bestial_wrath", "mend_pet"]:
+	if a.has("buff"):
 		return false
-	if a.has("generates_rage") and not a.has("weapon_pct") and str(a.get("special", "")) != "charge":
+	# Pure heals target yourself; hybrid damage+heal (Holy Shock) needs a target.
+	if (a.has("heal") or a.has("hot")) and not (a.has("flat") or a.has("weapon_pct") or a.has("dot")):
+		return false
+	if a.has("generates_rage") and not a.has("weapon_pct"):
 		return false
 	return a.has("weapon_pct") or a.has("flat") or a.has("dot") or a.has("debuff") \
-		or a.has("slow") or a.has("root") or a.has("stun") or a.has("channel") \
-		or str(a.get("special", "")) in ["charge", "polymorph"]
+		or a.has("slow") or a.has("root") or a.has("stun") or a.has("channel")
 
 
 func _range_bonus(a: Dictionary) -> float:
@@ -750,6 +801,7 @@ func _cancel_cast() -> void:
 func _resolve_ability(id: String, a: Dictionary) -> void:
 	model.play_attack()
 	var mob: Mob = target as Mob if target is Mob else null
+	var lvl_scale := maxf(level - int(a["level"]), 0)
 	match str(a.get("special", "")):
 		"charge":
 			_do_charge(mob, a)
@@ -764,7 +816,13 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 			Game.add_item("conjured_water", 5)
 			return
 		"call_pet":
-			_summon_pet()
+			_summon_pet("wolf")
+			return
+		"summon_imp":
+			_summon_pet("imp")
+			return
+		"summon_voidwalker":
+			_summon_pet("voidwalker")
 			return
 		"polymorph":
 			_do_polymorph(mob, a)
@@ -779,6 +837,51 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 			else:
 				Events.error_message.emit("You have no pet.")
 			return
+		"stoneform":
+			for b in buffs.duplicate():
+				if b.has("dot"):
+					_drop_buff(b)
+			apply_buff({ "id": "stoneform", "name": "Stoneform", "kind": "buff", "duration": 8.0,
+				"stat": "armor_pct", "amount": 0.3 })
+			return
+		"forsaken_will":
+			for b in buffs.duplicate():
+				if b.get("stun", false) or b.get("root", false) or float(b.get("slow_pct", 0.0)) > 0.0 or b.get("fear", false):
+					_drop_buff(b)
+			return
+		"life_tap":
+			var tap := randf_range(float(a["flat"][0]), float(a["flat"][1])) + float(a.get("flat_per_level", 0)) * lvl_scale
+			if hp <= int(tap) + 1:
+				Events.error_message.emit("Not enough health.")
+				return
+			hp -= int(tap)
+			var gained := tap * 1.5 * (1.0 + Game.talent_mod("life_tap_pct"))
+			resource = minf(resource + gained, resource_max)
+			Events.combat_text.emit(global_position + Vector3(0, 2.2, 0), "-%d" % int(tap), "player_hurt")
+			return
+		"lay_on_hands":
+			heal(hp_max)
+			resource = 0.0
+			return
+		"judgement":
+			_do_judgement(mob, a, lvl_scale)
+			return
+		"fear":
+			if mob != null:
+				mob.apply_buff({ "id": "fear", "name": "Fear", "kind": "debuff",
+					"duration": float(a.get("fear_duration", 8)), "fear": true })
+			return
+		"growl":
+			if mob != null:
+				mob.add_threat(self, 150.0 + level * 12.0)
+				Events.combat_text.emit(mob.global_position + Vector3(0, 2.2, 0), "Growl", "physical")
+			return
+		"bear_form":
+			_toggle_form("bear")
+			return
+		"cat_form":
+			_toggle_form("cat")
+			return
 		_:
 			pass
 
@@ -788,13 +891,23 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 			bonus = Game.talent_mod("bloodrage_rage")
 		gain_rage(float(a["generates_rage"]) + bonus)
 
-	# Self buffs (Battle Shout, aspects, armors, Ice Barrier...)
+	# Self buffs (Battle Shout, aspects, seals, auras, Ice Barrier...)
 	if a.has("buff"):
 		_apply_self_buff(id, a)
 	if a.has("absorb"):
 		var amount := float(a["absorb"]) + float(a.get("absorb_per_level", 0)) * maxf(level - int(a["level"]), 0)
 		apply_buff({ "id": id, "name": a["name"], "kind": "buff",
 			"duration": float(a.get("buff_duration", 60)), "absorb": amount })
+	# Direct heals and heal-over-time (Holy Light, Rejuvenation, Siphon Life...)
+	if a.has("heal"):
+		_heal_self(id, a, lvl_scale)
+	if a.has("hot"):
+		var hot: Dictionary = a["hot"]
+		var tick := float(hot["tick"]) + float(hot.get("per_level", 0)) * lvl_scale
+		tick *= 1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })
+		apply_buff({ "id": id + "_hot", "name": a["name"], "kind": "buff",
+			"duration": float(hot.get("duration", 12)),
+			"hot": { "tick": tick, "interval": float(hot.get("interval", 3)) } })
 
 	# Gather targets.
 	var victims: Array = []
@@ -905,15 +1018,73 @@ func _apply_self_buff(id: String, a: Dictionary) -> void:
 	var b: Dictionary = a["buff"]
 	var amount := float(b.get("amount", 0)) + float(b.get("per_level", 0)) * maxf(level - int(a["level"]), 0)
 	amount *= 1.0 + Game.talent_mod("ability_power_pct", { "ability": id })
-	# Only one aspect at a time.
-	if b.get("aspect", false):
+	# Exclusive groups: one aspect, one seal, one blessing, one aura at a time.
+	var excl: String = str(b.get("exclusive", "aspect" if b.get("aspect", false) else ""))
+	if excl != "":
 		for other in buffs.duplicate():
-			if other.get("aspect", false):
+			if str(other.get("exclusive", "")) == excl:
 				_drop_buff(other)
 	apply_buff({ "id": id, "name": a["name"], "kind": "buff", "duration": float(b["duration"]),
 		"stat": b["stat"], "amount": amount, "aspect": b.get("aspect", false),
-		"breaks_on_hit": b.get("breaks_on_hit", false) })
+		"exclusive": excl, "breaks_on_hit": b.get("breaks_on_hit", false) })
 	Events.player_stats_changed.emit()
+
+
+func _heal_self(id: String, a: Dictionary, lvl_scale: float) -> void:
+	var s := Game.stats()
+	var amount := randf_range(float(a["heal"][0]), float(a["heal"][1])) \
+		+ float(a.get("heal_per_level", 0)) * lvl_scale \
+		+ Formulas.spell_bonus(s["int"], level) * 0.8
+	amount *= 1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })
+	if randf() * 100.0 < Game.crit_pct("spell"):
+		amount *= 1.5
+	heal(amount)
+
+
+func _toggle_form(f: String) -> void:
+	if current_form() == f:
+		_leave_form()
+		return
+	_leave_form()
+	var pretty := f.capitalize() + " Form"
+	if f == "bear":
+		apply_buff({ "id": "bear_form_buff", "name": pretty, "kind": "buff", "duration": 86400.0,
+			"form": "bear", "exclusive": "form", "stat": "armor_pct", "amount": 0.25 })
+		apply_buff({ "id": "bear_resilience", "name": "Thick Fur", "kind": "buff", "duration": 86400.0,
+			"stat": "damage_taken_pct", "amount": -0.1 })
+	else:
+		apply_buff({ "id": "cat_form_buff", "name": pretty, "kind": "buff", "duration": 86400.0,
+			"form": "cat", "exclusive": "form", "stat": "move_speed_pct", "amount": 0.15 })
+	_build_body_model()
+	Events.player_stats_changed.emit()
+
+
+func _leave_form() -> void:
+	var had := current_form() != ""
+	remove_buff("bear_form_buff")
+	remove_buff("bear_resilience")
+	remove_buff("cat_form_buff")
+	if had:
+		_build_body_model()
+		Events.player_stats_changed.emit()
+
+
+func _do_judgement(mob: Mob, a: Dictionary, lvl_scale: float) -> void:
+	var seal_found := false
+	for b in buffs.duplicate():
+		if str(b.get("exclusive", "")) == "seal":
+			_drop_buff(b)
+			seal_found = true
+			break
+	if not seal_found:
+		Events.error_message.emit("You have no active Seal.")
+		return
+	if mob == null or not is_instance_valid(mob) or not mob.alive:
+		return
+	var flat := randf_range(float(a["flat"][0]), float(a["flat"][1])) + float(a.get("flat_per_level", 0)) * lvl_scale
+	flat *= 1.0 + Game.talent_mod("ability_damage_pct", { "ability": "judgement" })
+	_spell_hit(mob, "judgement", a, flat, "holy")
+	start_attack()
 
 
 func _channel_tick(id: String, a: Dictionary) -> void:
@@ -924,6 +1095,25 @@ func _channel_tick(id: String, a: Dictionary) -> void:
 		"mend_pet":
 			if pet != null and is_instance_valid(pet) and pet.alive:
 				pet.heal(float(a.get("heal_tick", 8)) + float(a.get("heal_per_level", 0)) * maxf(level - int(a["level"]), 0))
+			return
+		"tranquility":
+			heal(hp_max * 0.1 * (1.0 + Game.talent_mod("heal_power_pct")))
+			return
+		"drain_life":
+			var mob2: Mob = target as Mob if target is Mob else null
+			if mob2 == null or not is_instance_valid(mob2) or not mob2.alive:
+				_cancel_cast()
+				return
+			var hit_bonus := Game.talent_mod("spell_hit_pct")
+			if randf() * 100.0 < Formulas.spell_resist_chance(level, mob2.level, hit_bonus):
+				Events.combat_text.emit(mob2.global_position + Vector3(0, 2.2, 0), "Resist", "miss")
+				return
+			var drain := randf_range(float(a["flat"][0]), float(a["flat"][1])) \
+				+ float(a.get("flat_per_level", 0)) * maxf(level - int(a["level"]), 0)
+			drain *= 1.0 + Game.talent_mod("ability_damage_pct", { "ability": id }) \
+				+ Game.talent_mod("school_damage_pct", { "school": "shadow" }) + _spell_wide_mult()
+			mob2.take_damage(drain, "shadow", self)
+			heal(drain * 0.9, false)
 			return
 		_:
 			pass
@@ -992,14 +1182,15 @@ func _mobs_within(radius: float) -> Array:
 	return out
 
 
-func _summon_pet() -> void:
+func _summon_pet(kind: String = "wolf") -> void:
 	if pet != null and is_instance_valid(pet):
 		pet.queue_free()
 	pet = Pet.new()
 	get_parent().add_child(pet)
-	pet.setup(self)
+	pet.setup(self, kind)
 	pet.global_position = global_position + global_transform.basis.x * -1.6
 	Game.pc["has_pet"] = true
+	Game.pc["pet_kind"] = kind
 	Events.pet_changed.emit(pet)
 
 
@@ -1125,7 +1316,8 @@ func respawn_at_graveyard() -> void:
 		return
 	global_position = Game.zone_node.graveyard_position()
 	alive = true
-	model.revive_pose()
+	# Death drops all buffs including druid forms — rebuild the body fresh.
+	_build_body_model()
 	hp = int(hp_max * 0.5)
 	if res_type == "mana":
 		resource = resource_max * 0.5

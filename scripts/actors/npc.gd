@@ -44,8 +44,7 @@ func setup(ndef: Dictionary) -> void:
 		"skin": Color(skins[rng.randi_range(0, skins.size() - 1)]),
 		"shirt": shirt,
 		"pants": shirt.darkened(0.5),
-		"posture": race.get("posture", "upright"),
-		"tusks": ndef.get("race", "") == "orc",
+		"features": race.get("model", {}),
 		"hair": Color.from_hsv(rng.randf() * 0.15, 0.5, rng.randf_range(0.1, 0.5))
 	})
 

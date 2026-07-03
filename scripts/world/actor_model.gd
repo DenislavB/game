@@ -70,8 +70,11 @@ func build_humanoid(cfg: Dictionary) -> void:
 	var shirt: Color = cfg.get("shirt", Color("7a5a3a"))
 	var pants: Color = cfg.get("pants", Color("4a3a2a"))
 	var hair: Color = cfg.get("hair", Color("3a2a1a"))
-	var hunched: bool = cfg.get("posture", "upright") == "hunched"
-	var orc: bool = cfg.get("tusks", false)
+	# Race feature block (from races.json "model"): posture, tusks
+	# ("short"/"long"), ears ("long"), beard, stature [x,y,z], eye_color/glow.
+	var feat: Dictionary = cfg.get("features", {})
+	var hunched: bool = feat.get("posture", cfg.get("posture", "upright")) == "hunched"
+	var tusks: String = str(feat.get("tusks", "short" if cfg.get("tusks", false) else ""))
 	var s: float = cfg.get("scale", 1.0)
 	_def_shirt = shirt
 	_def_pants = pants
@@ -96,17 +99,28 @@ func build_humanoid(cfg: Dictionary) -> void:
 
 	# --- Head (face details at -Z so front/back is unmistakable) ---
 	var head := _pivot(torso, Vector3(0, 0.71, 0))
+	var eye_col := Color(str(feat.get("eye_color", "#1a1a22")))
+	var eye_glow: bool = feat.get("eye_glow", false)
 	_part(head, Props._cyl(0.09, 0.11, 0.12, 6), skin.darkened(0.1), Vector3(0, 0.05, 0))  # neck
 	_part(head, Props._box(0.32, 0.34, 0.34), skin, Vector3(0, 0.28, 0))                    # skull
-	_part(head, Props._box(0.05, 0.05, 0.02), Color("1a1a22"), Vector3(0.08, 0.32, -0.175))  # eyes
-	_part(head, Props._box(0.05, 0.05, 0.02), Color("1a1a22"), Vector3(-0.08, 0.32, -0.175))
+	_part(head, Props._box(0.05, 0.05, 0.02), eye_col, Vector3(0.08, 0.32, -0.175), Vector3.ZERO, eye_glow)
+	_part(head, Props._box(0.05, 0.05, 0.02), eye_col, Vector3(-0.08, 0.32, -0.175), Vector3.ZERO, eye_glow)
 	_part(head, Props._box(0.06, 0.09, 0.05), skin.darkened(0.12), Vector3(0, 0.26, -0.19))  # nose
 	_part(head, Props._box(0.34, 0.1, 0.32), hair, Vector3(0, 0.47, 0.02))                   # hair top
 	_part(head, Props._box(0.3, 0.2, 0.08), hair, Vector3(0, 0.32, 0.17))                    # hair back
-	if orc:
+	if tusks != "":
 		_part(head, Props._box(0.28, 0.11, 0.12), skin.darkened(0.08), Vector3(0, 0.13, -0.13))  # jaw
-		_part(head, Props._cyl(0.0, 0.04, 0.16, 4), Color("e8e0c8"), Vector3(0.09, 0.2, -0.19))  # tusks point up
-		_part(head, Props._cyl(0.0, 0.04, 0.16, 4), Color("e8e0c8"), Vector3(-0.09, 0.2, -0.19))
+		var tl := 0.16 if tusks == "short" else 0.3
+		var tr := 0.04 if tusks == "short" else 0.05
+		var tx := 0.09 if tusks == "short" else 0.12
+		_part(head, Props._cyl(0.0, tr, tl, 4), Color("e8e0c8"), Vector3(tx, 0.2, -0.19), Vector3(0, 0, -12))
+		_part(head, Props._cyl(0.0, tr, tl, 4), Color("e8e0c8"), Vector3(-tx, 0.2, -0.19), Vector3(0, 0, 12))
+	if str(feat.get("ears", "")) == "long":
+		_part(head, Props._box(0.05, 0.2, 0.07), skin, Vector3(0.2, 0.4, 0.04), Vector3(0, 0, -28))
+		_part(head, Props._box(0.05, 0.2, 0.07), skin, Vector3(-0.2, 0.4, 0.04), Vector3(0, 0, 28))
+	if feat.get("beard", false):
+		_part(head, Props._box(0.26, 0.24, 0.1), hair, Vector3(0, 0.06, -0.14))   # beard
+		_part(head, Props._box(0.3, 0.06, 0.08), hair, Vector3(0, 0.2, -0.16))    # moustache
 	_helm = _part(head, Props._box(0.37, 0.24, 0.38), Color("8a8a92"), Vector3(0, 0.44, 0))
 	_helm.visible = false
 
@@ -129,7 +143,8 @@ func build_humanoid(cfg: Dictionary) -> void:
 		rig.position.y = -0.07
 		for arm in _biped_arms:
 			arm.scale = Vector3(1.15, 1.1, 1.15)
-	rig.scale = Vector3(s, s, s)
+	var stature: Array = feat.get("stature", [1.0, 1.0, 1.0])
+	rig.scale = Vector3(float(stature[0]) * s, float(stature[1]) * s, float(stature[2]) * s)
 	_death_axis = "z"
 	_base_y = rig.position.y
 
@@ -149,6 +164,8 @@ func set_weapon(wtype: String) -> void:
 func apply_equipment(equip: Dictionary) -> void:
 	## Reflect equipped armor on the model. Colors come from each item's
 	## "color" field in items.json (fallback: a neutral leather tone).
+	if _belt_mesh == null:
+		return  # creature model (e.g. druid form) — nothing to dress
 	_tint(_chest_meshes, equip.get("chest", ""), [_def_shirt.darkened(0.12), _def_shirt])
 	_tint(_leg_meshes, equip.get("legs", ""), [_def_pants, _def_pants.darkened(0.15), _def_pants, _def_pants.darkened(0.15)])
 	_tint(_boot_meshes, equip.get("feet", ""), [Color("3a2c1e"), Color("3a2c1e")])
@@ -296,6 +313,30 @@ func build_creature(shape: String, color: Color, s: float = 1.0) -> void:
 			l.omni_range = 6.0
 			l.position = Vector3(0, 1.2, 0)
 			rig.add_child(l)
+		"bear":
+			_part(rig, Props._box(1.3, 0.85, 0.8), color, Vector3(0, 0.9, 0))
+			_part(rig, Props._box(0.7, 0.25, 0.6), dark, Vector3(-0.25, 1.35, 0))  # shoulder hump
+			var bhead := _part(rig, Props._box(0.5, 0.45, 0.48), color, Vector3(0.85, 1.05, 0))
+			_part(bhead, Props._box(0.24, 0.2, 0.26), light, Vector3(0.3, -0.1, 0))  # snout
+			_part(bhead, Props._box(0.06, 0.05, 0.08), Color("2a1a12"), Vector3(0.44, -0.08, 0))  # nose tip
+			_part(bhead, Props._box(0.045, 0.05, 0.05), eye, Vector3(0.22, 0.1, 0.15))
+			_part(bhead, Props._box(0.045, 0.05, 0.05), eye, Vector3(0.22, 0.1, -0.15))
+			_part(bhead, Props._box(0.1, 0.12, 0.08), dark, Vector3(-0.1, 0.26, 0.16))  # ears
+			_part(bhead, Props._box(0.1, 0.12, 0.08), dark, Vector3(-0.1, 0.26, -0.16))
+			_quad_legs(0.5, 0.28, 0.55, dark)
+			_is_quadruped = true
+		"cat":
+			_part(rig, Props._box(1.15, 0.42, 0.38), color, Vector3(0, 0.72, 0))
+			var chead := _part(rig, Props._box(0.34, 0.3, 0.32), color, Vector3(0.68, 0.85, 0))
+			_part(chead, Props._box(0.18, 0.12, 0.18), light, Vector3(0.22, -0.06, 0))  # muzzle
+			_part(chead, Props._box(0.04, 0.045, 0.045), Color("d8e850"), Vector3(0.14, 0.08, 0.11))
+			_part(chead, Props._box(0.04, 0.045, 0.045), Color("d8e850"), Vector3(0.14, 0.08, -0.11))
+			_part(chead, Props._box(0.08, 0.12, 0.05), dark, Vector3(-0.06, 0.2, 0.1))  # ears
+			_part(chead, Props._box(0.08, 0.12, 0.05), dark, Vector3(-0.06, 0.2, -0.1))
+			_tail = _pivot(rig, Vector3(-0.55, 0.78, 0))
+			_part(_tail, Props._cyl(0.03, 0.05, 0.8, 4), dark, Vector3(-0.4, 0.1, 0), Vector3(0, 0, 75))
+			_quad_legs(0.42, 0.14, 0.55, dark)
+			_is_quadruped = true
 		"sheep":
 			_part(rig, Props._sphere(0.4, 6), Color("e8e4d8"), Vector3(0, 0.55, 0))
 			_part(rig, Props._box(0.25, 0.22, 0.2), Color("2a2a2a"), Vector3(0.4, 0.6, 0))

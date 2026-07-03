@@ -29,8 +29,9 @@ func take_damage(amount: float, school: String, source: Node, is_crit: bool = fa
 			amount -= absorbed
 			if b["absorb"] <= 0.0:
 				b["t"] = 0.0
-	# Damage-taken modifiers (Hunter's Mark, Sunder, Defiance...).
+	# Damage-taken modifiers (Hunter's Mark debuff, Bear Form buff...).
 	amount *= 1.0 + debuff_total("damage_taken_pct")
+	amount *= maxf(1.0 + buff_total("damage_taken_pct"), 0.1)
 	var final := int(maxf(amount, 0.0))
 	hp -= final
 	_on_hit_reactions(final, source)
@@ -124,6 +125,14 @@ func _drop_buff(b: Dictionary) -> void:
 func has_buff(id: String) -> bool:
 	for b in buffs:
 		if b["id"] == id:
+			return true
+	return false
+
+
+func has_flag(flag: String) -> bool:
+	## True if any buff/debuff carries the given boolean key (e.g. "fear").
+	for b in buffs:
+		if b.get(flag, false):
 			return true
 	return false
 

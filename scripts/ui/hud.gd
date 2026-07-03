@@ -134,12 +134,16 @@ func _build_target_frame() -> void:
 	root.add_child(target_frame)
 
 
+var pet_name_l: Label
+
+
 func _build_pet_frame() -> void:
 	pet_frame = UI.panel()
 	pet_frame.position = Vector2(14, 110)
 	pet_frame.custom_minimum_size = Vector2(150, 0)
 	var v := VBoxContainer.new()
-	v.add_child(UI.label("Wolf", 12, Color(0.5, 0.9, 0.5)))
+	pet_name_l = UI.label("Pet", 12, Color(0.5, 0.9, 0.5))
+	v.add_child(pet_name_l)
 	pet_hp = UI.bar(UI.COL_HP, 10)
 	v.add_child(pet_hp)
 	pet_frame.add_child(v)
@@ -416,6 +420,8 @@ func _on_combat_text(world_pos: Vector3, text: String, kind: String) -> void:
 		"frost": color = Color(0.5, 0.75, 1)
 		"arcane": color = Color(0.85, 0.55, 1)
 		"nature": color = Color(0.5, 0.9, 0.4)
+		"shadow": color = Color(0.7, 0.45, 0.9)
+		"holy": color = Color(1, 0.9, 0.55)
 	var l := UI.label(text, size, color)
 	l.add_theme_constant_override("outline_size", 6)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
@@ -491,6 +497,7 @@ func _process(delta: float) -> void:
 	# Pet frame
 	if p.pet != null and is_instance_valid(p.pet) and p.pet.alive:
 		pet_frame.visible = true
+		pet_name_l.text = p.pet.unit_name
 		pet_hp.max_value = p.pet.hp_max
 		pet_hp.value = p.pet.hp
 	else:

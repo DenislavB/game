@@ -186,6 +186,9 @@ func _physics_process(delta: float) -> void:
 		heal(hp_max * delta * 0.1, false)
 		_sheep_tick(delta)
 		return
+	if has_flag("fear"):
+		_flee_tick(delta)
+		return
 	if is_stunned():
 		velocity.x = 0
 		velocity.z = 0
@@ -212,6 +215,24 @@ func _sheep_tick(delta: float) -> void:
 	velocity.x = _wander_dir.x * 2.0
 	velocity.z = _wander_dir.z * 2.0
 	face_direction(_wander_dir, delta)
+	apply_gravity(delta)
+	move_and_slide()
+	model.moving = true
+
+
+func _flee_tick(delta: float) -> void:
+	# Feared: run screaming away from the player.
+	var p = Game.player
+	if p == null or not is_instance_valid(p):
+		return
+	var away := global_position - p.global_position
+	away.y = 0
+	if away.length_squared() < 0.01:
+		away = Vector3.FORWARD
+	away = away.normalized()
+	velocity.x = away.x * move_speed
+	velocity.z = away.z * move_speed
+	face_direction(away, delta)
 	apply_gravity(delta)
 	move_and_slide()
 	model.moving = true
@@ -359,6 +380,11 @@ func take_damage(amount: float, school: String, source: Node, is_crit: bool = fa
 		Events.combat_text.emit(global_position + Vector3(0, 2.2, 0), "Evade", "mob_miss")
 		return
 	super.take_damage(amount, school, source, is_crit, ability_name)
+	# Damage has a chance to break fear early.
+	if alive and has_flag("fear") and randf() < 0.25:
+		for b in buffs.duplicate():
+			if b.get("fear", false):
+				_drop_buff(b)
 
 
 # ---------------------------------------------------------------- death & loot

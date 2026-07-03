@@ -5,9 +5,29 @@
     "start_zone": "sunscorch_mesa",
     "description": "Bred for war on the red plains. Orcs shrug off stuns and hit like falling rocks.",
     "stat_bonus": { "str": 3, "agi": 0, "sta": 2, "int": -3, "spi": 0 },
-    "racial": { "id": "blood_fury", "name": "Blood Fury", "desc": "+15% attack power for 15 sec, but healing received reduced. 2 min cooldown." },
+    "racial": { "id": "blood_fury", "name": "Blood Fury", "desc": "+15% attack power for 15 sec. 2 min cooldown." },
     "skin_colors": ["#5a8a3c", "#4a7a34", "#6b9a48"],
-    "posture": "hunched"
+    "model": { "posture": "hunched", "tusks": "short" }
+  },
+  "troll": {
+    "name": "Troll",
+    "faction": "horde",
+    "start_zone": "sunscorch_mesa",
+    "description": "Lanky, cunning and quick to heal. The Duskmane trolls fight with a grin full of tusks.",
+    "stat_bonus": { "str": 1, "agi": 2, "sta": 1, "int": -1, "spi": 1 },
+    "racial": { "id": "berserking", "name": "Berserking", "desc": "+20% attack speed for 12 sec. 2 min cooldown." },
+    "skin_colors": ["#7a9ab8", "#6a8aa8", "#8aacc8"],
+    "model": { "posture": "hunched", "tusks": "long", "ears": "long", "stature": [0.98, 1.12, 0.98] }
+  },
+  "undead": {
+    "name": "Undead",
+    "faction": "horde",
+    "start_zone": "sunscorch_mesa",
+    "description": "Dead, risen, and deeply unimpressed by it. What still holds together is held by spite.",
+    "stat_bonus": { "str": 0, "agi": 0, "sta": 1, "int": 1, "spi": 3 },
+    "racial": { "id": "forsaken_will", "name": "Will of the Forsaken", "desc": "Removes stun, root, slow and fear effects. 2 min cooldown." },
+    "skin_colors": ["#b8c0b0", "#a8b0a0", "#c8c8b8"],
+    "model": { "posture": "hunched", "eye_color": "#d8e850", "eye_glow": true, "stature": [0.95, 1.0, 0.95] }
   },
   "human": {
     "name": "Human",
@@ -17,6 +37,26 @@
     "stat_bonus": { "str": 0, "agi": 0, "sta": 0, "int": 1, "spi": 2 },
     "racial": { "id": "second_wind", "name": "Second Wind", "desc": "Restore 20% health over 10 sec. 3 min cooldown." },
     "skin_colors": ["#d9a97c", "#c69368", "#e8c49a"],
-    "posture": "upright"
+    "model": {}
+  },
+  "wood_elf": {
+    "name": "Wood Elf",
+    "faction": "alliance",
+    "start_zone": "greenhollow_vale",
+    "description": "Children of the deep pines. Wood elves move like wind through branches — and are gone as fast.",
+    "stat_bonus": { "str": -1, "agi": 3, "sta": 0, "int": 1, "spi": 1 },
+    "racial": { "id": "quickening", "name": "Quickening", "desc": "+30% movement speed for 8 sec. 2 min cooldown." },
+    "skin_colors": ["#e8c9a8", "#d8b894", "#f0d8c0"],
+    "model": { "ears": "long", "stature": [0.92, 1.05, 0.92] }
+  },
+  "dwarf": {
+    "name": "Dwarf",
+    "faction": "alliance",
+    "start_zone": "greenhollow_vale",
+    "description": "Carved from the Graystone hills, beard-first. Dwarves endure what would flatten lesser folk.",
+    "stat_bonus": { "str": 2, "agi": -1, "sta": 3, "int": 0, "spi": 0 },
+    "racial": { "id": "stoneform", "name": "Stoneform", "desc": "Removes bleed and poison effects and increases armor by 30% for 8 sec. 2 min cooldown." },
+    "skin_colors": ["#d8a078", "#c89068", "#e0b088"],
+    "model": { "beard": true, "stature": [1.18, 0.78, 1.15] }
   }
 }

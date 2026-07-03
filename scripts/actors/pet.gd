@@ -1,20 +1,27 @@
 class_name Pet
 extends Unit
-## Hunter's wolf. Follows the hunter, attacks their target on command,
-## and generates extra threat so mobs prefer it over the hunter.
+## Companion pet: the hunter's wolf, the warlock's imp (ranged caster)
+## or voidwalker (tanky, high threat). Follows the owner, attacks their
+## target on command, and generates extra threat.
 
-const THREAT_MULT := 2.5
-
+var kind := "wolf"
 var owner_unit: Unit = null
 var attack_target: Mob = null
 var _swing_t := 0.0
 var _regen_t := 0.0
 
 
-func setup(p_owner: Unit) -> void:
+func threat_mult() -> float:
+	match kind:
+		"voidwalker": return 3.5
+		"imp": return 1.2
+		_: return 2.5
+
+
+func setup(p_owner: Unit, p_kind: String = "wolf") -> void:
 	owner_unit = p_owner
+	kind = p_kind
 	is_player_unit = true
-	unit_name = "Wolf"
 	level = int(Game.pc["level"])
 	_recalc_stats()
 	hp = hp_max
@@ -31,8 +38,17 @@ func setup(p_owner: Unit) -> void:
 
 	model = ActorModel.new()
 	add_child(model)
-	var def := DB.mob("hunter_wolf_pet")
-	model.build_creature("wolf", Color(def["color"]), float(def["scale"]))
+	match kind:
+		"imp":
+			unit_name = "Imp"
+			model.build_creature("spirit", Color("c05838"), 0.55)
+		"voidwalker":
+			unit_name = "Voidwalker"
+			model.build_creature("spirit", Color("4a5ad8"), 1.15)
+		_:
+			unit_name = "Wolf"
+			var def := DB.mob("hunter_wolf_pet")
+			model.build_creature("wolf", Color(def["color"]), float(def["scale"]))
 
 	var label := Label3D.new()
 	label.text = unit_name
@@ -48,11 +64,18 @@ func setup(p_owner: Unit) -> void:
 func _recalc_stats() -> void:
 	level = int(Game.pc["level"])
 	var hp_f := 1.0 + Game.talent_mod("pet_health_pct")
-	hp_max = int((45.0 + level * 13.0 + level * level * 0.6) * hp_f)
+	var base := 45.0 + level * 13.0 + level * level * 0.6
+	match kind:
+		"voidwalker": base *= 1.7
+		"imp": base *= 0.65
+	hp_max = int(base * hp_f)
 
 
 func pet_damage() -> float:
 	var avg := 2.5 + level * 1.3
+	match kind:
+		"voidwalker": avg = 2.0 + level * 1.0
+		"imp": avg = 3.0 + level * 1.4
 	avg *= 1.0 + Game.talent_mod("pet_damage_pct")
 	if has_buff("bestial_wrath"):
 		avg *= 1.5
@@ -87,9 +110,10 @@ func _physics_process(delta: float) -> void:
 	var goal_range: float
 	if attack_target != null:
 		goal = attack_target.global_position
-		goal_range = attack_target.melee_range
+		# The imp fights at range like its master taught it.
+		goal_range = 14.0 if kind == "imp" else attack_target.melee_range
 	else:
-		# Heel at the hunter's left side.
+		# Heel at the owner's left side.
 		goal = owner_unit.global_position + owner_unit.global_transform.basis.x * -1.6
 		goal_range = 1.2
 
@@ -111,7 +135,8 @@ func _physics_process(delta: float) -> void:
 			face_direction(to_goal, delta)
 			_swing_t -= delta
 			if _swing_t <= 0.0:
-				_swing_t = 1.6 / (1.0 + Game.talent_mod("pet_attack_speed_pct"))
+				var speed := 2.4 if kind == "imp" else 1.6
+				_swing_t = speed / (1.0 + Game.talent_mod("pet_attack_speed_pct"))
 				_swing()
 	model.moving = Vector2(velocity.x, velocity.z).length() > 0.5
 	apply_gravity(delta)
@@ -119,6 +144,16 @@ func _physics_process(delta: float) -> void:
 
 
 func _swing() -> void:
+	if kind == "imp":
+		# Firebolt: a small ranged spell, no armor mitigation.
+		model.play_attack()
+		if randf() * 100.0 < Formulas.spell_resist_chance(level, attack_target.level, 0.0):
+			Events.combat_text.emit(attack_target.global_position + Vector3(0, 2, 0), "Resist", "mob_miss")
+			return
+		attack_target.take_damage(pet_damage(), "fire", self)
+		if is_instance_valid(attack_target) and attack_target.alive:
+			attack_target.add_threat(self, pet_damage() * threat_mult())
+		return
 	model.play_attack()
 	var outcome := Formulas.attack_roll(level, attack_target.level, 5.0, 5.0)
 	if outcome == "miss" or outcome == "dodge":
@@ -130,12 +165,12 @@ func _swing() -> void:
 	dmg *= 1.0 - Formulas.armor_reduction(Formulas.mob_armor(attack_target.level), level)
 	attack_target.take_damage(dmg, "physical", self, outcome == "crit")
 	if is_instance_valid(attack_target) and attack_target.alive:
-		attack_target.add_threat(self, dmg * THREAT_MULT)
+		attack_target.add_threat(self, dmg * threat_mult())
 
 
 func die(killer: Node) -> void:
 	super.die(killer)
-	Events.game_message.emit("Your pet has died.")
+	Events.game_message.emit("Your %s has died." % unit_name.to_lower())
 	Events.pet_changed.emit(null)
 	await get_tree().create_timer(4.0).timeout
 	queue_free()

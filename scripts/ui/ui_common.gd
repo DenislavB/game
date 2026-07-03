@@ -87,6 +87,8 @@ static func school_color(school: String) -> Color:
 		"frost": return Color("60b0ff")
 		"arcane": return Color("d070ff")
 		"nature": return Color("70d060")
+		"shadow": return Color("a060d0")
+		"holy": return Color("ffe080")
 		_: return Color("d8c8a0")
 
 

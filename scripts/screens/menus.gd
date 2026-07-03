@@ -114,11 +114,13 @@ func _build_create() -> void:
 	v.add_child(nh)
 
 	v.add_child(UI.label("Race", 15, UI.COL_GOLD))
-	var rh := HBoxContainer.new()
-	rh.add_theme_constant_override("separation", 8)
+	var rh := GridContainer.new()
+	rh.columns = 3
+	rh.add_theme_constant_override("h_separation", 8)
+	rh.add_theme_constant_override("v_separation", 8)
 	for rid in DB.races:
 		var b := UI.button(DB.races[rid]["name"])
-		b.custom_minimum_size = Vector2(160, 40)
+		b.custom_minimum_size = Vector2(190, 40)
 		var rid2 := str(rid)
 		b.pressed.connect(func():
 			picked_race = rid2
@@ -128,11 +130,13 @@ func _build_create() -> void:
 	v.add_child(rh)
 
 	v.add_child(UI.label("Class", 15, UI.COL_GOLD))
-	var ch := HBoxContainer.new()
-	ch.add_theme_constant_override("separation", 8)
+	var ch := GridContainer.new()
+	ch.columns = 3
+	ch.add_theme_constant_override("h_separation", 8)
+	ch.add_theme_constant_override("v_separation", 8)
 	for cid in DB.classes:
 		var b2 := UI.button(DB.classes[cid]["name"])
-		b2.custom_minimum_size = Vector2(160, 40)
+		b2.custom_minimum_size = Vector2(190, 40)
 		var cid2 := str(cid)
 		b2.pressed.connect(func():
 			picked_class = cid2

@@ -225,7 +225,7 @@ func _flee_tick(delta: float) -> void:
 	var p = Game.player
 	if p == null or not is_instance_valid(p):
 		return
-	var away := global_position - p.global_position
+	var away: Vector3 = global_position - (p.global_position as Vector3)
 	away.y = 0
 	if away.length_squared() < 0.01:
 		away = Vector3.FORWARD

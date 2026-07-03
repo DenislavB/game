@@ -428,6 +428,8 @@ func _tick_combat_scan(delta: float) -> void:
 
 
 func _on_hit_reactions(amount: int, _source: Node) -> void:
+	if amount > 0:
+		SFX.play("hurt", -6.0)
 	if res_type == "rage" and amount > 0:
 		gain_rage(Formulas.rage_from_damage_taken(amount, level))
 	if sitting:
@@ -508,6 +510,7 @@ func _facing(u: Unit) -> bool:
 
 func _melee_swing(ranged: bool) -> void:
 	model.play_attack("shoot" if ranged else _melee_style())
+	SFX.play("bow" if ranged else "swing")
 	var mob := target as Mob
 	if ranged:
 		FX.bolt(get_parent(), global_position + Vector3(0, 1.5, 0),
@@ -524,6 +527,9 @@ func _melee_swing(ranged: bool) -> void:
 		Events.combat_log.emit("%s dodges your attack." % mob.unit_name)
 		return
 	var dmg := _weapon_damage(mob, 1.0, 0.0, ranged, outcome == "crit", "physical")
+	FX.impact(get_parent(), mob.global_position + Vector3(0, 1.2, 0),
+		Color(1, 0.6, 0.2) if outcome == "crit" else Color(1, 0.9, 0.6))
+	SFX.play("hit_crit" if outcome == "crit" else "hit")
 	mob.take_damage(dmg, "physical", self, outcome == "crit")
 	if res_type == "rage":
 		gain_rage(Formulas.rage_from_damage_dealt(dmg, level) + Game.talent_mod("rage_on_hit"))
@@ -1071,6 +1077,7 @@ func _spell_wide_mult() -> float:
 func _spell_hit(mob: Mob, _id: String, a: Dictionary, flat: float, school: String) -> void:
 	FX.bolt(get_parent(), global_position + Vector3(0, 1.5, 0) - global_transform.basis.z * 0.5,
 		mob.global_position + Vector3(0, 1.2, 0), UI.school_color(school))
+	SFX.play("spell_%s" % school)
 	var hit_bonus := Game.talent_mod("spell_hit_pct")
 	if randf() * 100.0 < Formulas.spell_resist_chance(level, mob.level, hit_bonus):
 		Events.combat_text.emit(mob.global_position + Vector3(0, 2.2, 0), "Resist", "miss")
@@ -1115,6 +1122,7 @@ func _heal_self(id: String, a: Dictionary, lvl_scale: float) -> void:
 	amount *= 1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })
 	if randf() * 100.0 < Game.crit_pct("spell"):
 		amount *= 1.5
+	SFX.play("heal")
 	heal(amount)
 
 

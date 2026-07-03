@@ -31,6 +31,22 @@ static func bolt(parent: Node, from: Vector3, to: Vector3, color: Color, arrow: 
 	tw.tween_callback(p.queue_free)
 
 
+static func impact(parent: Node, at: Vector3, color: Color = Color(1, 0.9, 0.6)) -> void:
+	## Quick flash where a hit lands.
+	if parent == null or not is_instance_valid(parent):
+		return
+	var p := Node3D.new()
+	var mi := MeshInstance3D.new()
+	mi.mesh = Props._sphere(0.12, 5)
+	mi.material_override = Props.mat(color, true)
+	p.add_child(mi)
+	parent.add_child(p)
+	p.global_position = at
+	var tw := p.create_tween()
+	tw.tween_property(p, "scale", Vector3(2.2, 2.2, 2.2), 0.12)
+	tw.tween_callback(p.queue_free)
+
+
 static func burst(parent: Node, at: Vector3, color: Color, radius: float = 1.0) -> void:
 	## Expanding flash ring for AoE impacts.
 	if parent == null or not is_instance_valid(parent):

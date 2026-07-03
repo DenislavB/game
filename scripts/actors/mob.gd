@@ -314,6 +314,7 @@ func _aggro_tick(delta: float) -> void:
 				var school := str(caster.get("school", "fire"))
 				FX.bolt(get_parent(), global_position + Vector3(0, 1.6, 0),
 					combat_target.global_position + Vector3(0, 1.2, 0), UI.school_color(school))
+				SFX.play_at("spell_%s" % school, global_position + Vector3(0, 1.6, 0), get_parent())
 				combat_target.take_damage(roll, school, self)
 	elif dist > melee_range:
 		_interrupt_own_cast()
@@ -344,6 +345,7 @@ func _interrupt_own_cast() -> void:
 
 func _swing_at(target: Unit) -> void:
 	model.play_attack(_swing_style)
+	SFX.play_at("swing", global_position + Vector3(0, 1.2, 0), get_parent())
 	var outcome := Formulas.attack_roll(level, target.level, target.dodge_value(), 5.0)
 	match outcome:
 		"miss":

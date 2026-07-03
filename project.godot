@@ -15,6 +15,7 @@ config/features=PackedStringArray("4.3")
 DB="*res://scripts/autoload/db.gd"
 Events="*res://scripts/autoload/events.gd"
 Game="*res://scripts/autoload/game.gd"
+SFX="*res://scripts/autoload/sfx.gd"
 
 [display]
 

@@ -25,6 +25,9 @@ var _base_y := 0.0
 var _is_quadruped := false
 var _death_axis := "z"           # humanoids topple sideways (z), creatures roll (x)
 
+var _head_pivot: Node3D = null
+var _torso_pivot: Node3D = null
+
 # Gear visual part references (humanoids only)
 var _chest_meshes: Array = []
 var _leg_meshes: Array = []
@@ -91,6 +94,7 @@ func build_humanoid(cfg: Dictionary) -> void:
 
 	# --- Torso ---
 	var torso := _pivot(rig, Vector3(0, 0.95, 0))
+	_torso_pivot = torso
 	_chest_meshes.append(_part(torso, Props._box(0.5, 0.26, 0.3), shirt.darkened(0.12), Vector3(0, 0.14, 0)))
 	_chest_meshes.append(_part(torso, Props._box(0.62, 0.48, 0.36), shirt, Vector3(0, 0.47, 0)))
 	_belt_mesh = _part(torso, Props._box(0.54, 0.12, 0.33), Color("5a4428"), Vector3(0, 0.0, 0))
@@ -99,6 +103,7 @@ func build_humanoid(cfg: Dictionary) -> void:
 
 	# --- Head (face details at -Z so front/back is unmistakable) ---
 	var head := _pivot(torso, Vector3(0, 0.71, 0))
+	_head_pivot = head
 	var eye_col := Color(str(feat.get("eye_color", "#1a1a22")))
 	var eye_glow: bool = feat.get("eye_glow", false)
 	_part(head, Props._cyl(0.09, 0.11, 0.12, 6), skin.darkened(0.1), Vector3(0, 0.05, 0))  # neck
@@ -143,10 +148,43 @@ func build_humanoid(cfg: Dictionary) -> void:
 		rig.position.y = -0.07
 		for arm in _biped_arms:
 			arm.scale = Vector3(1.15, 1.1, 1.15)
+	# --- Free-form detail parts (Spore-style, placed in the Character Editor) ---
+	for part in feat.get("parts", []):
+		_add_detail_part(part)
+
 	var stature: Array = feat.get("stature", [1.0, 1.0, 1.0])
 	rig.scale = Vector3(float(stature[0]) * s, float(stature[1]) * s, float(stature[2]) * s)
 	_death_axis = "z"
 	_base_y = rig.position.y
+
+
+func _add_detail_part(part: Dictionary) -> void:
+	## part: {shape, attach ("head"/"torso"), color "#hex", pos [x,y,z],
+	##        rot [x,y,z] degrees, size [x,y,z], mirror bool}
+	var parent := _head_pivot if str(part.get("attach", "head")) == "head" else _torso_pivot
+	if parent == null:
+		return
+	var color := Color(str(part.get("color", "#e8e0c8")))
+	var size_a: Array = part.get("size", [0.1, 0.1, 0.1])
+	var size := Vector3(float(size_a[0]), float(size_a[1]), float(size_a[2]))
+	var pos_a: Array = part.get("pos", [0, 0, 0])
+	var pos := Vector3(float(pos_a[0]), float(pos_a[1]), float(pos_a[2]))
+	var rot_a: Array = part.get("rot", [0, 0, 0])
+	var rot := Vector3(float(rot_a[0]), float(rot_a[1]), float(rot_a[2]))
+	var mesh: Mesh
+	match str(part.get("shape", "box")):
+		"sphere":
+			mesh = Props._sphere(maxf(size.x, 0.01), 6)
+		"cone":
+			mesh = Props._cyl(0.0, maxf(size.x, 0.01), maxf(size.y, 0.01), 5)
+		"cylinder":
+			mesh = Props._cyl(maxf(size.x, 0.01), maxf(size.x, 0.01), maxf(size.y, 0.01), 6)
+		_:
+			mesh = Props._box(maxf(size.x, 0.01), maxf(size.y, 0.01), maxf(size.z, 0.01))
+	_part(parent, mesh, color, pos, rot)
+	if part.get("mirror", false):
+		# Mirrored twin across the X axis (tusks, horns, ears...).
+		_part(parent, mesh, color, Vector3(-pos.x, pos.y, pos.z), Vector3(rot.x, -rot.y, -rot.z))
 
 
 func set_weapon(wtype: String) -> void:

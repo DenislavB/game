@@ -89,6 +89,7 @@ scenes/Main.tscn       The only scene — everything else is built in code
 The main menu has a built-in **Character Editor** — a live turntable tool for restyling everything that walks around the world, no JSON editing needed:
 
 - **Races** tab: skin tones, hunched posture, tusk size, long ears, beard, eye color/glow, and body proportions (width/height/depth) per race. Preview in any class outfit with any weapon.
+- **Detail parts** (Spore-style): add free-form shapes (box/sphere/cone/cylinder) to a race's head or torso and position, rotate, scale, color and mirror them with sliders — horns, spikes, bigger tusks, whatever. An "Unpack" button converts the preset tusks/ears/beard into editable parts so you can move the orc's tusks around.
 - **NPCs** tab: pick a zone and an NPC, then override their skin/shirt/pants/hair colors (saved as an `appearance` block on that NPC in the zone file). "Reset" returns them to their generated look.
 - **Mobs** tab: recolor and resize any creature.
 

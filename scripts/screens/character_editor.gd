@@ -219,12 +219,12 @@ func _check_row(label_text: String, current: bool, cb: Callable) -> void:
 	h.add_child(chk)
 
 
-func _slider_row(label_text: String, minv: float, maxv: float, current: float, cb: Callable) -> void:
+func _slider_row(label_text: String, minv: float, maxv: float, current: float, cb: Callable, step: float = 0.02) -> void:
 	var h := _row(label_text)
 	var slider := HSlider.new()
 	slider.min_value = minv
 	slider.max_value = maxv
-	slider.step = 0.02
+	slider.step = step
 	slider.value = current
 	slider.custom_minimum_size = Vector2(160, 24)
 	var val_l := UI.label("%.2f" % current, 12)
@@ -321,6 +321,9 @@ func _race_controls() -> void:
 			_rebuild_preview())
 	controls_box.add_child(HSeparator.new())
 
+	_parts_controls(m)
+	controls_box.add_child(HSeparator.new())
+
 	controls_box.add_child(UI.label("Preview options (not saved)", 12, Color(0.6, 0.58, 0.5)))
 	_option_row("Outfit class", DB.classes.keys(), preview_class, func(val: String):
 		preview_class = val
@@ -328,6 +331,143 @@ func _race_controls() -> void:
 	_option_row("Weapon", WEAPONS, preview_weapon, func(val: String):
 		preview_weapon = val
 		_rebuild_preview())
+
+
+# ---------------------------------------------------------------- detail parts
+
+var part_index := -1
+
+const PART_SHAPES := ["box", "sphere", "cone", "cylinder"]
+const PART_ATTACH := ["head", "torso"]
+
+
+func _parts_controls(m: Dictionary) -> void:
+	controls_box.add_child(HSeparator.new())
+	controls_box.add_child(UI.label("Detail parts (Spore-style)", 14, UI.COL_GOLD))
+	controls_box.add_child(UI.label("Freely placed shapes: horns, tusks, spikes...", 11, Color(0.6, 0.58, 0.5)))
+
+	if m.has("tusks") or str(m.get("ears", "")) == "long" or m.get("beard", false):
+		var unpack := UI.button("Unpack tusks/ears/beard into editable parts", func():
+			_unpack_legacy(m)
+			_rebuild_controls()
+			_rebuild_preview())
+		controls_box.add_child(unpack)
+
+	if not m.has("parts"):
+		m["parts"] = []
+	var parts: Array = m["parts"]
+	part_index = clampi(part_index, -1, parts.size() - 1)
+
+	# Part selector + management buttons.
+	var names: Array = []
+	for i in parts.size():
+		var p: Dictionary = parts[i]
+		names.append("%d: %s @ %s" % [i + 1, str(p.get("shape", "box")), str(p.get("attach", "head"))])
+	if not names.is_empty():
+		var current_name: String = str(names[part_index]) if part_index >= 0 else str(names[0])
+		if part_index < 0:
+			part_index = 0
+		_option_row("Part", names, current_name, func(val: String):
+			part_index = names.find(val)
+			_rebuild_controls()
+			_rebuild_preview())
+	var btns := HBoxContainer.new()
+	btns.add_theme_constant_override("separation", 6)
+	var add_b := UI.button("Add Part", func():
+		parts.append({ "shape": "cone", "attach": "head", "color": "#e8e0c8",
+			"pos": [0.12, 0.3, -0.16], "rot": [0.0, 0.0, 0.0], "size": [0.05, 0.2, 0.05], "mirror": true })
+		part_index = parts.size() - 1
+		_rebuild_controls()
+		_rebuild_preview())
+	btns.add_child(add_b)
+	if part_index >= 0 and part_index < parts.size():
+		var dup_b := UI.button("Duplicate", func():
+			parts.append((parts[part_index] as Dictionary).duplicate(true))
+			part_index = parts.size() - 1
+			_rebuild_controls()
+			_rebuild_preview())
+		btns.add_child(dup_b)
+		var del_b := UI.button("Delete", func():
+			parts.remove_at(part_index)
+			part_index = parts.size() - 1
+			_rebuild_controls()
+			_rebuild_preview())
+		btns.add_child(del_b)
+	controls_box.add_child(btns)
+
+	if part_index < 0 or part_index >= parts.size():
+		return
+	var part: Dictionary = parts[part_index]
+	_option_row("Shape", PART_SHAPES, str(part.get("shape", "box")), func(val: String):
+		part["shape"] = val
+		_rebuild_controls()
+		_rebuild_preview())
+	_option_row("Attach to", PART_ATTACH, str(part.get("attach", "head")), func(val: String):
+		part["attach"] = val
+		_rebuild_controls()
+		_rebuild_preview())
+	_color_row("Color", Color(str(part.get("color", "#e8e0c8"))), func(c: Color):
+		part["color"] = "#" + c.to_html(false)
+		_rebuild_preview())
+	_check_row("Mirror (pair)", part.get("mirror", false), func(on: bool):
+		part["mirror"] = on
+		_rebuild_preview())
+
+	var pos: Array = part.get("pos", [0.0, 0.0, 0.0])
+	part["pos"] = pos
+	var rot: Array = part.get("rot", [0.0, 0.0, 0.0])
+	part["rot"] = rot
+	var size_arr: Array = part.get("size", [0.1, 0.1, 0.1])
+	part["size"] = size_arr
+	var axis_names := ["X (side)", "Y (up)", "Z (front is -)"]
+	for i in 3:
+		var ai := i
+		var pos_cb := func(val: float):
+			pos[ai] = val
+			_rebuild_preview()
+		_slider_row("Pos " + axis_names[i], -0.8, 0.8, float(pos[i]), pos_cb, 0.01)
+	var rot_names := ["Rot X", "Rot Y", "Rot Z"]
+	for i in 3:
+		var ai2 := i
+		var rot_cb := func(val: float):
+			rot[ai2] = val
+			_rebuild_preview()
+		_slider_row(rot_names[i], -180.0, 180.0, float(rot[i]), rot_cb, 5.0)
+	var size_names := ["Size X / radius", "Size Y / length", "Size Z"]
+	for i in 3:
+		var ai3 := i
+		var size_cb := func(val: float):
+			size_arr[ai3] = val
+			_rebuild_preview()
+		_slider_row(size_names[i], 0.01, 0.7, float(size_arr[i]), size_cb, 0.01)
+
+
+func _unpack_legacy(m: Dictionary) -> void:
+	## Convert the baked-in feature flags into editable parts (same visuals).
+	if not m.has("parts"):
+		m["parts"] = []
+	var parts: Array = m["parts"]
+	var skin0 := Color(str(DB.races[race_id]["skin_colors"][0]))
+	if m.has("tusks"):
+		var long_t: bool = str(m["tusks"]) == "long"
+		parts.append({ "shape": "box", "attach": "head", "color": "#" + skin0.darkened(0.08).to_html(false),
+			"pos": [0.0, 0.13, -0.13], "rot": [0.0, 0.0, 0.0], "size": [0.28, 0.11, 0.12], "mirror": false })
+		parts.append({ "shape": "cone", "attach": "head", "color": "#e8e0c8",
+			"pos": [0.12 if long_t else 0.09, 0.2, -0.19], "rot": [0.0, 0.0, -12.0],
+			"size": [0.05 if long_t else 0.04, 0.3 if long_t else 0.16, 0.05], "mirror": true })
+		m.erase("tusks")
+	if str(m.get("ears", "")) == "long":
+		parts.append({ "shape": "box", "attach": "head", "color": "#" + skin0.to_html(false),
+			"pos": [0.2, 0.4, 0.04], "rot": [0.0, 0.0, -28.0], "size": [0.05, 0.2, 0.07], "mirror": true })
+		m.erase("ears")
+	if m.get("beard", false):
+		parts.append({ "shape": "box", "attach": "head", "color": "#3a2a1a",
+			"pos": [0.0, 0.06, -0.14], "rot": [0.0, 0.0, 0.0], "size": [0.26, 0.24, 0.1], "mirror": false })
+		parts.append({ "shape": "box", "attach": "head", "color": "#3a2a1a",
+			"pos": [0.0, 0.2, -0.16], "rot": [0.0, 0.0, 0.0], "size": [0.3, 0.06, 0.08], "mirror": false })
+		m.erase("beard")
+	part_index = parts.size() - 1
+	_status("Unpacked preset features into %d editable parts." % parts.size())
 
 
 # ================================================================ npc mode

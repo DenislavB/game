@@ -20,6 +20,10 @@ var _day_sky_top: Color
 var _day_sky_horizon: Color
 var _day_fog: Color
 
+# Ambient life
+var _fireflies: Array = []       # GPUParticles3D swarms, lit only at night
+var _ambient_on := true
+
 
 func build(zone_id: String, decor_only: bool = false) -> void:
 	## decor_only builds just terrain/sky/water/scattered props — the Zone
@@ -37,6 +41,7 @@ func build(zone_id: String, decor_only: bool = false) -> void:
 	_build_environment()
 	_build_water()
 	_scatter_props()
+	_place_scenes()
 	if decor_only:
 		return
 	_place_set_props()
@@ -45,6 +50,7 @@ func build(zone_id: String, decor_only: bool = false) -> void:
 	_spawn_mobs()
 	_place_gather_nodes()
 	_place_exits()
+	_build_ambient()
 
 
 func ground_height(x: float, z: float) -> float:
@@ -121,13 +127,20 @@ func _build_environment() -> void:
 
 func _process(delta: float) -> void:
 	Game.time_of_day = fmod(Game.time_of_day + delta * DAY_SPEED, 24.0)
-	if _sun == null:
-		return
 	var h := Game.time_of_day
 	# 0 at night, 1 at high noon, smooth dawn (5-8h) and dusk (17-20h).
 	var daylight := clampf(sin((h - 6.0) / 12.0 * PI), 0.0, 1.0)
 	if h < 5.0 or h > 20.0:
 		daylight = 0.0
+	# Fireflies come out at dusk and fade by dawn.
+	var want_ambient := daylight < 0.35
+	if want_ambient != _ambient_on:
+		_ambient_on = want_ambient
+		for fx in _fireflies:
+			if is_instance_valid(fx):
+				fx.emitting = want_ambient
+	if _sun == null:
+		return
 	var night_top := Color("0d1626")
 	var night_horizon := Color("1a2a40")
 	var night_fog := Color("141c2a")
@@ -182,23 +195,42 @@ func _random_point(cx: float, cz: float, r: float) -> Vector2:
 
 
 func _scatter_props() -> void:
+	## Each prop set scatters `count` of `type` across the map, optionally
+	## clustered around x/z within radius r. Flags:
+	##   near_water : place along the shoreline band (reeds, cattails)
+	##   on_water   : float on the water surface (lilypads)
+	## Otherwise props avoid roads, camps and water as before.
 	var half := float(zone_def["size"]) * 0.5 - 25.0
+	var water := float(zone_def.get("water_level", 0.0))
 	for pset in zone_def.get("props", []):
 		var count := int(pset["count"])
 		var color_hint: String = pset.get("color", "")
+		var near_water: bool = pset.get("near_water", false)
+		var on_water: bool = pset.get("on_water", false)
 		for i in count:
 			var p: Vector2
 			if pset.has("x"):
 				p = _random_point(float(pset["x"]), float(pset["z"]), float(pset["r"]))
 			else:
 				p = Vector2(_rng.randf_range(-half, half), _rng.randf_range(-half, half))
-			if not _good_prop_spot(p.x, p.y):
-				continue
 			var h := terrain.height_at(p.x, p.y)
-			if h < float(zone_def.get("water_level", 0.0)) + 0.5:
-				continue
+			var y := h - 0.1
+			if on_water:
+				# Only where the terrain actually dips below the surface.
+				if h > water - 0.2:
+					continue
+				y = water + 0.02
+			elif near_water:
+				# A narrow band right at the water's edge.
+				if h < water - 0.6 or h > water + 1.2:
+					continue
+			else:
+				if not _good_prop_spot(p.x, p.y):
+					continue
+				if h < water + 0.5:
+					continue
 			var prop := Props.build_prop(pset["type"], _rng, color_hint)
-			prop.position = Vector3(p.x, h - 0.1, p.y)
+			prop.position = Vector3(p.x, y, p.y)
 			prop.rotation.y = _rng.randf() * TAU
 			add_child(prop)
 
@@ -217,6 +249,80 @@ func _place_set_props() -> void:
 		add_child(prop)
 		if str(p["type"]) == "campfire":
 			rest_spots.append(Vector3(x, 0, z))
+
+
+func _place_scenes() -> void:
+	## Composite set-pieces (vistas + narrative tableaus) at exact spots.
+	## A scene's own RNG is seeded from its position so it looks identical
+	## every load but differs from its neighbours.
+	for sc in zone_def.get("scenes", []):
+		var x := float(sc["x"])
+		var z := float(sc["z"])
+		var srng := RandomNumberGenerator.new()
+		srng.seed = int(x) * 73856 ^ int(z) * 19349 ^ int(zone_def["seed"])
+		var node := Scenes.build(str(sc["type"]), srng)
+		node.position = Vector3(x, terrain.height_at(x, z) + float(sc.get("lift", 0.0)), z)
+		node.rotation.y = deg_to_rad(float(sc.get("rot", 0)))
+		if sc.has("scale"):
+			node.scale = Vector3.ONE * float(sc["scale"])
+		add_child(node)
+		# Bonfires and shrines double as rest spots (Well Rested).
+		if str(sc["type"]) in ["bonfire_ring", "wayshrine"]:
+			rest_spots.append(Vector3(x, 0, z))
+
+
+func _build_ambient() -> void:
+	## Firefly swarms that only glow at night — around camps/fires, over
+	## water, and at any point the zone lists in "ambient_spots".
+	var spots: Array = []
+	for rs in rest_spots:
+		spots.append(Vector2(rs.x, rs.z))
+	for f in zone_def.get("flatten", []):
+		if float(f.get("h", 1.0)) < 0.0:
+			spots.append(Vector2(float(f["x"]), float(f["z"])))
+	for a in zone_def.get("ambient_spots", []):
+		spots.append(Vector2(float(a["x"]), float(a["z"])))
+	for sp in spots:
+		var fx := _make_firefly_swarm(7.0)
+		fx.position = Vector3(sp.x, terrain.height_at(sp.x, sp.y) + 1.3, sp.y)
+		add_child(fx)
+		_fireflies.append(fx)
+
+
+func _make_firefly_swarm(radius: float) -> GPUParticles3D:
+	var p := GPUParticles3D.new()
+	p.amount = 16
+	p.lifetime = 5.0
+	p.preprocess = 3.0
+	p.randomness = 1.0
+	p.visibility_aabb = AABB(Vector3(-radius, -3, -radius), Vector3(radius * 2, 8, radius * 2))
+	var pm := ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	pm.emission_sphere_radius = radius
+	pm.gravity = Vector3.ZERO
+	pm.direction = Vector3(0, 1, 0)
+	pm.spread = 180.0
+	pm.initial_velocity_min = 0.15
+	pm.initial_velocity_max = 0.55
+	pm.damping_min = 0.1
+	pm.damping_max = 0.35
+	pm.scale_min = 0.6
+	pm.scale_max = 1.3
+	p.process_material = pm
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.13, 0.13)
+	var m := StandardMaterial3D.new()
+	m.albedo_color = Color("dbe27a")
+	m.emission_enabled = true
+	m.emission = Color("dbe27a")
+	m.emission_energy_multiplier = 3.2
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	quad.material = m
+	p.draw_pass_1 = quad
+	p.emitting = false  # _process turns swarms on at night
+	return p
 
 
 func _place_buildings() -> void:

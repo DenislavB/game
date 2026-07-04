@@ -140,6 +140,202 @@ static func build_prop(type: String, rng: RandomNumberGenerator, color_hint: Str
 			light.omni_range = 9.0
 			light.position = Vector3(0, 1.2, 0)
 			n.add_child(light)
+		# ---- filler detail: small ground clutter, no colliders ----
+		"mushroom":
+			for i in rng.randi_range(2, 4):
+				var mp := Vector3(rng.randf_range(-0.3, 0.3), 0, rng.randf_range(-0.3, 0.3))
+				var mh := rng.randf_range(0.14, 0.28)
+				_mesh(n, _cyl(0.04, 0.05, mh, 5), Color("e8e0d0"), mp + Vector3(0, mh * 0.5, 0))
+				var cap: Color = [Color("c04030"), Color("d88030"), Color("9a5a30")][rng.randi_range(0, 2)]
+				_mesh(n, _sphere(rng.randf_range(0.09, 0.15), 6), cap, mp + Vector3(0, mh, 0), Vector3.ZERO, Vector3(1, 0.55, 1))
+		"fern":
+			for i in 5:
+				var fa := TAU * i / 5.0 + rng.randf() * 0.4
+				_mesh(n, _box(0.09, 0.05, 0.95), Color("3e6a34").lerp(Color("52823e"), rng.randf()),
+					Vector3(cos(fa) * 0.32, 0.38, sin(fa) * 0.32), Vector3(38, -rad_to_deg(fa), 0))
+		"tall_grass":
+			for i in rng.randi_range(5, 9):
+				var gp := Vector3(rng.randf_range(-0.45, 0.45), 0, rng.randf_range(-0.45, 0.45))
+				var gh := rng.randf_range(0.5, 0.95)
+				_mesh(n, _box(0.035, gh, 0.035), Color("6a8a40").lerp(Color("889a4a"), rng.randf()),
+					gp + Vector3(0, gh * 0.5, 0), Vector3(rng.randf_range(-14, 14), rng.randf() * 180, rng.randf_range(-14, 14)))
+		"reeds":
+			for i in rng.randi_range(6, 11):
+				var rp := Vector3(rng.randf_range(-0.5, 0.5), 0, rng.randf_range(-0.5, 0.5))
+				var rh := rng.randf_range(1.0, 1.9)
+				_mesh(n, _cyl(0.015, 0.03, rh, 4), Color("7a8a4a"), rp + Vector3(0, rh * 0.5, 0),
+					Vector3(rng.randf_range(-8, 8), 0, rng.randf_range(-8, 8)))
+		"cattail":
+			for i in rng.randi_range(3, 6):
+				var cp := Vector3(rng.randf_range(-0.4, 0.4), 0, rng.randf_range(-0.4, 0.4))
+				var chh := rng.randf_range(1.2, 1.8)
+				_mesh(n, _cyl(0.015, 0.025, chh, 4), Color("6a8244"), cp + Vector3(0, chh * 0.5, 0))
+				_mesh(n, _cyl(0.06, 0.06, 0.32, 5), Color("5a3a1e"), cp + Vector3(0, chh, 0))
+		"lilypad":
+			_mesh(n, _cyl(0.42, 0.42, 0.04, 7), Color("3e7a44"), Vector3.ZERO)
+			if rng.randf() < 0.4:
+				_mesh(n, _sphere(0.12, 6), Color("e8d0e0"), Vector3(0.12, 0.06, 0), Vector3.ZERO, Vector3(1, 0.8, 1))
+		"pebbles":
+			for i in rng.randi_range(4, 8):
+				var pp := Vector3(rng.randf_range(-0.6, 0.6), 0, rng.randf_range(-0.6, 0.6))
+				var pr := rng.randf_range(0.08, 0.22)
+				var pc := Color(color_hint) if color_hint != "" else Color("8a857a")
+				_mesh(n, _sphere(pr, 4), pc, pp + Vector3(0, pr * 0.3, 0),
+					Vector3(rng.randf() * 40, rng.randf() * 180, 0), Vector3(1.3, 0.6, 1.1))
+		"bones":
+			_mesh(n, _sphere(0.2, 5), Color("d8d0c0"), Vector3(0.7, 0.14, 0), Vector3.ZERO, Vector3(1, 0.9, 1.1))  # skull
+			_mesh(n, _cyl(0.04, 0.04, 1.1, 4), Color("cec6b4"), Vector3(0, 0.08, 0), Vector3(0, 0, 90))            # spine
+			for i in 4:
+				var bx := -0.35 + i * 0.28
+				_mesh(n, _cyl(0.025, 0.025, 0.7, 4), Color("cec6b4"), Vector3(bx, 0.22, 0), Vector3(90, 0, 0), Vector3(1, 0.6, 1))
+
+		# ---- landmark / scene props (solid ones get colliders) ----
+		"log":
+			var ll := rng.randf_range(2.0, 3.2)
+			_mesh(n, _cyl(0.32, 0.36, ll, 7), Color("6a4a30"), Vector3(0, 0.34, 0), Vector3(0, 0, 90))
+			_mesh(n, _cyl(0.34, 0.34, 0.05, 7), Color("8a6a44"), Vector3(ll * 0.5, 0.34, 0), Vector3(0, 0, 90))
+			var lsh := BoxShape3D.new()
+			lsh.size = Vector3(ll, 0.6, 0.6)
+			_collider(n, lsh, Vector3(0, 0.34, 0))
+		"stump":
+			_mesh(n, _cyl(0.5, 0.62, 0.7, 8), Color("6a4a30"), Vector3(0, 0.35, 0))
+			_mesh(n, _cyl(0.48, 0.48, 0.08, 8), Color("9a7850"), Vector3(0, 0.72, 0))
+			_trunk_collider(n, 0.6, 0.7)
+		"sapling":
+			_mesh(n, _cyl(0.06, 0.09, 1.2, 5), Color("6a4a30"), Vector3(0, 0.6, 0))
+			_mesh(n, _sphere(0.7, 6), Color("4e7a30").lerp(Color("6a9440"), rng.randf()), Vector3(0, 1.5, 0), Vector3.ZERO, Vector3(1, 0.85, 1))
+		"crate":
+			_mesh(n, _box(0.8, 0.8, 0.8), Color("8a6a3c"), Vector3(0, 0.4, 0))
+			_mesh(n, _box(0.84, 0.12, 0.84), Color("6a4e2c"), Vector3(0, 0.4, 0))
+			var csh := BoxShape3D.new()
+			csh.size = Vector3(0.8, 0.8, 0.8)
+			_collider(n, csh, Vector3(0, 0.4, 0))
+		"barrel":
+			_mesh(n, _cyl(0.32, 0.4, 1.0, 8), Color("7a5632"), Vector3(0, 0.5, 0))
+			_mesh(n, _cyl(0.42, 0.42, 0.1, 8), Color("4a3620"), Vector3(0, 0.3, 0))
+			_mesh(n, _cyl(0.42, 0.42, 0.1, 8), Color("4a3620"), Vector3(0, 0.72, 0))
+			var bsh := CylinderShape3D.new()
+			bsh.radius = 0.42
+			bsh.height = 1.0
+			_collider(n, bsh, Vector3(0, 0.5, 0))
+		"hay_bale":
+			_mesh(n, _cyl(0.7, 0.7, 1.2, 8), Color("c8a84c"), Vector3(0, 0.7, 0), Vector3(90, 0, 0))
+			var hsh := CylinderShape3D.new()
+			hsh.radius = 0.7
+			hsh.height = 1.2
+			_collider(n, hsh, Vector3(0, 0.7, 0))
+		"fence":
+			for sx3 in [-1.0, 1.0]:
+				_mesh(n, _box(0.14, 1.0, 0.14), Color("6a4a2e"), Vector3(sx3 * 1.1, 0.5, 0))
+			_mesh(n, _box(2.3, 0.12, 0.08), Color("7a5636"), Vector3(0, 0.8, 0))
+			_mesh(n, _box(2.3, 0.12, 0.08), Color("7a5636"), Vector3(0, 0.45, 0))
+		"signpost":
+			_mesh(n, _cyl(0.08, 0.1, 2.2, 5), Color("6a4a2e"), Vector3(0, 1.1, 0))
+			_mesh(n, _box(1.1, 0.35, 0.07), Color("8a6a3c"), Vector3(0.3, 1.7, 0))
+			_mesh(n, _box(0.9, 0.3, 0.07), Color("8a6a3c"), Vector3(-0.25, 1.3, 0))
+			_trunk_collider(n, 0.15, 2.2)
+		"scarecrow":
+			_mesh(n, _cyl(0.08, 0.08, 2.0, 5), Color("6a4a2e"), Vector3(0, 1.0, 0))
+			_mesh(n, _box(1.5, 0.1, 0.1), Color("6a4a2e"), Vector3(0, 1.5, 0))
+			_mesh(n, _sphere(0.28, 6), Color("c8a84c"), Vector3(0, 2.0, 0))
+			_mesh(n, _box(0.6, 0.7, 0.35), Color("8a5a3a"), Vector3(0, 1.5, 0))
+			_mesh(n, _cyl(0.0, 0.34, 0.35, 6), Color("9a7a40"), Vector3(0, 2.25, 0))
+			_trunk_collider(n, 0.2, 2.0)
+		"standing_stone":
+			var stc := Color(color_hint) if color_hint != "" else Color("6a6a64")
+			_mesh(n, _box(1.1, rng.randf_range(3.2, 4.4), 0.7), stc, Vector3(0, 1.9, 0),
+				Vector3(rng.randf_range(-4, 4), rng.randf() * 30, rng.randf_range(-5, 5)))
+			var ssh := BoxShape3D.new()
+			ssh.size = Vector3(1.1, 4.0, 0.7)
+			_collider(n, ssh, Vector3(0, 2.0, 0))
+		"obelisk":
+			var obc := Color(color_hint) if color_hint != "" else Color("7a7060")
+			_mesh(n, _box(1.4, 0.5, 1.4), obc.darkened(0.15), Vector3(0, 0.25, 0))
+			_mesh(n, _box(0.9, 5.5, 0.9), obc, Vector3(0, 3.2, 0))
+			_mesh(n, _cyl(0.0, 0.7, 1.0, 4), obc.lightened(0.1), Vector3(0, 6.4, 0), Vector3(0, 45, 0))
+			var obsh := BoxShape3D.new()
+			obsh.size = Vector3(1.4, 6.0, 1.4)
+			_collider(n, obsh, Vector3(0, 3.0, 0))
+		"statue":
+			_mesh(n, _box(2.0, 0.6, 2.0), Color("8a8478"), Vector3(0, 0.3, 0))
+			_mesh(n, _box(1.4, 0.4, 1.4), Color("9a9488"), Vector3(0, 0.7, 0))
+			var fig := Color(color_hint) if color_hint != "" else Color("b0aa9a")
+			_mesh(n, _cyl(0.35, 0.45, 2.0, 7), fig, Vector3(0, 1.9, 0))
+			_mesh(n, _sphere(0.32, 7), fig, Vector3(0, 3.1, 0))
+			_mesh(n, _box(0.16, 1.4, 0.16), fig, Vector3(0.5, 2.3, 0), Vector3(0, 0, 28))
+			var stsh := BoxShape3D.new()
+			stsh.size = Vector3(2.0, 4.0, 2.0)
+			_collider(n, stsh, Vector3(0, 1.5, 0))
+		"wagon":
+			_mesh(n, _box(2.6, 0.9, 1.4), Color("7a5632"), Vector3(0, 1.0, 0))
+			_mesh(n, _box(2.6, 0.5, 0.12), Color("6a4a2c"), Vector3(0, 1.4, 0.66))
+			_mesh(n, _box(2.6, 0.5, 0.12), Color("6a4a2c"), Vector3(0, 1.4, -0.66))
+			for wz in [-0.8, 0.8]:
+				for wx in [-0.9, 0.9]:
+					_mesh(n, _cyl(0.45, 0.45, 0.14, 8), Color("4a3620"), Vector3(wx, 0.5, wz), Vector3(90, 0, 0))
+			var wgsh := BoxShape3D.new()
+			wgsh.size = Vector3(2.6, 1.0, 1.6)
+			_collider(n, wgsh, Vector3(0, 1.0, 0))
+		"market_stall":
+			for mx in [-1.3, 1.3]:
+				for mz in [-0.9, 0.9]:
+					_mesh(n, _cyl(0.08, 0.08, 2.2, 5), Color("6a4a2e"), Vector3(mx, 1.1, mz))
+			_mesh(n, _box(3.0, 0.9, 0.7), Color("8a6a3c"), Vector3(0, 1.0, -0.6))
+			var awn := Color(color_hint) if color_hint != "" else Color("b04838")
+			_mesh(n, _box(3.2, 0.1, 2.4), awn, Vector3(0, 2.3, 0), Vector3(-14, 0, 0))
+			var msh := BoxShape3D.new()
+			msh.size = Vector3(3.0, 1.0, 0.7)
+			_collider(n, msh, Vector3(0, 0.9, -0.6))
+		"banner":
+			_mesh(n, _cyl(0.07, 0.09, 3.4, 5), Color("5a4a30"), Vector3(0, 1.7, 0))
+			_mesh(n, _sphere(0.14, 6), Color("c8a040"), Vector3(0, 3.5, 0))
+			var flag := AnimatedProp.make(AnimatedProp.Mode.SWAY, 1.6, 0.12)
+			flag.position = Vector3(0.1, 3.1, 0)
+			var flag_c := Color(color_hint) if color_hint != "" else Color("9a3030")
+			_mesh(flag, _box(0.9, 1.1, 0.04), flag_c, Vector3(0.45, -0.55, 0))
+			n.add_child(flag)
+			_trunk_collider(n, 0.14, 3.4)
+		"windmill":
+			_mesh(n, _cyl(1.6, 2.0, 5.0, 8), Color("c8b898"), Vector3(0, 2.5, 0))
+			var wroof := PrismMesh.new()
+			wroof.size = Vector3(3.4, 1.6, 3.4)
+			_mesh(n, wroof, Color("7a4a34"), Vector3(0, 5.8, 0))
+			var sails := AnimatedProp.make(AnimatedProp.Mode.SPIN, 0.5, 0.0)
+			sails.position = Vector3(0, 4.4, 1.9)
+			for i in 4:
+				var sa := TAU * i / 4.0
+				var arm := MeshInstance3D.new()
+				arm.mesh = _box(0.5, 3.2, 0.12)
+				arm.material_override = mat(Color("8a7048"))
+				arm.position = Vector3(sin(sa) * 1.6, cos(sa) * 1.6, 0)
+				arm.rotation.z = -sa
+				sails.add_child(arm)
+			n.add_child(sails)
+			var wmsh := CylinderShape3D.new()
+			wmsh.radius = 1.9
+			wmsh.height = 5.0
+			_collider(n, wmsh, Vector3(0, 2.5, 0))
+		"waterfall":
+			# A cliff lip with a translucent falling sheet — a vista backdrop.
+			_mesh(n, _box(5.0, 4.0, 1.4), Color("6a6458"), Vector3(0, 2.0, 0))
+			var fall := StandardMaterial3D.new()
+			fall.albedo_color = Color(0.7, 0.85, 0.95, 0.55)
+			fall.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			fall.roughness = 0.1
+			var sheet := MeshInstance3D.new()
+			sheet.mesh = _box(3.4, 4.2, 0.2)
+			sheet.material_override = fall
+			sheet.position = Vector3(0, 2.0, 0.75)
+			n.add_child(sheet)
+			_mesh(n, _cyl(1.8, 2.2, 0.4, 9), Color(0.48, 0.54, 0.58, 0.7), Vector3(0, 0.05, 1.4))
+		"pennant":
+			# A short marker flag for camps / roadside.
+			_mesh(n, _cyl(0.05, 0.06, 1.8, 5), Color("5a4a30"), Vector3(0, 0.9, 0))
+			var pflag := AnimatedProp.make(AnimatedProp.Mode.SWAY, 2.2, 0.18)
+			pflag.position = Vector3(0, 1.7, 0)
+			var pc2 := Color(color_hint) if color_hint != "" else Color("c8a040")
+			_mesh(pflag, _box(0.55, 0.4, 0.03), pc2, Vector3(0.28, -0.18, 0))
+			n.add_child(pflag)
 		_:
 			_mesh(n, _box(0.5, 0.5, 0.5), Color.MAGENTA, Vector3(0, 0.25, 0))
 	n.scale = Vector3(s, s, s)

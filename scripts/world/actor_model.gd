@@ -33,6 +33,7 @@ var _death_axis := "z"           # humanoids topple sideways (z), creatures roll
 var _head_pivot: Node3D = null
 var _torso_pivot: Node3D = null
 var _torso_base_x := 0.0         # hunched races lean forward at rest
+var _head_base_x := 0.0          # hunched races tilt the head back up
 var _orb: MeshInstance3D = null  # glowing hand orb shown while casting
 
 # Gear visual part references (humanoids only)
@@ -162,6 +163,7 @@ func build_humanoid(cfg: Dictionary) -> void:
 		for arm in _biped_arms:
 			arm.scale = Vector3(1.15, 1.1, 1.15)
 	_torso_base_x = torso.rotation.x
+	_head_base_x = head.rotation.x
 	# --- Free-form detail parts (Spore-style, placed in the Character Editor) ---
 	for part in feat.get("parts", []):
 		_add_detail_part(part)
@@ -424,56 +426,170 @@ func _quad_legs(spread_x: float, w: float, len: float, color: Color, pairs: int 
 # Elbows flex forward-only (>= 0), knees backward-only (<= 0).
 #
 # Attack styles animate the WHOLE body — torso twist ("tw"), torso pitch
-# ("tp", negative leans forward), and a root lunge ("lg", forward) — so they
-# read clearly even from the behind-the-back gameplay camera. Directional
-# strikes run windup -> hit -> recover; flourishes rise and fall on a sine.
+# ("tp", negative leans forward), torso roll ("tr"), head yaw/pitch
+# ("hy"/"hx"), a crouch ("dip", positive sinks the whole rig) and a root
+# lunge ("lg", forward) — so they read clearly even from the behind-the-back
+# gameplay camera. Directional strikes run windup -> strike -> follow-through
+# ("r" pose, the overswing) -> settle; flourishes rise and fall on a sine.
+# Every attack blends in from whatever pose the body was actually in, so
+# swings chain into each other instead of snapping back to a T-pose first.
 #
-# Pose keys: lx/lz/le = left shoulder X/Z + elbow, rx/rz/re = right side,
-# tw = torso yaw, tp = torso pitch delta, lg = forward lunge (meters).
+# Pose keys: lx/lz/le = left shoulder X/Z + elbow, rx/rz/re = right side.
 # Shoulder Z sign: arm swings OUT from the body when lz < 0 / rz > 0.
+# When standing, "lg" also splits the legs into a lunge stance and "dip"
+# bends both knees, which is what sells the weight of a heavy swing.
+
+const POSE_KEYS := ["lx", "lz", "le", "rx", "rz", "re", "tw", "tp", "tr", "lg", "dip", "hy", "hx"]
+
+# Each weapon family has 3 variations of its basic swing; play_attack picks
+# one at random (never the same twice in a row) so auto-attacking feels
+# hand-animated instead of metronomic.
+const STYLE_VARIANTS := {
+	"slash": ["slash", "slash_up", "slash_cross"],
+	"chop": ["chop", "chop_diag", "chop_heavy"],
+	"smash": ["smash", "smash_over", "smash_side"],
+	"stab": ["stab", "stab_low", "stab_high"],
+	"claw": ["claw", "claw_left"]
+}
 
 const ATTACK_POSES := {
+	# --- one-hand blade: diagonal cut / rising backhand / flat cross-cut ---
 	"slash": {
-		"w": { "rx": -0.4, "rz": 1.0, "re": 1.2, "lx": 0.3, "tw": 0.5, "tp": 0.05 },
-		"h": { "rx": 1.5, "rz": -0.6, "re": 0.15, "lx": -0.3, "tw": -0.55, "tp": -0.12, "lg": 0.3 }
+		"w": { "rx": -0.5, "rz": 1.1, "re": 1.2, "lx": 0.35, "lz": -0.15, "tw": 0.55, "tp": 0.06, "tr": 0.08, "hy": -0.3, "dip": 0.02 },
+		"h": { "rx": 1.5, "rz": -0.5, "re": 0.15, "lx": -0.4, "tw": -0.6, "tp": -0.14, "tr": -0.1, "lg": 0.32, "hy": 0.15, "dip": 0.06 },
+		"r": { "rx": 0.9, "rz": -0.2, "re": 0.4, "lx": -0.15, "tw": -0.25, "tp": -0.05, "lg": 0.1 }
 	},
+	"slash_up": {
+		"w": { "rx": 0.9, "rz": -0.7, "re": 0.7, "lx": 0.2, "tw": -0.5, "tp": -0.1, "hy": 0.25, "dip": 0.08 },
+		"h": { "rx": 1.7, "rz": 0.9, "re": 0.2, "lx": -0.3, "tw": 0.5, "tp": 0.05, "tr": 0.12, "lg": 0.28, "hy": -0.2 },
+		"r": { "rx": 1.2, "rz": 0.4, "re": 0.4, "tw": 0.2, "lg": 0.08 }
+	},
+	"slash_cross": {
+		"w": { "rx": 0.6, "rz": 1.3, "re": 1.0, "lx": 0.2, "tw": 0.7, "tp": 0.02, "hy": -0.4, "dip": 0.04 },
+		"h": { "rx": 1.1, "rz": -1.0, "re": 0.2, "lx": -0.5, "lz": -0.3, "tw": -0.75, "tr": -0.12, "lg": 0.3, "hy": 0.2, "dip": 0.05 },
+		"r": { "rx": 0.8, "rz": -0.5, "re": 0.5, "tw": -0.3, "lg": 0.08 }
+	},
+	# --- axe: overhead hew / diagonal hew / slow two-handed splitter ---
 	"chop": {
-		"w": { "rx": -2.6, "re": 0.8, "lx": -0.5, "tw": 0.15, "tp": 0.2 },
-		"h": { "rx": 1.7, "re": 0.1, "lx": 0.3, "tw": -0.15, "tp": -0.35, "lg": 0.3 }
+		"w": { "rx": -2.6, "re": 0.8, "lx": -0.5, "tw": 0.15, "tp": 0.2, "hx": -0.25, "dip": 0.03 },
+		"h": { "rx": 1.7, "re": 0.1, "lx": 0.3, "tw": -0.15, "tp": -0.35, "lg": 0.3, "hx": 0.15, "dip": 0.1 },
+		"r": { "rx": 1.1, "re": 0.35, "tp": -0.15, "lg": 0.1 }
 	},
+	"chop_diag": {
+		"w": { "rx": -2.2, "rz": 0.7, "re": 0.9, "lx": 0.2, "tw": 0.4, "tp": 0.15, "tr": 0.1, "hy": -0.25 },
+		"h": { "rx": 1.5, "rz": -0.4, "re": 0.15, "lx": -0.3, "tw": -0.45, "tp": -0.3, "tr": -0.08, "lg": 0.3, "dip": 0.08 },
+		"r": { "rx": 1.0, "re": 0.3, "tw": -0.2, "lg": 0.1 }
+	},
+	"chop_heavy": {
+		"w": { "rx": -2.9, "re": 1.0, "lx": -2.4, "le": 0.7, "tw": 0.1, "tp": 0.3, "hx": -0.3, "dip": 0.05 },
+		"h": { "rx": 1.8, "re": 0.05, "lx": 1.4, "le": 0.2, "tp": -0.5, "lg": 0.4, "hx": 0.2, "dip": 0.14 },
+		"r": { "rx": 1.2, "lx": 0.8, "le": 0.3, "tp": -0.2, "lg": 0.15 }
+	},
+	# --- mace: two-hand crush / one-hand overhead / shield-side bash ---
 	"smash": {
-		"w": { "lx": -2.6, "rx": -2.6, "le": 0.6, "re": 0.6, "tp": 0.25 },
-		"h": { "lx": 1.6, "rx": 1.6, "le": 0.15, "re": 0.15, "tp": -0.45, "lg": 0.35 }
+		"w": { "lx": -2.6, "rx": -2.6, "le": 0.6, "re": 0.6, "tp": 0.25, "hx": -0.25, "dip": 0.04 },
+		"h": { "lx": 1.6, "rx": 1.6, "le": 0.15, "re": 0.15, "tp": -0.45, "lg": 0.35, "hx": 0.2, "dip": 0.12 },
+		"r": { "lx": 1.0, "rx": 1.0, "le": 0.3, "re": 0.3, "tp": -0.2, "lg": 0.12 }
 	},
+	"smash_over": {
+		"w": { "rx": -2.7, "re": 0.7, "lx": -0.4, "tw": 0.2, "tp": 0.22, "hx": -0.2 },
+		"h": { "rx": 1.65, "re": 0.1, "lx": 0.2, "tw": -0.2, "tp": -0.4, "lg": 0.32, "dip": 0.12 },
+		"r": { "rx": 1.0, "re": 0.3, "tp": -0.15, "lg": 0.1 }
+	},
+	"smash_side": {
+		"w": { "rx": 0.2, "rz": 1.2, "re": 0.8, "lx": 0.3, "tw": 0.6, "tp": 0.1, "hy": -0.3, "dip": 0.05 },
+		"h": { "rx": 1.2, "rz": -0.8, "re": 0.2, "lx": -0.35, "tw": -0.6, "tp": -0.2, "tr": -0.1, "lg": 0.3, "dip": 0.08 },
+		"r": { "rx": 0.8, "rz": -0.3, "re": 0.4, "tw": -0.25, "lg": 0.1 }
+	},
+	# --- dagger: straight thrust / low gut-stab / quick high jab ---
 	"stab": {
-		"w": { "rx": 0.3, "re": 2.0, "lx": 0.5, "le": 0.4, "tw": 0.4, "lg": -0.1 },
-		"h": { "rx": 1.2, "re": 0.05, "lx": -0.2, "tw": -0.35, "lg": 0.45 }
+		"w": { "rx": 0.3, "re": 2.0, "lx": 0.5, "le": 0.4, "tw": 0.4, "lg": -0.1, "hy": -0.2 },
+		"h": { "rx": 1.2, "re": 0.05, "lx": -0.2, "tw": -0.35, "lg": 0.45, "dip": 0.05 },
+		"r": { "rx": 0.9, "re": 0.5, "tw": -0.15, "lg": 0.15 }
 	},
+	"stab_low": {
+		"w": { "rx": 0.1, "re": 1.8, "lx": 0.4, "le": 0.5, "tw": 0.35, "tp": 0.12, "dip": 0.1 },
+		"h": { "rx": 0.9, "re": 0.1, "lx": -0.25, "tw": -0.3, "tp": -0.25, "lg": 0.5, "dip": 0.16 },
+		"r": { "rx": 0.6, "re": 0.6, "tp": -0.1, "lg": 0.15 }
+	},
+	"stab_high": {
+		"w": { "rx": 0.5, "re": 1.9, "lx": 0.4, "le": 0.3, "tw": 0.3, "hy": -0.15 },
+		"h": { "rx": 1.5, "re": 0.2, "lx": -0.2, "tw": -0.3, "tp": -0.08, "lg": 0.35 },
+		"r": { "rx": 1.0, "re": 0.7, "tw": -0.1, "lg": 0.1 }
+	},
+	# --- unarmed / feral ---
 	"claw": {
-		"w": { "lx": 0.2, "lz": -1.1, "le": 0.9, "rx": 0.2, "rz": 1.1, "re": 0.9, "tp": 0.08 },
-		"h": { "lx": 1.3, "lz": 0.3, "le": 0.4, "rx": 1.3, "rz": -0.3, "re": 0.4, "tp": -0.15, "lg": 0.25 }
+		"w": { "lx": 0.2, "lz": -1.1, "le": 0.9, "rx": 0.2, "rz": 1.1, "re": 0.9, "tp": 0.08, "dip": 0.04 },
+		"h": { "lx": 1.3, "lz": 0.3, "le": 0.4, "rx": 1.3, "rz": -0.3, "re": 0.4, "tp": -0.15, "lg": 0.25, "dip": 0.08 },
+		"r": { "lx": 0.9, "rx": 0.9, "le": 0.5, "re": 0.5, "tp": -0.08, "lg": 0.08 }
+	},
+	"claw_left": {
+		"w": { "lx": -0.4, "lz": -1.2, "le": 1.0, "rx": 0.3, "tw": -0.5, "tp": 0.06, "hy": 0.25 },
+		"h": { "lx": 1.4, "lz": 0.4, "le": 0.3, "rx": -0.2, "tw": 0.5, "tp": -0.12, "tr": 0.1, "lg": 0.28 },
+		"r": { "lx": 0.9, "le": 0.5, "tw": 0.2, "lg": 0.1 }
 	},
 	"slam_ground": {
-		"w": { "lx": -2.4, "rx": -2.4, "le": 0.5, "re": 0.5, "tp": 0.22 },
-		"h": { "lx": 1.5, "rx": 1.5, "le": 0.2, "re": 0.2, "tp": -0.5, "lg": 0.15 }
+		"w": { "lx": -2.4, "rx": -2.4, "le": 0.5, "re": 0.5, "tp": 0.22, "hx": -0.25 },
+		"h": { "lx": 1.5, "rx": 1.5, "le": 0.2, "re": 0.2, "tp": -0.5, "lg": 0.15, "hx": 0.25, "dip": 0.18 },
+		"r": { "lx": 1.0, "rx": 1.0, "le": 0.4, "re": 0.4, "tp": -0.25, "dip": 0.08 }
 	},
+	# --- spell releases: one-hand fling for quick casts, a heavy two-hand
+	# forward blast for anything with a long cast bar ---
 	"bolt": {
-		"w": { "rx": 0.4, "re": 1.8, "lx": 0.9, "le": 0.3, "tw": 0.45, "tp": 0.06 },
-		"h": { "rx": 1.6, "re": 0.05, "lx": -0.2, "tw": -0.4, "tp": -0.1, "lg": 0.3 }
+		"w": { "rx": 0.4, "re": 1.8, "lx": 0.9, "le": 0.3, "tw": 0.45, "tp": 0.06, "hy": -0.2 },
+		"h": { "rx": 1.6, "re": 0.05, "lx": -0.2, "tw": -0.4, "tp": -0.1, "lg": 0.3, "hy": 0.1 },
+		"r": { "rx": 1.1, "re": 0.3, "tw": -0.15, "lg": 0.1 }
+	},
+	"bolt_big": {
+		"w": { "lx": -0.8, "le": 0.5, "rx": -0.8, "re": 0.5, "tp": 0.25, "hx": -0.2, "dip": 0.05 },
+		"h": { "lx": 1.35, "le": 0.15, "rx": 1.35, "re": 0.15, "tp": -0.18, "lg": 0.4, "hx": 0.05, "dip": 0.08 },
+		"r": { "lx": 1.0, "rx": 1.0, "le": 0.3, "re": 0.3, "tp": -0.08, "lg": 0.15 }
 	}
 }
 
 const FLOURISH_POSES := {
-	"buff_self": { "lx": 2.2, "rx": 2.2, "le": 0.3, "re": 0.3, "lz": -0.5, "rz": 0.5, "tp": 0.12 },
-	"heal": { "lx": 1.1, "rx": 1.1, "le": 0.6, "re": 0.6, "lz": 0.25, "rz": -0.25, "tp": -0.1 },
-	"burst": { "lx": 0.5, "rx": 0.5, "le": 0.1, "re": 0.1, "lz": -1.3, "rz": 1.3, "tp": -0.1 }
+	"buff_self": { "lx": 2.2, "rx": 2.2, "le": 0.3, "re": 0.3, "lz": -0.5, "rz": 0.5, "tp": 0.12, "hx": -0.3 },
+	"heal": { "lx": 1.1, "rx": 1.1, "le": 0.6, "re": 0.6, "lz": 0.25, "rz": -0.25, "tp": -0.1, "hx": 0.1 },
+	"burst": { "lx": 0.5, "rx": 0.5, "le": 0.1, "re": 0.1, "lz": -1.3, "rz": 1.3, "tp": -0.1, "hx": -0.15 }
 }
+
+# Sustained casting stances, held while a cast bar fills. Each school has
+# its own recognizable silhouette; special mechanics (channels, summons,
+# gathering) keep their dedicated stances.
+const CAST_STANCES := {
+	"cast_fire": { "lx": 1.0, "le": 0.9, "lz": 0.25, "rx": 1.0, "re": 0.9, "rz": -0.25, "tp": 0.08, "hx": -0.15 },
+	"cast_frost": { "rx": 1.4, "re": 0.1, "lx": 0.8, "le": 1.2, "tw": 0.15, "hy": -0.1 },
+	"cast_arcane": { "lx": 2.0, "lz": -0.35, "le": 0.25, "rx": 2.0, "rz": 0.35, "re": 0.25, "tp": 0.1, "hx": -0.3 },
+	"cast_shadow": { "lx": 0.7, "le": 0.6, "lz": 0.2, "rx": 0.7, "re": 0.6, "rz": -0.2, "tp": -0.25, "hx": 0.25, "dip": 0.08 },
+	"cast_nature": { "lx": 0.5, "lz": -1.0, "le": 0.4, "rx": 0.5, "rz": 1.0, "re": 0.4, "tp": 0.06, "hx": -0.25 },
+	"cast_holy": { "lx": 2.4, "lz": -0.2, "le": 0.2, "rx": 2.4, "rz": 0.2, "re": 0.2, "tp": 0.12, "hx": -0.4 },
+	"heal": { "lx": 1.1, "le": 0.6, "lz": 0.25, "rx": 1.1, "re": 0.6, "rz": -0.25, "tp": -0.05, "hx": -0.1 },
+	"burst": { "lx": 0.5, "le": 0.1, "lz": -1.3, "rx": 0.5, "re": 0.1, "rz": 1.3, "tp": -0.08 },
+	"channel_bolt": { "lx": 1.2, "le": 0.3, "rx": 1.4, "re": 0.3, "hy": -0.1 },
+	"channel_heal": { "lx": 2.0, "lz": -0.4, "le": 0.3, "rx": 2.0, "rz": 0.4, "re": 0.3, "hx": -0.3 },
+	"channel_drain": { "lx": 1.1, "le": 0.5, "rx": 1.3, "re": 0.4, "tp": -0.1, "hx": 0.1 },
+	"summon": { "lx": 2.2, "lz": -0.5, "le": 0.3, "rx": 2.2, "rz": 0.5, "re": 0.3, "tp": 0.1, "hx": -0.35 },
+	"cast": { "lx": 1.3, "le": 0.35, "rx": 1.5, "re": 0.35 }  # generic fallback
+}
+
+var _move_blend := 0.0           # 0 = standing, 1 = full run; eases both ways
+var _last_variant := ""
+var _from_pose: Dictionary = {}  # pose snapshot taken when an attack starts
 
 
 func play_attack(style: String = "slash") -> void:
+	# Family names ("slash", "chop"...) roll a random variation; a concrete
+	# variant name plays exactly that one.
+	if STYLE_VARIANTS.has(style):
+		var opts: Array = (STYLE_VARIANTS[style] as Array).duplicate()
+		if opts.size() > 1:
+			opts.erase(_last_variant)
+		style = str(opts[randi() % opts.size()])
+	_last_variant = style
 	_attack_style = style
 	_attack_dur = _duration_for(style)
 	_attack_t = _attack_dur
+	_from_pose = _current_pose()
 
 
 func start_cast(style: String = "bolt", color: Color = Color(0.65, 0.8, 1.0)) -> void:
@@ -505,12 +621,23 @@ func _free_orb() -> void:
 
 
 func _duration_for(style: String) -> float:
+	# Timing is part of the variation: heavy overswings are slow and
+	# deliberate, jabs are snappy.
 	match style:
 		"chop", "slam_ground": return 0.55
+		"chop_diag": return 0.5
+		"chop_heavy": return 0.7
 		"smash", "spin": return 0.6
+		"smash_over": return 0.65
+		"smash_side": return 0.55
 		"stab": return 0.3
-		"claw": return 0.4
+		"stab_low": return 0.34
+		"stab_high": return 0.26
+		"slash_up": return 0.4
+		"slash_cross": return 0.5
+		"claw", "claw_left": return 0.4
 		"shoot": return 0.55
+		"bolt_big": return 0.55
 		_: return 0.45  # slash, bolt, heal, burst, buff_self
 
 
@@ -542,11 +669,15 @@ func _process(delta: float) -> void:
 			si += 1
 		return
 
-	_phase += delta * (11.0 if moving else 0.0)
-	if not moving:
-		rig.position.y = _base_y + sin(_time * 2.0) * 0.02
-	else:
-		rig.position.y = _base_y + absf(sin(_phase)) * 0.06
+	# Momentum: ease into and out of the run so idle <-> run never pops.
+	_move_blend = move_toward(_move_blend, 1.0 if moving else 0.0, delta * 5.0)
+	_phase += delta * 11.0 * _move_blend
+
+	# Vertical weight: standing breath vs. a run bob that sinks slightly
+	# (loaded stride) and bounces once per footfall.
+	var idle_y := sin(_time * 2.0) * 0.02
+	var run_y: float = -0.03 + absf(sin(_phase)) * 0.07
+	rig.position.y = _base_y + lerpf(idle_y, run_y, _move_blend)
 
 	_animate_legs()
 
@@ -563,16 +694,15 @@ func _process(delta: float) -> void:
 		_apply_cast_pose(_cast_style, delta)
 	else:
 		_animate_arms_idle(delta)
+		_run_idle_body(delta)
 		if _is_quadruped:
 			rig.rotation.z = 0
 
 	# Ease the body back to rest when no attack owns it.
 	if not attacking:
 		rig.position.z = lerpf(rig.position.z, 0.0, delta * 8.0)
-		if _torso_pivot != null:
-			var lean := -0.16 if moving else sin(_time * 2.0) * 0.02
-			_torso_pivot.rotation.y = lerp_angle(_torso_pivot.rotation.y, 0.0, delta * 8.0)
-			_torso_pivot.rotation.x = lerp_angle(_torso_pivot.rotation.x, _torso_base_x + lean, delta * 6.0)
+	if (attacking or casting) and not _is_quadruped:
+		rig.rotation.z = lerpf(rig.rotation.z, 0.0, delta * 8.0)
 	if not (attacking and _attack_style in ["spin", "shoot"]):
 		rig.rotation.y = lerp_angle(rig.rotation.y, 0.0, delta * 6.0)
 
@@ -583,35 +713,65 @@ func _process(delta: float) -> void:
 
 
 func _animate_legs() -> void:
-	var hip_amt := 0.85 if moving else 0.0
-	var knee_amt := 1.1 if moving else 0.0
+	var b := _move_blend
 	var use_knees := _biped_knees.size() == _legs.size() and not _biped_knees.is_empty()
 	var i := 0
 	for leg in _legs:
 		var theta := _phase if i % 2 == 0 else _phase + PI
-		leg.rotation.x = sin(theta) * hip_amt
+		leg.rotation.x = sin(theta) * 0.9 * b
 		if use_knees:
-			# Bends through the swing half of the stride (foot in the air),
-			# straightens through stance (foot planted, pushing).
-			_biped_knees[i].rotation.x = -maxf(0.0, cos(theta)) * knee_amt
+			# Deep bend through the swing half of the stride (foot in the
+			# air, heel kicking up) plus a slight always-on crouch so the
+			# run reads loaded, not stiff-legged.
+			var swing_bend: float = maxf(0.0, cos(theta)) * 1.15
+			_biped_knees[i].rotation.x = -(swing_bend + 0.08) * b
 		i += 1
 
 
+func _run_idle_body(delta: float) -> void:
+	## Torso, hips and head while no attack or cast owns the body.
+	## Run: counter-rotation and hip roll driven by the stride phase.
+	## Idle: slow breathing and a wandering, lifelike gaze.
+	if _torso_pivot == null:
+		return
+	var b := _move_blend
+	var t := clampf(delta * 12.0, 0.0, 1.0)
+	# Run targets — the torso twists opposite the leading leg and rolls
+	# with the weight shift; the head counter-turns to keep facing forward.
+	var run_tw := -sin(_phase) * 0.14
+	var run_tp := _torso_base_x - 0.15
+	var run_tr := -sin(_phase) * 0.035
+	var run_hy := sin(_phase) * 0.1
+	var run_roll := sin(_phase) * 0.04
+	# Idle targets — breath in the chest, tiny weight shifts, gaze wander.
+	var idle_tp := _torso_base_x + sin(_time * 1.7) * 0.022
+	var idle_hy := sin(_time * 0.37) * 0.2 + sin(_time * 0.13) * 0.12
+	var idle_hx := sin(_time * 0.23) * 0.06
+	_torso_pivot.rotation.y = lerp_angle(_torso_pivot.rotation.y, run_tw * b, t)
+	_torso_pivot.rotation.x = lerp_angle(_torso_pivot.rotation.x, lerpf(idle_tp, run_tp, b), t)
+	_torso_pivot.rotation.z = lerp_angle(_torso_pivot.rotation.z, run_tr * b, t)
+	rig.rotation.z = lerpf(rig.rotation.z, run_roll * b, t)
+	if _head_pivot != null:
+		_head_pivot.rotation.y = lerp_angle(_head_pivot.rotation.y, lerpf(idle_hy, run_hy, b), t)
+		_head_pivot.rotation.x = lerp_angle(_head_pivot.rotation.x, _head_base_x + idle_hx * (1.0 - b), t)
+
+
 func _animate_arms_idle(delta: float) -> void:
+	var b := _move_blend
+	var t := clampf(delta * 12.0, 0.0, 1.0)
 	var j := 0
 	for arm in _biped_arms:
 		var theta := _phase + PI if j % 2 == 0 else _phase
-		if moving:
-			# Runner's pump: bent elbows driving back and forth.
-			arm.rotation.x = sin(theta) * 0.9
-			arm.rotation.z = lerp_angle(arm.rotation.z, 0.0, delta * 6.0)
-			if j < _biped_elbows.size():
-				_biped_elbows[j].rotation.x = 0.75 + 0.25 * sin(theta)
-		else:
-			arm.rotation.x = lerp_angle(arm.rotation.x, 0.0, delta * 6.0)
-			arm.rotation.z = lerp_angle(arm.rotation.z, 0.0, delta * 6.0)
-			if j < _biped_elbows.size():
-				_biped_elbows[j].rotation.x = lerp_angle(_biped_elbows[j].rotation.x, 0.1, delta * 6.0)
+		# Runner's pump (bent elbows driving back and forth, held slightly
+		# out from the body) blended against a relaxed breathing hang.
+		var run_x := sin(theta) * 0.75
+		var run_z := (0.09 if j % 2 == 0 else -0.09) * -1.0  # elbows out a touch
+		var idle_z := sin(_time * 1.7) * 0.02
+		arm.rotation.x = lerp_angle(arm.rotation.x, run_x * b, t)
+		arm.rotation.z = lerp_angle(arm.rotation.z, lerpf(idle_z, run_z, b), t)
+		if j < _biped_elbows.size():
+			var run_e := 0.95 + 0.35 * sin(theta)
+			_biped_elbows[j].rotation.x = lerp_angle(_biped_elbows[j].rotation.x, lerpf(0.12, run_e, b), t)
 		j += 1
 
 
@@ -619,9 +779,32 @@ func _animate_arms_idle(delta: float) -> void:
 
 func _blend_pose(a: Dictionary, b: Dictionary, t: float) -> Dictionary:
 	var out := {}
-	for key in ["lx", "lz", "le", "rx", "rz", "re", "tw", "tp", "lg"]:
+	for key in POSE_KEYS:
 		out[key] = lerpf(float(a.get(key, 0.0)), float(b.get(key, 0.0)), t)
 	return out
+
+
+func _current_pose() -> Dictionary:
+	## Snapshot of the joints an attack pose drives, so a new swing can
+	## blend in from wherever the body actually is.
+	if _biped_arms.size() < 2:
+		return {}
+	var p := {
+		"lx": (_biped_arms[0] as Node3D).rotation.x, "lz": (_biped_arms[0] as Node3D).rotation.z,
+		"rx": (_biped_arms[1] as Node3D).rotation.x, "rz": (_biped_arms[1] as Node3D).rotation.z,
+		"lg": -rig.position.z
+	}
+	if _biped_elbows.size() >= 2:
+		p["le"] = (_biped_elbows[0] as Node3D).rotation.x
+		p["re"] = (_biped_elbows[1] as Node3D).rotation.x
+	if _torso_pivot != null:
+		p["tw"] = _torso_pivot.rotation.y
+		p["tp"] = _torso_pivot.rotation.x - _torso_base_x
+		p["tr"] = _torso_pivot.rotation.z
+	if _head_pivot != null:
+		p["hy"] = _head_pivot.rotation.y
+		p["hx"] = _head_pivot.rotation.x - _head_base_x
+	return p
 
 
 func _apply_pose(p: Dictionary) -> void:
@@ -630,7 +813,36 @@ func _apply_pose(p: Dictionary) -> void:
 	if _torso_pivot != null:
 		_torso_pivot.rotation.y = float(p.get("tw", 0.0))
 		_torso_pivot.rotation.x = _torso_base_x + float(p.get("tp", 0.0))
+		_torso_pivot.rotation.z = float(p.get("tr", 0.0))
+	if _head_pivot != null:
+		_head_pivot.rotation.y = float(p.get("hy", 0.0))
+		_head_pivot.rotation.x = _head_base_x + float(p.get("hx", 0.0))
 	rig.position.z = -float(p.get("lg", 0.0))
+	var dip := float(p.get("dip", 0.0))
+	rig.position.y -= dip
+	# When standing, a lunge splits the legs into a fighting stance and a
+	# crouch bends the knees — this is what gives heavy hits their weight.
+	if _move_blend < 0.3 and _legs.size() >= 2 and _biped_knees.size() >= 2:
+		var lg := float(p.get("lg", 0.0))
+		var ground := 1.0 - _move_blend / 0.3
+		(_legs[0] as Node3D).rotation.x = lg * 1.1 * ground
+		(_legs[1] as Node3D).rotation.x = -lg * 0.8 * ground
+		(_biped_knees[0] as Node3D).rotation.x = -dip * 2.5 * ground
+		(_biped_knees[1] as Node3D).rotation.x = (-lg * 0.9 - dip * 2.5) * ground
+
+
+func _lerp_pose(p: Dictionary, t: float) -> void:
+	## Ease every channel toward a pose — used for sustained cast stances.
+	_lerp_arm(0, float(p.get("lx", 0.0)), float(p.get("le", 0.0)), t, float(p.get("lz", 0.0)))
+	_lerp_arm(1, float(p.get("rx", 0.0)), float(p.get("re", 0.0)), t, float(p.get("rz", 0.0)))
+	if _torso_pivot != null:
+		_torso_pivot.rotation.y = lerp_angle(_torso_pivot.rotation.y, float(p.get("tw", 0.0)), t)
+		_torso_pivot.rotation.x = lerp_angle(_torso_pivot.rotation.x, _torso_base_x + float(p.get("tp", 0.0)), t)
+		_torso_pivot.rotation.z = lerp_angle(_torso_pivot.rotation.z, float(p.get("tr", 0.0)), t)
+	if _head_pivot != null:
+		_head_pivot.rotation.y = lerp_angle(_head_pivot.rotation.y, float(p.get("hy", 0.0)), t)
+		_head_pivot.rotation.x = lerp_angle(_head_pivot.rotation.x, _head_base_x + float(p.get("hx", 0.0)), t)
+	rig.position.y -= float(p.get("dip", 0.0))
 
 
 func _set_arm(idx: int, shoulder_x: float, elbow_x: float, shoulder_z: float = 0.0) -> void:
@@ -656,22 +868,28 @@ func _lerp_arm(idx: int, shoulder_x: float, elbow_x: float, t: float, shoulder_z
 func _apply_attack_pose(style: String, k: float) -> void:
 	var neutral := {}
 	if ATTACK_POSES.has(style):
-		# Windup (0-0.4, ease out) -> strike (0.4-0.65, sharp) -> recover.
+		# Windup (blends in from the CURRENT pose, ease out) -> strike
+		# (sharp acceleration) -> follow-through (the overswing, "r") ->
+		# settle back toward neutral.
 		var poses: Dictionary = ATTACK_POSES[style]
 		var windup: Dictionary = poses["w"]
 		var hit: Dictionary = poses["h"]
-		if k < 0.4:
-			var t := k / 0.4
-			_apply_pose(_blend_pose(neutral, windup, t * (2.0 - t)))
-		elif k < 0.65:
-			var t2 := (k - 0.4) / 0.25
+		var follow: Dictionary = poses.get("r", _blend_pose(hit, neutral, 0.6))
+		if k < 0.42:
+			var t := k / 0.42
+			_apply_pose(_blend_pose(_from_pose, windup, t * (2.0 - t)))
+		elif k < 0.62:
+			var t2 := (k - 0.42) / 0.2
 			_apply_pose(_blend_pose(windup, hit, t2 * t2))
+		elif k < 0.8:
+			var t3 := (k - 0.62) / 0.18
+			_apply_pose(_blend_pose(hit, follow, 1.0 - (1.0 - t3) * (1.0 - t3)))
 		else:
-			var t3 := (k - 0.65) / 0.35
-			_apply_pose(_blend_pose(hit, neutral, smoothstep(0.0, 1.0, t3)))
+			var t4 := (k - 0.8) / 0.2
+			_apply_pose(_blend_pose(follow, neutral, smoothstep(0.0, 1.0, t4)))
 		return
 	if FLOURISH_POSES.has(style):
-		_apply_pose(_blend_pose(neutral, FLOURISH_POSES[style], sin(k * PI)))
+		_apply_pose(_blend_pose(_from_pose if k < 0.5 else neutral, FLOURISH_POSES[style], sin(k * PI)))
 		return
 	match style:
 		"shoot":
@@ -719,37 +937,22 @@ func _apply_cast_pose(style: String, delta: float) -> void:
 		return
 	if _orb != null and is_instance_valid(_orb):
 		_orb.scale = Vector3.ONE * (0.85 + 0.35 * sin(_time * 7.0))
-	var t := delta * 8.0
-	match style:
-		"heal":
-			_lerp_arm(0, 1.1, 0.6, t, 0.25)
-			_lerp_arm(1, 1.1, 0.6, t, -0.25)
-		"burst":
-			_lerp_arm(0, 0.5, 0.1, t, -1.3)
-			_lerp_arm(1, 0.5, 0.1, t, 1.3)
-		"channel_bolt":
-			_lerp_arm(0, 1.2, 0.3, t)
-			_lerp_arm(1, 1.4, 0.3, t)
-		"channel_heal":
-			_lerp_arm(0, 2.0, 0.3, t, -0.4)
-			_lerp_arm(1, 2.0, 0.3, t, 0.4)
-		"channel_drain":
-			_lerp_arm(0, 1.1, 0.5, t)
-			_lerp_arm(1, 1.3, 0.4, t)
-		"summon":
-			_lerp_arm(0, 2.2, 0.3, t, -0.5)
-			_lerp_arm(1, 2.2, 0.3, t, 0.5)
-		"gather":
-			# Kneel down and work at the node.
-			rig.position.y = lerpf(rig.position.y, _base_y - 0.35, t)
-			var gi := 0
-			for leg in _legs:
-				leg.rotation.x = lerp_angle(leg.rotation.x, 0.5, t)
-				if gi < _biped_knees.size():
-					_biped_knees[gi].rotation.x = lerp_angle(_biped_knees[gi].rotation.x, -1.7, t)
-				gi += 1
-			_lerp_arm(0, 1.1, 0.7, t)
-			_lerp_arm(1, 1.1, 0.7, t)
-		_:  # "bolt" and unmatched: hands raised forward, aiming
-			_lerp_arm(0, 1.3, 0.35, t)
-			_lerp_arm(1, 1.5, 0.35, t)
+	var t := clampf(delta * 8.0, 0.0, 1.0)
+	if style == "gather":
+		# Kneel down and work at the node.
+		rig.position.y = lerpf(rig.position.y, _base_y - 0.35, t)
+		var gi := 0
+		for leg in _legs:
+			leg.rotation.x = lerp_angle(leg.rotation.x, 0.5, t)
+			if gi < _biped_knees.size():
+				_biped_knees[gi].rotation.x = lerp_angle(_biped_knees[gi].rotation.x, -1.7, t)
+			gi += 1
+		_lerp_arm(0, 1.1, 0.7, t)
+		_lerp_arm(1, 1.1, 0.7, t)
+		return
+	var stance: Dictionary = CAST_STANCES.get(style, CAST_STANCES["cast"])
+	_lerp_pose(stance, t)
+	# A slow sway on top of the held stance keeps the caster alive while
+	# the cast bar fills — the arms visibly gather power.
+	if _torso_pivot != null:
+		_torso_pivot.rotation.x += sin(_time * 3.2) * 0.012

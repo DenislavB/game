@@ -308,7 +308,8 @@ func _aggro_tick(delta: float) -> void:
 		velocity.z = 0
 		if _cast_t < 0.0 and _attack_t <= 0.0:
 			_cast_t = float(caster.get("cast_time", 2.0))
-			model.start_cast("bolt")
+			var cschool := str(caster.get("school", "fire"))
+			model.start_cast("cast_" + cschool, UI.school_color(cschool))
 		if _cast_t >= 0.0:
 			_cast_t -= delta
 			if _cast_t < 0.0:

@@ -664,7 +664,7 @@ func use_ability(id: String) -> void:
 		casting_id = id
 		cast_total = cast_time
 		cast_t = cast_time
-		model.start_cast(_anim_style(id, a), UI.school_color(str(a.get("school", ""))))
+		model.start_cast(_cast_stance(id, a), UI.school_color(str(a.get("school", ""))))
 		Events.cast_started.emit(a["name"], cast_time)
 	elif a.has("channel"):
 		_pay_cost(a)
@@ -744,8 +744,22 @@ func _anim_style(id: String, a: Dictionary) -> String:
 	if str(a.get("school", "physical")) == "physical" and a.has("flat"):
 		return _melee_style()
 	if float(a.get("cast", 0)) > 0.0 or a.has("dot") or a.has("flat"):
-		return "bolt"
+		# Long casts earn the heavy two-handed release.
+		return "bolt_big" if float(a.get("cast", 0)) >= 2.2 else "bolt"
 	return "slash"
+
+
+func _cast_stance(id: String, a: Dictionary) -> String:
+	## The pose HELD while the cast bar fills. Generic damage casts get a
+	## school-flavored stance; mechanics (channels, heals, summons) keep
+	## their dedicated ones from _anim_style.
+	var s := _anim_style(id, a)
+	if s in ["bolt", "bolt_big", "burst", "slam_ground"]:
+		var school := str(a.get("school", "arcane"))
+		if school in ["fire", "frost", "arcane", "nature", "shadow", "holy"]:
+			return "cast_" + school
+		return "cast_arcane"
+	return s
 
 
 func _range_bonus(a: Dictionary) -> float:

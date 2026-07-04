@@ -125,6 +125,12 @@ static func ability_tooltip(id: String) -> String:
 		return id
 	var lines: Array = []
 	lines.append("[b][color=#ffd100]%s[/color][/b]" % a["name"])
+	if Game.knows(id) and Game.ability_max_rank(id) > 1:
+		var rank_line := "[color=#8fd4ff]Rank %d / %d[/color]" % [Game.ability_rank(id), Game.ability_max_rank(id)]
+		var nxt := Game.next_rank_level(id)
+		if nxt > 0:
+			rank_line += "  [color=#808080](next rank at level %d)[/color]" % nxt
+		lines.append(rank_line)
 	var cost: Dictionary = a.get("cost", {})
 	var costs: Array = []
 	if cost.has("rage"):

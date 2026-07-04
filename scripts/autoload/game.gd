@@ -38,6 +38,7 @@ func new_character(char_name: String, race_id: String, class_id: String) -> void
 		"inventory": inv,
 		"equipment": {},
 		"known": [],
+		"ranks": {},
 		"action_bar": bar,
 		"talents": {},
 		"quests": {},
@@ -235,15 +236,92 @@ func spend_talent(tree_name: String, talent: Dictionary) -> bool:
 
 
 # ---------------------------------------------------------------- abilities
+#
+# Ability RANKS, classic style: every scaling ability gains a new rank
+# every 8 levels from the level it's first learned at. An ability only
+# scales with your level up to the point where its next rank unlocks —
+# skip a trainer visit and your old rank visibly falls behind, exactly
+# like it used to. Each rank trained also adds a flat +8% power, so
+# buying the upgrade always feels like a real jump.
+
+const RANK_STEP := 8
+const RANK_POWER_BONUS := 0.08
+
 
 func knows(ability_id: String) -> bool:
 	return ability_id in pc["known"]
+
+
+func ability_rank_levels(aid: String) -> Array:
+	## Levels at which each rank of this ability unlocks. Abilities with
+	## no per-level scaling only ever have a single rank.
+	var a: Dictionary = DB.ability(aid)
+	if a.is_empty():
+		return []
+	var base := int(a["level"])
+	if not _ability_scales(a):
+		return [base]
+	var out: Array = []
+	var l := base
+	while l <= Formulas.MAX_LEVEL:
+		out.append(l)
+		l += RANK_STEP
+	return out
+
+
+func _ability_scales(a: Dictionary) -> bool:
+	if a.has("flat_per_level") or a.has("heal_per_level") or a.has("absorb_per_level"):
+		return true
+	if a.get("hot", {}).has("per_level") or a.get("dot", {}).has("per_level"):
+		return true
+	if a.get("cost", {}).has("mana_per_level"):
+		return true
+	return false
+
+
+func ability_rank(aid: String) -> int:
+	if not knows(aid):
+		return 0
+	return int(pc.get("ranks", {}).get(aid, 1))
+
+
+func ability_max_rank(aid: String) -> int:
+	return ability_rank_levels(aid).size()
+
+
+func next_rank_level(aid: String) -> int:
+	## Level at which the NEXT rank unlocks, or -1 if maxed.
+	var levels := ability_rank_levels(aid)
+	var r := ability_rank(aid)
+	if r <= 0 or r >= levels.size():
+		return -1
+	return int(levels[r])
+
+
+func ability_scale(aid: String) -> float:
+	## Effective "levels above base" used for all per-level scaling.
+	## Capped at the unlock level of the next untrained rank.
+	var a: Dictionary = DB.ability(aid)
+	if a.is_empty():
+		return 0.0
+	var cap := int(pc["level"])
+	var nxt := next_rank_level(aid)
+	if nxt > 0:
+		cap = mini(cap, nxt)
+	return maxf(float(cap) - float(a["level"]), 0.0)
+
+
+func rank_power_mult(aid: String) -> float:
+	return 1.0 + RANK_POWER_BONUS * maxi(ability_rank(aid) - 1, 0)
 
 
 func learn_ability(ability_id: String) -> void:
 	if knows(ability_id):
 		return
 	pc["known"].append(ability_id)
+	if not pc.has("ranks"):
+		pc["ranks"] = {}
+	pc["ranks"][ability_id] = 1
 	# Auto-place on the first free action bar slot.
 	for i in ACTION_SLOTS:
 		if pc["action_bar"][i] == null:
@@ -259,29 +337,59 @@ func set_action_slot(i: int, ability_id) -> void:
 
 
 func trainable_abilities() -> Array:
-	## [{id, cost, can_afford, level_ok}] — everything this class can ever train.
+	## Everything this class can train right now or eventually:
+	## [{id, rank, cost, can_afford, level_ok, is_rank}]. rank 1 entries
+	## are brand-new abilities; higher ranks upgrade a known ability.
 	var out: Array = []
 	for aid in DB.class_abilities(pc["class"]):
-		if knows(aid):
-			continue
-		var a: Dictionary = DB.abilities[aid]
-		var cost := Formulas.ability_train_cost(int(a["level"]))
-		out.append({
-			"id": aid, "cost": cost,
-			"can_afford": pc["money"] >= cost,
-			"level_ok": pc["level"] >= int(a["level"])
-		})
+		if not knows(aid):
+			var a: Dictionary = DB.abilities[aid]
+			var cost := Formulas.ability_train_cost(int(a["level"]))
+			out.append({
+				"id": aid, "rank": 1, "cost": cost, "is_rank": false,
+				"can_afford": pc["money"] >= cost,
+				"level_ok": pc["level"] >= int(a["level"])
+			})
+		else:
+			var nxt := next_rank_level(aid)
+			if nxt > 0:
+				var rcost := Formulas.ability_train_cost(nxt)
+				out.append({
+					"id": aid, "rank": ability_rank(aid) + 1, "cost": rcost, "is_rank": true,
+					"can_afford": pc["money"] >= rcost,
+					"level_ok": pc["level"] >= nxt
+				})
 	return out
 
 
 func train_ability(aid: String) -> bool:
 	var a: Dictionary = DB.abilities[aid]
-	var cost := Formulas.ability_train_cost(int(a["level"]))
-	if pc["level"] < int(a["level"]) or not spend_money(cost):
+	if not knows(aid):
+		var cost := Formulas.ability_train_cost(int(a["level"]))
+		if pc["level"] < int(a["level"]) or not spend_money(cost):
+			return false
+		learn_ability(aid)
+		Events.game_message.emit("You have learned %s." % a["name"])
+		SFX.play("quest_done")
+		return true
+	# Train the next rank.
+	var nxt := next_rank_level(aid)
+	if nxt <= 0 or pc["level"] < nxt:
 		return false
-	learn_ability(aid)
-	Events.game_message.emit("You have learned %s." % a["name"])
+	if not spend_money(Formulas.ability_train_cost(nxt)):
+		return false
+	pc["ranks"][aid] = ability_rank(aid) + 1
+	Events.abilities_changed.emit()
+	Events.game_message.emit("You have learned %s (Rank %d)! Your action bar uses it automatically." % [a["name"], ability_rank(aid)])
+	SFX.play("quest_done")
 	return true
+
+
+func has_training_available() -> bool:
+	for e in trainable_abilities():
+		if e["level_ok"]:
+			return true
+	return false
 
 
 # ---------------------------------------------------------------- money & items
@@ -435,6 +543,11 @@ func gain_xp(amount: int) -> void:
 		Events.game_message.emit("You have reached level %d!" % int(pc["level"]))
 		if int(pc["level"]) >= 10 and talent_points_left() > 0:
 			Events.game_message.emit("You have unspent talent points. Press N to open talents.")
+		# Classic dopamine: tell the player the trainer has something new.
+		for e in trainable_abilities():
+			if e["level_ok"]:
+				Events.game_message.emit("New %s available at your class trainer!" % ("ranks" if e["is_rank"] else "abilities"))
+				break
 	Events.player_xp_changed.emit()
 
 
@@ -643,6 +756,16 @@ func load_game() -> bool:
 	pc = parsed
 	current_zone_id = pc.get("zone", "sunscorch_mesa")
 	time_of_day = float(pc.get("tod", 10.0))
+	# Migration: saves from before ability ranks existed get every rank
+	# their level already covers, so nothing they own suddenly gets weaker.
+	if not pc.has("ranks"):
+		pc["ranks"] = {}
+		for aid in pc.get("known", []):
+			var granted := 0
+			for l in ability_rank_levels(str(aid)):
+				if int(l) <= int(pc["level"]):
+					granted += 1
+			pc["ranks"][aid] = maxi(granted, 1)
 	_talent_cache.clear()
 	return true
 

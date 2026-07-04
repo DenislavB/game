@@ -14,6 +14,8 @@ var dialog_win: PanelContainer
 var map_win: PanelContainer
 var map_canvas: Control
 var system_win: PanelContainer
+var spell_win: PanelContainer
+var spell_box: VBoxContainer
 
 var vendor_open := false
 var _vendor_npc: Npc = null
@@ -86,6 +88,9 @@ func _ready() -> void:
 	map_canvas.custom_minimum_size = Vector2(600, 600)
 	_win_content(map_win).add_child(map_canvas)
 
+	spell_win = _make_window("Spellbook  (P)", Vector2(500, 110), Vector2(520, 0))
+	spell_box = _scroll_box(spell_win, 540)
+
 	system_win = _make_window("Menu", Vector2(660, 300), Vector2(280, 0))
 	var sys_box := _win_content(system_win)
 	var resume_b := UI.button("Resume", func(): system_win.visible = false)
@@ -121,7 +126,8 @@ func _ready() -> void:
 		if char_win.visible: _rebuild_character())
 	Events.abilities_changed.connect(func():
 		if char_win.visible: _rebuild_character()
-		if trainer_win.visible: _rebuild_trainer())
+		if trainer_win.visible: _rebuild_trainer()
+		if spell_win.visible: _rebuild_spellbook())
 	Events.talents_changed.connect(func():
 		if talent_win.visible: _rebuild_talents())
 	Events.quest_log_changed.connect(func():
@@ -181,14 +187,14 @@ func _clear(box: Container) -> void:
 
 
 func any_open() -> bool:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win, spell_win]:
 		if w.visible:
 			return true
 	return false
 
 
 func close_all() -> void:
-	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win]:
+	for w in [bags_win, char_win, quest_win, talent_win, vendor_win, trainer_win, loot_win, dialog_win, map_win, system_win, spell_win]:
 		w.visible = false
 	vendor_open = false
 	Events.close_loot.emit()
@@ -215,6 +221,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_rebuild_talents()
 	elif event.is_action_pressed("toggle_map"):
 		map_win.visible = not map_win.visible
+	elif event.is_action_pressed("toggle_spellbook"):
+		spell_win.visible = not spell_win.visible
+		if spell_win.visible:
+			_rebuild_spellbook()
 	elif event.is_action_pressed("ui_escape"):
 		if any_open():
 			close_all()
@@ -474,9 +484,13 @@ func _rebuild_trainer() -> void:
 	for entry in Game.trainable_abilities():
 		any = true
 		var a := DB.ability(entry["id"])
-		var line := "%s  (Level %d)  —  %s" % [a["name"], int(a["level"]), Formulas.money_string(entry["cost"])]
-		var b := UI.button(line)
 		var aid := str(entry["id"])
+		var is_rank: bool = entry["is_rank"]
+		var unlock_level: int = Game.next_rank_level(aid) if is_rank else int(a["level"])
+		var label: String = a["name"] + ("  Rank %d" % int(entry["rank"]) if is_rank else "")
+		var b := UI.button("%s  (Level %d)  —  %s" % [label, unlock_level, Formulas.money_string(entry["cost"])])
+		if is_rank:
+			b.add_theme_color_override("font_color", Color(0.55, 0.85, 1.0))
 		if not entry["level_ok"]:
 			b.disabled = true
 			b.text += "  [too low level]"
@@ -492,6 +506,53 @@ func _rebuild_trainer() -> void:
 	if not any:
 		trainer_box.add_child(UI.label("\"I have nothing more to teach you... for now.\"", 13))
 	trainer_box.add_child(UI.label("Your money: %s" % Formulas.money_string(int(Game.pc["money"])), 13, UI.COL_GOLD))
+
+
+# ---------------------------------------------------------------- spellbook
+
+func _rebuild_spellbook() -> void:
+	## Classic spellbook: every ability of your class in level order —
+	## known ones with their current rank (and a gold nudge when the
+	## trainer has the next rank waiting), future ones grayed out.
+	_clear(spell_box)
+	var cls: Dictionary = DB.classes[Game.pc["class"]]
+	spell_box.add_child(UI.label("%s Spellbook" % cls["name"], 15, UI.COL_GOLD))
+	spell_box.add_child(UI.label("Left-click to use, right-click to place on the action bar.", 12, Color(0.65, 0.65, 0.65)))
+	spell_box.add_child(HSeparator.new())
+	var ids: Array = DB.class_abilities(Game.pc["class"])
+	# The racial belongs in the book too.
+	var racial: String = str(DB.races[Game.pc["race"]]["racial"]["id"])
+	if racial != "":
+		ids.append(racial)
+	for aid_v in ids:
+		var aid := str(aid_v)
+		var a := DB.ability(aid)
+		if a.is_empty():
+			continue
+		if Game.knows(aid):
+			var rank := Game.ability_rank(aid)
+			var max_rank := Game.ability_max_rank(aid)
+			var nxt := Game.next_rank_level(aid)
+			var line: String = a["name"]
+			if max_rank > 1:
+				line += "   —   Rank %d / %d" % [rank, max_rank]
+			var b := UI.button(line)
+			if nxt > 0 and int(Game.pc["level"]) >= nxt:
+				b.text += "   [Rank %d ready at trainer!]" % (rank + 1)
+				b.add_theme_color_override("font_color", UI.COL_GOLD)
+			var aid2 := aid
+			b.gui_input.connect(func(ev):
+				if ev is InputEventMouseButton and ev.pressed:
+					if ev.button_index == MOUSE_BUTTON_LEFT:
+						if Game.player != null:
+							Game.player.use_ability(aid2)
+					elif ev.button_index == MOUSE_BUTTON_RIGHT:
+						_add_to_bar(aid2))
+			b.mouse_entered.connect(func(): Hud.inst.show_tooltip(UI.ability_tooltip(aid2)))
+			b.mouse_exited.connect(func(): Hud.inst.hide_tooltip())
+			spell_box.add_child(b)
+		else:
+			spell_box.add_child(UI.label("%s   (learn at level %d)" % [a["name"], int(a["level"])], 13, Color(0.45, 0.45, 0.45)))
 
 
 # ---------------------------------------------------------------- loot

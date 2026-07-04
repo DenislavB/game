@@ -774,7 +774,9 @@ func _ability_cost(a: Dictionary) -> float:
 	if cost.has("rage"):
 		return maxf(float(cost["rage"]) + Game.talent_mod("ability_cost", { "ability": _aid(a) }), 0.0)
 	if cost.has("mana"):
-		var c := float(cost["mana"]) + float(cost.get("mana_per_level", 0)) * maxf(level - int(a["level"]), 0)
+		# Mana cost scales with the ability's trained rank, not raw level —
+		# an old rank stays cheap, the shiny new one costs more.
+		var c := float(cost["mana"]) + float(cost.get("mana_per_level", 0)) * Game.ability_scale(_aid(a))
 		c *= 1.0 - Game.talent_mod("cost_reduction_pct", { "school": a.get("school", "") })
 		if a.has("min_range"):
 			c *= 1.0 - Game.talent_mod("cost_reduction_pct", { "school": "all_shots" })
@@ -903,7 +905,7 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 	if style != "":
 		model.play_attack(style)
 	var mob: Mob = target as Mob if target is Mob else null
-	var lvl_scale := maxf(level - int(a["level"]), 0)
+	var lvl_scale := Game.ability_scale(id)
 	match str(a.get("special", "")):
 		"charge":
 			_do_charge(mob, a)
@@ -997,7 +999,7 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 	if a.has("buff"):
 		_apply_self_buff(id, a)
 	if a.has("absorb"):
-		var amount := float(a["absorb"]) + float(a.get("absorb_per_level", 0)) * maxf(level - int(a["level"]), 0)
+		var amount := (float(a["absorb"]) + float(a.get("absorb_per_level", 0)) * Game.ability_scale(id)) * Game.rank_power_mult(id)
 		apply_buff({ "id": id, "name": a["name"], "kind": "buff",
 			"duration": float(a.get("buff_duration", 60)), "absorb": amount })
 	# Direct heals and heal-over-time (Holy Light, Rejuvenation, Siphon Life...)
@@ -1006,7 +1008,8 @@ func _resolve_ability(id: String, a: Dictionary) -> void:
 	if a.has("hot"):
 		var hot: Dictionary = a["hot"]
 		var tick := float(hot["tick"]) + float(hot.get("per_level", 0)) * lvl_scale
-		tick *= 1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })
+		tick *= (1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })) \
+			* Game.rank_power_mult(id)
 		apply_buff({ "id": id + "_hot", "name": a["name"], "kind": "buff",
 			"duration": float(hot.get("duration", 12)),
 			"hot": { "tick": tick, "interval": float(hot.get("interval", 3)) } })
@@ -1036,8 +1039,8 @@ func _apply_ability_to(mob: Mob, id: String, a: Dictionary) -> void:
 	if mob == null or not is_instance_valid(mob) or not mob.alive:
 		return
 	var school: String = a.get("school", "physical")
-	var lvl_scale := maxf(level - int(a["level"]), 0)
-	var dmg_mult := 1.0 + Game.talent_mod("ability_damage_pct", { "ability": id })
+	var lvl_scale := Game.ability_scale(id)
+	var dmg_mult := (1.0 + Game.talent_mod("ability_damage_pct", { "ability": id })) * Game.rank_power_mult(id)
 
 	if a.has("weapon_pct") or a.has("flat"):
 		var flat := 0.0
@@ -1123,8 +1126,8 @@ func _spell_hit(mob: Mob, _id: String, a: Dictionary, flat: float, school: Strin
 
 func _apply_self_buff(id: String, a: Dictionary) -> void:
 	var b: Dictionary = a["buff"]
-	var amount := float(b.get("amount", 0)) + float(b.get("per_level", 0)) * maxf(level - int(a["level"]), 0)
-	amount *= 1.0 + Game.talent_mod("ability_power_pct", { "ability": id })
+	var amount := float(b.get("amount", 0)) + float(b.get("per_level", 0)) * Game.ability_scale(id)
+	amount *= (1.0 + Game.talent_mod("ability_power_pct", { "ability": id })) * Game.rank_power_mult(id)
 	# Exclusive groups: one aspect, one seal, one blessing, one aura at a time.
 	var excl: String = str(b.get("exclusive", "aspect" if b.get("aspect", false) else ""))
 	if excl != "":
@@ -1142,7 +1145,8 @@ func _heal_self(id: String, a: Dictionary, lvl_scale: float) -> void:
 	var amount := randf_range(float(a["heal"][0]), float(a["heal"][1])) \
 		+ float(a.get("heal_per_level", 0)) * lvl_scale \
 		+ Formulas.spell_bonus(s["int"], level) * 0.8
-	amount *= 1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })
+	amount *= (1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })) \
+		* Game.rank_power_mult(id)
 	if randf() * 100.0 < Game.crit_pct("spell"):
 		amount *= 1.5
 	SFX.play("heal")
@@ -1202,7 +1206,7 @@ func _channel_tick(id: String, a: Dictionary) -> void:
 			return
 		"mend_pet":
 			if pet != null and is_instance_valid(pet) and pet.alive:
-				pet.heal(float(a.get("heal_tick", 8)) + float(a.get("heal_per_level", 0)) * maxf(level - int(a["level"]), 0))
+				pet.heal((float(a.get("heal_tick", 8)) + float(a.get("heal_per_level", 0)) * Game.ability_scale(id)) * Game.rank_power_mult(id))
 			return
 		"tranquility":
 			heal(hp_max * 0.1 * (1.0 + Game.talent_mod("heal_power_pct")))
@@ -1217,9 +1221,10 @@ func _channel_tick(id: String, a: Dictionary) -> void:
 				Events.combat_text.emit(mob2.global_position + Vector3(0, 2.2, 0), "Resist", "miss")
 				return
 			var drain := randf_range(float(a["flat"][0]), float(a["flat"][1])) \
-				+ float(a.get("flat_per_level", 0)) * maxf(level - int(a["level"]), 0)
-			drain *= 1.0 + Game.talent_mod("ability_damage_pct", { "ability": id }) \
-				+ Game.talent_mod("school_damage_pct", { "school": "shadow" }) + _spell_wide_mult()
+				+ float(a.get("flat_per_level", 0)) * Game.ability_scale(id)
+			drain *= (1.0 + Game.talent_mod("ability_damage_pct", { "ability": id }) \
+				+ Game.talent_mod("school_damage_pct", { "school": "shadow" }) + _spell_wide_mult()) \
+				* Game.rank_power_mult(id)
 			# The stolen life visibly flows from the victim to you.
 			FX.bolt(get_parent(), mob2.global_position + Vector3(0, 1.2, 0),
 				global_position + Vector3(0, 1.4, 0), Color(0.35, 0.9, 0.35))
@@ -1232,9 +1237,9 @@ func _channel_tick(id: String, a: Dictionary) -> void:
 	if mob == null or not is_instance_valid(mob) or not mob.alive:
 		_cancel_cast()
 		return
-	var lvl_scale := maxf(level - int(a["level"]), 0)
+	var lvl_scale := Game.ability_scale(id)
 	var flat := randf_range(float(a["flat"][0]), float(a["flat"][1])) + float(a.get("flat_per_level", 0)) * lvl_scale
-	flat *= 1.0 + Game.talent_mod("ability_damage_pct", { "ability": id })
+	flat *= (1.0 + Game.talent_mod("ability_damage_pct", { "ability": id })) * Game.rank_power_mult(id)
 	_spell_hit(mob, id, a, flat, a.get("school", "arcane"))
 
 

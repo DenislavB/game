@@ -45,7 +45,8 @@
     "req_level": 1,
     "armor": 12,
     "value": 15,
-    "color": "#8a6a48"
+    "color": "#8a6a48",
+    "armor_class": "mail"
   },
   "recruits_pants": {
     "name": "Recruit's Pants",
@@ -54,7 +55,8 @@
     "req_level": 1,
     "armor": 10,
     "value": 12,
-    "color": "#6a5238"
+    "color": "#6a5238",
+    "armor_class": "mail"
   },
   "recruits_boots": {
     "name": "Recruit's Boots",
@@ -63,7 +65,8 @@
     "req_level": 1,
     "armor": 7,
     "value": 10,
-    "color": "#4a3826"
+    "color": "#4a3826",
+    "armor_class": "mail"
   },
   "apprentice_robe": {
     "name": "Apprentice Robe",
@@ -72,7 +75,8 @@
     "req_level": 1,
     "armor": 6,
     "value": 15,
-    "color": "#5a4a8a"
+    "color": "#5a4a8a",
+    "armor_class": "cloth"
   },
   "apprentice_pants": {
     "name": "Apprentice Pants",
@@ -81,7 +85,8 @@
     "req_level": 1,
     "armor": 5,
     "value": 12,
-    "color": "#3e3462"
+    "color": "#3e3462",
+    "armor_class": "cloth"
   },
   "apprentice_boots": {
     "name": "Apprentice Boots",
@@ -90,7 +95,8 @@
     "req_level": 1,
     "armor": 4,
     "value": 10,
-    "color": "#3a3050"
+    "color": "#3a3050",
+    "armor_class": "cloth"
   },
   "scouts_tunic": {
     "name": "Scout's Tunic",
@@ -99,7 +105,8 @@
     "req_level": 1,
     "armor": 9,
     "value": 15,
-    "color": "#5a6e3a"
+    "color": "#5a6e3a",
+    "armor_class": "leather"
   },
   "scouts_pants": {
     "name": "Scout's Pants",
@@ -108,7 +115,8 @@
     "req_level": 1,
     "armor": 8,
     "value": 12,
-    "color": "#48582f"
+    "color": "#48582f",
+    "armor_class": "leather"
   },
   "scouts_boots": {
     "name": "Scout's Boots",
@@ -117,7 +125,8 @@
     "req_level": 1,
     "armor": 5,
     "value": 10,
-    "color": "#3c4826"
+    "color": "#3c4826",
+    "armor_class": "leather"
   },
   "tough_jerky": {
     "name": "Tough Jerky",
@@ -656,7 +665,8 @@
     "speed": 3.3,
     "stats": {
       "str": 10,
-      "sta": 5
+      "sta": 5,
+      "ap": 12
     },
     "value": 6500,
     "desc": "Taken from the warlord of the Dustplains."
@@ -674,7 +684,8 @@
     "speed": 3.2,
     "stats": {
       "int": 14,
-      "spi": 7
+      "spi": 7,
+      "sp": 10
     },
     "value": 6500
   },
@@ -691,7 +702,9 @@
     "speed": 2.7,
     "stats": {
       "agi": 13,
-      "sta": 4
+      "sta": 4,
+      "ap": 10,
+      "crit": 1.0
     },
     "value": 6500
   },
@@ -705,7 +718,8 @@
       "sta": 1
     },
     "value": 140,
-    "color": "#7a5a3c"
+    "color": "#7a5a3c",
+    "armor_class": "leather"
   },
   "sunscorched_leggings": {
     "name": "Sunscorched Leggings",
@@ -718,7 +732,8 @@
       "sta": 2
     },
     "value": 380,
-    "color": "#9a5a30"
+    "color": "#9a5a30",
+    "armor_class": "leather"
   },
   "vale_walker_boots": {
     "name": "Vale Walker Boots",
@@ -731,7 +746,8 @@
       "spi": 1
     },
     "value": 380,
-    "color": "#5a6e42"
+    "color": "#5a6e42",
+    "armor_class": "leather"
   },
   "initiate_cowl": {
     "name": "Initiate's Cowl",
@@ -744,7 +760,8 @@
       "spi": 2
     },
     "value": 420,
-    "color": "#6a5a9a"
+    "color": "#6a5a9a",
+    "armor_class": "cloth"
   },
   "grunt_shoulderguards": {
     "name": "Grunt's Shoulderguards",
@@ -757,7 +774,8 @@
       "sta": 2
     },
     "value": 500,
-    "color": "#7a4a2e"
+    "color": "#7a4a2e",
+    "armor_class": "mail"
   },
   "woven_gloves": {
     "name": "Woven Gloves",
@@ -769,7 +787,8 @@
       "int": 2
     },
     "value": 160,
-    "color": "#8a80b0"
+    "color": "#8a80b0",
+    "armor_class": "cloth"
   },
   "trackers_gloves": {
     "name": "Tracker's Gloves",
@@ -781,7 +800,8 @@
       "agi": 3
     },
     "value": 420,
-    "color": "#6a5838"
+    "color": "#6a5838",
+    "armor_class": "leather"
   },
   "millbrook_belt": {
     "name": "Millbrook Belt",
@@ -793,7 +813,8 @@
       "sta": 1
     },
     "value": 130,
-    "color": "#6a5030"
+    "color": "#6a5030",
+    "armor_class": "leather"
   },
   "toughened_belt": {
     "name": "Toughened Leather Belt",
@@ -805,7 +826,8 @@
       "sta": 3
     },
     "value": 520,
-    "color": "#4e3c26"
+    "color": "#4e3c26",
+    "armor_class": "leather"
   },
   "abbey_robe": {
     "name": "Abbey Acolyte Robe",
@@ -818,7 +840,8 @@
       "spi": 2
     },
     "value": 440,
-    "color": "#c8c0a0"
+    "color": "#c8c0a0",
+    "armor_class": "cloth"
   },
   "wolfrider_tunic": {
     "name": "Wolfrider's Tunic",
@@ -831,7 +854,8 @@
       "sta": 3
     },
     "value": 560,
-    "color": "#4e4252"
+    "color": "#4e4252",
+    "armor_class": "leather"
   },
   "plainsrunner_leggings": {
     "name": "Plainsrunner Leggings",
@@ -844,7 +868,8 @@
       "sta": 3
     },
     "value": 1400,
-    "color": "#8a7444"
+    "color": "#8a7444",
+    "armor_class": "leather"
   },
   "centaur_hide_cloak": {
     "name": "Kharvani Hide Shoulders",
@@ -857,7 +882,8 @@
       "str": 3
     },
     "value": 1600,
-    "color": "#6e5232"
+    "color": "#6e5232",
+    "armor_class": "leather"
   },
   "oasis_treads": {
     "name": "Oasis Treads",
@@ -870,7 +896,8 @@
       "int": 3
     },
     "value": 1400,
-    "color": "#4a7a72"
+    "color": "#4a7a72",
+    "armor_class": "leather"
   },
   "dustwind_helm": {
     "name": "Dustwind Helm",
@@ -883,7 +910,8 @@
       "str": 4
     },
     "value": 2100,
-    "color": "#8a7050"
+    "color": "#8a7050",
+    "armor_class": "mail"
   },
   "sages_circlet": {
     "name": "Sage's Circlet",
@@ -896,7 +924,8 @@
       "spi": 4
     },
     "value": 2100,
-    "color": "#b09ac8"
+    "color": "#b09ac8",
+    "armor_class": "cloth"
   },
   "warlords_chestplate": {
     "name": "Warlord's Chestplate",
@@ -906,10 +935,12 @@
     "armor": 90,
     "stats": {
       "str": 8,
-      "sta": 8
+      "sta": 8,
+      "ap": 6
     },
     "value": 5200,
-    "color": "#606874"
+    "color": "#606874",
+    "armor_class": "plate"
   },
   "runeweave_robe": {
     "name": "Runeweave Robe",
@@ -920,10 +951,12 @@
     "stats": {
       "int": 10,
       "spi": 6,
-      "sta": 4
+      "sta": 4,
+      "sp": 8
     },
     "value": 5200,
-    "color": "#7a3a5a"
+    "color": "#7a3a5a",
+    "armor_class": "cloth"
   },
   "beastlord_spaulders": {
     "name": "Beastlord Spaulders",
@@ -933,10 +966,13 @@
     "armor": 55,
     "stats": {
       "agi": 8,
-      "sta": 6
+      "sta": 6,
+      "ap": 6,
+      "crit": 0.5
     },
     "value": 5200,
-    "color": "#8a5a28"
+    "color": "#8a5a28",
+    "armor_class": "leather"
   },
   "old_moonkin_feather": {
     "name": "Moon-touched Feather",
@@ -1252,7 +1288,9 @@
     "stats": {
       "str": 12,
       "agi": 8,
-      "sta": 6
+      "sta": 6,
+      "ap": 14,
+      "crit": 1.0
     },
     "value": 21000,
     "desc": "Pried from the captain's cold, wet hand."
@@ -1271,7 +1309,8 @@
     "stats": {
       "int": 18,
       "spi": 9,
-      "sta": 5
+      "sta": 5,
+      "sp": 14
     },
     "value": 21000
   },
@@ -1288,7 +1327,9 @@
     "speed": 2.7,
     "stats": {
       "agi": 16,
-      "sta": 6
+      "sta": 6,
+      "ap": 12,
+      "crit": 1.5
     },
     "value": 21000
   },
@@ -1303,7 +1344,8 @@
       "sta": 5
     },
     "value": 7200,
-    "color": "#3f6e2f"
+    "color": "#3f6e2f",
+    "armor_class": "leather"
   },
   "tidewalker_boots": {
     "name": "Tidewalker Boots",
@@ -1316,7 +1358,8 @@
       "int": 4
     },
     "value": 6800,
-    "color": "#3a7a8a"
+    "color": "#3a7a8a",
+    "armor_class": "leather"
   },
   "corsair_sash": {
     "name": "Corsair Sash",
@@ -1329,7 +1372,8 @@
       "sta": 4
     },
     "value": 7000,
-    "color": "#8a2f3a"
+    "color": "#8a2f3a",
+    "armor_class": "leather"
   },
   "bloodpalm_shoulderpads": {
     "name": "Bloodpalm Shoulderpads",
@@ -1342,7 +1386,8 @@
       "sta": 5
     },
     "value": 7600,
-    "color": "#5a8aa0"
+    "color": "#5a8aa0",
+    "armor_class": "mail"
   },
   "coral_helm": {
     "name": "Coral Helm",
@@ -1355,7 +1400,8 @@
       "str": 5
     },
     "value": 8400,
-    "color": "#d87a6a"
+    "color": "#d87a6a",
+    "armor_class": "mail"
   },
   "hexweave_gloves": {
     "name": "Hexweave Gloves",
@@ -1368,7 +1414,8 @@
       "spi": 4
     },
     "value": 8000,
-    "color": "#4a4a8a"
+    "color": "#4a4a8a",
+    "armor_class": "cloth"
   },
   "saltfang_leggings": {
     "name": "Saltfang Leggings",
@@ -1381,7 +1428,8 @@
       "sta": 6
     },
     "value": 9200,
-    "color": "#6a3a3a"
+    "color": "#6a3a3a",
+    "armor_class": "leather"
   },
   "tidelord_breastplate": {
     "name": "Tidelord Breastplate",
@@ -1391,10 +1439,12 @@
     "armor": 130,
     "stats": {
       "str": 12,
-      "sta": 11
+      "sta": 11,
+      "ap": 8
     },
     "value": 18000,
-    "color": "#3a5a7a"
+    "color": "#3a5a7a",
+    "armor_class": "plate"
   },
   "siren_circlet": {
     "name": "Siren's Circlet",
@@ -1405,9 +1455,70 @@
     "stats": {
       "int": 14,
       "spi": 8,
-      "sta": 5
+      "sta": 5,
+      "sp": 10,
+      "crit": 0.5
     },
     "value": 17000,
-    "color": "#7ad8d0"
+    "color": "#7ad8d0",
+    "armor_class": "cloth"
+  },
+  "duskfall_edge": {
+    "name": "Duskfall Edge",
+    "slot": "mainhand",
+    "wtype": "sword",
+    "quality": "epic",
+    "req_level": 24,
+    "dmg": [
+      22,
+      41
+    ],
+    "speed": 2.7,
+    "stats": {
+      "str": 6,
+      "sta": 4,
+      "ap": 18,
+      "crit": 1.0
+    },
+    "value": 4200,
+    "desc": "The blade drinks the light around it.",
+    "world_drop": true
+  },
+  "stormheart_greatstaff": {
+    "name": "Stormheart Greatstaff",
+    "slot": "mainhand",
+    "wtype": "staff",
+    "quality": "epic",
+    "req_level": 24,
+    "dmg": [
+      16,
+      30
+    ],
+    "speed": 3.2,
+    "stats": {
+      "int": 8,
+      "spi": 5,
+      "sp": 22
+    },
+    "value": 4200,
+    "desc": "Thunder sleeps in the wood.",
+    "world_drop": true
+  },
+  "wyrmhide_mantle": {
+    "name": "Wyrmhide Mantle",
+    "slot": "shoulder",
+    "quality": "epic",
+    "req_level": 25,
+    "armor": 42,
+    "armor_class": "leather",
+    "stats": {
+      "agi": 8,
+      "sta": 6,
+      "crit": 1.0
+    },
+    "value": 3600,
+    "color": "#7a3a5a",
+    "desc": "Scaled hide of something best left unnamed.",
+    "world_drop": true
   }
 }

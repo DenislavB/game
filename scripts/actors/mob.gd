@@ -448,6 +448,16 @@ func _roll_loot() -> void:
 		if entry.has("count"):
 			count = randi_range(int(entry["count"][0]), int(entry["count"][1]))
 		loot.append({ "id": item_id, "count": count })
+	# World drops: every kill has a sliver of a chance at a level-range
+	# epic. Rare enough to stay legendary, real enough to chase.
+	if randf() < (0.01 if elite else 0.002):
+		var candidates: Array = []
+		for iid in DB.items:
+			var it: Dictionary = DB.items[iid]
+			if it.get("world_drop", false) and absi(int(it.get("req_level", 1)) - level) <= 6:
+				candidates.append(iid)
+		if not candidates.is_empty():
+			loot.append({ "id": candidates[randi() % candidates.size()], "count": 1 })
 
 
 func has_loot() -> bool:

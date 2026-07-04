@@ -310,7 +310,15 @@ func _rebuild_character() -> void:
 		char_box.add_child(UI.label("%s: %d" % [stat_names[k], int(s[k])], 13))
 	char_box.add_child(UI.label("Armor: %d" % int(Game.armor()), 13))
 	char_box.add_child(UI.label("Attack Power: %d  (Ranged: %d)" % [int(Game.attack_power()), int(Game.ranged_power())], 13))
+	if Game.spell_power() > 0:
+		char_box.add_child(UI.label("Spell Power: +%d" % int(Game.spell_power()), 13, Color(0.55, 0.75, 1.0)))
 	char_box.add_child(UI.label("Crit: %.1f%%   Dodge: %.1f%%" % [Game.crit_pct("melee"), Game.dodge_pct()], 13))
+	var cls_armor: Array = DB.classes[Game.pc["class"]].get("armor", [])
+	if not cls_armor.is_empty():
+		var pretty: Array = []
+		for ac in cls_armor:
+			pretty.append(str(ac).capitalize())
+		char_box.add_child(UI.label("Can wear: %s" % ", ".join(pretty), 12, Color(0.65, 0.65, 0.65)))
 
 	char_box.add_child(HSeparator.new())
 	char_box.add_child(UI.label("Professions", 14, UI.COL_GOLD))

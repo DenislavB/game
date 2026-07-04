@@ -167,18 +167,31 @@ static func item_tooltip(id: String) -> String:
 	lines.append("[b][color=#%s]%s[/color][/b]" % [c.to_html(false), it["name"]])
 	var slot: String = it.get("slot", "none")
 	if slot != "none":
-		lines.append("[color=#c8c8c8]%s[/color]" % slot.capitalize())
+		var kind_bits: Array = [slot.capitalize()]
+		if it.has("armor_class"):
+			kind_bits.append(str(it["armor_class"]).capitalize())
+		if it.has("wtype"):
+			kind_bits.append(str(it["wtype"]).capitalize())
+		lines.append("[color=#c8c8c8]%s[/color]" % "  —  ".join(kind_bits))
 	if it.has("dmg"):
 		var dps := (float(it["dmg"][0]) + float(it["dmg"][1])) * 0.5 / float(it["speed"])
 		lines.append("%d - %d Damage, Speed %.1f  [color=#c8c8c8](%.1f dps)[/color]" % [int(it["dmg"][0]), int(it["dmg"][1]), float(it["speed"]), dps])
 	if it.has("armor"):
 		lines.append("%d Armor" % int(it["armor"]))
+	var names := { "str": "Strength", "agi": "Agility", "sta": "Stamina",
+		"int": "Intellect", "spi": "Spirit", "ap": "Attack Power",
+		"sp": "Spell Power", "crit": "Crit Chance" }
 	for k in it.get("stats", {}):
-		var names := { "str": "Strength", "agi": "Agility", "sta": "Stamina", "int": "Intellect", "spi": "Spirit" }
-		lines.append("[color=#40c040]+%d %s[/color]" % [int(it["stats"][k]), names.get(k, k)])
+		var v: float = float(it["stats"][k])
+		if k == "crit":
+			lines.append("[color=#40c040]+%.1f%% %s[/color]" % [v, names[k]])
+		else:
+			lines.append("[color=#40c040]+%d %s[/color]" % [int(v), names.get(k, k)])
 	if int(it.get("req_level", 1)) > 1:
 		var ok: bool = int(Game.pc.get("level", 60)) >= int(it["req_level"])
 		lines.append("[color=#%s]Requires Level %d[/color]" % ["c8c8c8" if ok else "ff4040", int(it["req_level"])])
+	if not Game.pc.is_empty() and (it.has("armor_class") or it.has("wtype")) and not Game.class_can_equip(it):
+		lines.append("[color=#ff4040]Your class cannot use this.[/color]")
 	if it.has("desc"):
 		lines.append("[color=#ffd100]%s[/color]" % it["desc"])
 	if int(it.get("value", 0)) > 0:

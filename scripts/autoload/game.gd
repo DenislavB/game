@@ -109,14 +109,14 @@ func resource_type() -> String:
 
 func attack_power() -> float:
 	var s := stats()
-	var ap := Formulas.melee_attack_power(s["str"], pc["level"])
+	var ap := Formulas.melee_attack_power(s["str"], pc["level"]) + equip_stat("ap")
 	ap *= 1.0 + talent_mod("attack_power_pct")
 	return ap
 
 
 func ranged_power() -> float:
 	var s := stats()
-	return Formulas.ranged_attack_power(s["agi"], pc["level"])
+	return Formulas.ranged_attack_power(s["agi"], pc["level"]) + equip_stat("ap")
 
 
 func armor() -> float:
@@ -141,7 +141,7 @@ func crit_pct(kind: String) -> float:
 			c += talent_mod("ranged_crit_pct")
 		"spell":
 			c = Formulas.BASE_CRIT + s["int"] * 0.02 + talent_mod("crit_pct")
-	return c
+	return c + equip_stat("crit")
 
 
 func dodge_pct() -> float:
@@ -393,6 +393,48 @@ func has_training_available() -> bool:
 
 
 # ---------------------------------------------------------------- money & items
+#
+# ITEMIZATION PHILOSOPHY (classic-era rules, kept on purpose):
+#  * Armor classes matter. Cloth < Leather < Mail < Plate, and each class
+#    can only wear what its fantasy allows (mage in cloth, warrior in
+#    anything). An upgrade you cannot wear should still feel like loot —
+#    sell it, bank it, or reroll.
+#  * Weapon types matter. A mace paladin cannot swing a bow. Weapon type
+#    also drives the swing animation, so restrictions read on screen.
+#  * Quality is a promise: Poor (gray, vendor trash) -> Common (white,
+#    baseline) -> Uncommon (green, +primary stats) -> Rare (blue,
+#    +secondary stats: "ap"/"sp"/"crit") -> Epic (purple, world drops,
+#    build-changing). Color is never decoration; it prices the drop.
+#  * Primary stats stay simple and legible: Strength (melee power),
+#    Agility (crit/dodge/ranged), Stamina (health), Intellect (mana and
+#    spell power), Spirit (regen). Secondary stats are rare, small, and
+#    only on blue+ gear so every point feels earned.
+
+
+func class_can_equip(it: Dictionary) -> bool:
+	## Armor class + weapon type restrictions, driven by classes.json.
+	var cls: Dictionary = DB.classes[pc["class"]]
+	if it.has("armor_class"):
+		var allowed: Array = cls.get("armor", [])
+		if not allowed.is_empty() and not (str(it["armor_class"]) in allowed):
+			return false
+	if it.has("wtype"):
+		var weapons: Array = cls.get("weapons", [])
+		if not weapons.is_empty() and not (str(it["wtype"]) in weapons):
+			return false
+	return true
+
+
+func equip_stat(key: String) -> float:
+	## Sum of a secondary stat ("ap", "sp", "crit") across equipped gear.
+	var total := 0.0
+	for slot in pc["equipment"]:
+		total += float(DB.item(pc["equipment"][slot]).get("stats", {}).get(key, 0))
+	return total
+
+
+func spell_power() -> float:
+	return equip_stat("sp")
 
 func add_money(copper: int) -> void:
 	pc["money"] += copper
@@ -482,6 +524,12 @@ func equip_from_bag(i: int) -> void:
 		return
 	if int(it.get("req_level", 1)) > int(pc["level"]):
 		Events.error_message.emit("You must reach level %d to use that." % int(it["req_level"]))
+		return
+	if not class_can_equip(it):
+		if it.has("wtype"):
+			Events.error_message.emit("%ss cannot use %s weapons." % [DB.classes[pc["class"]]["name"], str(it["wtype"]).capitalize()])
+		else:
+			Events.error_message.emit("%ss cannot wear %s armor." % [DB.classes[pc["class"]]["name"], str(it.get("armor_class", "that")).capitalize()])
 		return
 	var old: String = pc["equipment"].get(slot, "")
 	pc["equipment"][slot] = e["id"]

@@ -1109,7 +1109,7 @@ func _spell_hit(mob: Mob, _id: String, a: Dictionary, flat: float, school: Strin
 		Events.combat_text.emit(mob.global_position + Vector3(0, 2.2, 0), "Resist", "miss")
 		return
 	var s := Game.stats()
-	var dmg := flat + Formulas.spell_bonus(s["int"], level)
+	var dmg := flat + Formulas.spell_bonus(s["int"], level) + Game.spell_power()
 	dmg *= 1.0 + Game.talent_mod("school_damage_pct", { "school": school }) + _spell_wide_mult()
 	dmg *= _global_damage_mult(mob)
 	var crit := Game.crit_pct("spell") + Game.talent_mod("school_crit_pct", { "school": school })
@@ -1144,7 +1144,7 @@ func _heal_self(id: String, a: Dictionary, lvl_scale: float) -> void:
 	var s := Game.stats()
 	var amount := randf_range(float(a["heal"][0]), float(a["heal"][1])) \
 		+ float(a.get("heal_per_level", 0)) * lvl_scale \
-		+ Formulas.spell_bonus(s["int"], level) * 0.8
+		+ (Formulas.spell_bonus(s["int"], level) + Game.spell_power()) * 0.8
 	amount *= (1.0 + Game.talent_mod("heal_power_pct") + Game.talent_mod("ability_damage_pct", { "ability": id })) \
 		* Game.rank_power_mult(id)
 	if randf() * 100.0 < Game.crit_pct("spell"):

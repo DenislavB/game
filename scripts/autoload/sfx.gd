@@ -24,7 +24,7 @@ func _ready() -> void:
 
 
 func play(sound: String, volume_db: float = 0.0) -> void:
-	var stream := _get(sound)
+	var stream := _build_stream(sound)
 	if stream == null:
 		return
 	var p: AudioStreamPlayer = _players[_next]
@@ -35,7 +35,7 @@ func play(sound: String, volume_db: float = 0.0) -> void:
 
 
 func play_at(sound: String, pos: Vector3, parent: Node = null) -> void:
-	var stream := _get(sound)
+	var stream := _build_stream(sound)
 	if stream == null:
 		return
 	if parent == null or not is_instance_valid(parent):
@@ -53,7 +53,7 @@ func play_at(sound: String, pos: Vector3, parent: Node = null) -> void:
 
 # ---------------------------------------------------------------- synthesis
 
-func _get(sound: String) -> AudioStreamWAV:
+func _build_stream(sound: String) -> AudioStreamWAV:
 	if _cache.has(sound):
 		return _cache[sound]
 	var samples: PackedFloat32Array

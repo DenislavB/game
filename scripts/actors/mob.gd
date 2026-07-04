@@ -83,7 +83,8 @@ func setup(id: String, mob_level: int, center: Vector2, r: float, respawn: float
 		var weapons := ["sword", "axe", "mace"]
 		var wtype: String = weapons[hash(id) % weapons.size()]
 		model.set_weapon(wtype)
-		_swing_style = { "sword": "slash", "axe": "chop", "mace": "smash" }.get(wtype, "slash")
+		# Humanoid mobs wield one-handers, so they use the left-shoulder slice.
+		_swing_style = "slice"
 	else:
 		_swing_style = "claw"
 	_build_nameplate(s)

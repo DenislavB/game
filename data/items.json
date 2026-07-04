@@ -23,7 +23,8 @@
       6
     ],
     "speed": 3.2,
-    "value": 25
+    "value": 25,
+    "two_hand": true
   },
   "hunting_bow": {
     "name": "Hunting Bow",
@@ -502,7 +503,8 @@
     "stats": {
       "int": 2
     },
-    "value": 180
+    "value": 180,
+    "two_hand": true
   },
   "trainee_bow": {
     "name": "Trainee's Longbow",
@@ -565,7 +567,8 @@
       "int": 5,
       "spi": 3
     },
-    "value": 700
+    "value": 700,
+    "two_hand": true
   },
   "quillfang_bow": {
     "name": "Quillfang Shortbow",
@@ -633,7 +636,8 @@
       "spi": 5,
       "sta": 3
     },
-    "value": 2400
+    "value": 2400,
+    "two_hand": true
   },
   "thornshot_bow": {
     "name": "Thornshot Recurve",
@@ -669,7 +673,8 @@
       "ap": 12
     },
     "value": 6500,
-    "desc": "Taken from the warlord of the Dustplains."
+    "desc": "Taken from the warlord of the Dustplains.",
+    "two_hand": true
   },
   "stormcallers_rod": {
     "name": "Stormcaller's Rod",
@@ -687,7 +692,8 @@
       "spi": 7,
       "sp": 10
     },
-    "value": 6500
+    "value": 6500,
+    "two_hand": true
   },
   "eagle_talon_bow": {
     "name": "Eagle Talon Longbow",
@@ -1107,7 +1113,8 @@
       7
     ],
     "speed": 3.3,
-    "value": 25
+    "value": 25,
+    "two_hand": true
   },
   "iron_ore": {
     "name": "Iron Ore",
@@ -1238,7 +1245,8 @@
       "int": 13,
       "spi": 7
     },
-    "value": 9000
+    "value": 9000,
+    "two_hand": true
   },
   "saltfang_longbow": {
     "name": "Saltfang Longbow",
@@ -1312,7 +1320,8 @@
       "sta": 5,
       "sp": 14
     },
-    "value": 21000
+    "value": 21000,
+    "two_hand": true
   },
   "coralspine_bow": {
     "name": "Coralspine Bow",
@@ -1502,7 +1511,8 @@
     },
     "value": 4200,
     "desc": "Thunder sleeps in the wood.",
-    "world_drop": true
+    "world_drop": true,
+    "two_hand": true
   },
   "wyrmhide_mantle": {
     "name": "Wyrmhide Mantle",

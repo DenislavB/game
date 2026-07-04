@@ -445,6 +445,8 @@ const POSE_KEYS := ["lx", "lz", "le", "rx", "rz", "re", "tw", "tp", "tr", "lg", 
 # one at random (never the same twice in a row) so auto-attacking feels
 # hand-animated instead of metronomic.
 const STYLE_VARIANTS := {
+	"slice": ["slice", "slice_flat"],
+	"cleave_down": ["cleave_down", "cleave_down2"],
 	"slash": ["slash", "slash_up", "slash_cross"],
 	"chop": ["chop", "chop_diag", "chop_heavy"],
 	"smash": ["smash", "smash_over", "smash_side"],
@@ -453,6 +455,37 @@ const STYLE_VARIANTS := {
 }
 
 const ATTACK_POSES := {
+	# --- ONE-HAND basic swing: the blade is cocked up by the LEFT shoulder,
+	# then slices diagonally down across to the character's RIGHT. Weapon is
+	# in the right hand, so the windup crosses the right arm over the chest
+	# (rz negative = inward/left) and the strike whips it out (rz positive =
+	# right) while the torso uncoils from a left wind to a right follow. ---
+	"slice": {
+		"w": { "rx": 1.15, "rz": -1.25, "re": 1.35, "lx": 0.3, "lz": -0.3, "tw": 0.62, "tp": 0.05, "hy": -0.2, "dip": 0.03 },
+		"h": { "rx": 1.2, "rz": 1.15, "re": 0.15, "lx": -0.35, "tw": -0.66, "tp": -0.12, "tr": -0.12, "lg": 0.32, "hy": 0.16, "dip": 0.06 },
+		"r": { "rx": 0.85, "rz": 0.5, "re": 0.4, "lx": -0.1, "tw": -0.28, "tp": -0.04, "lg": 0.1 }
+	},
+	"slice_flat": {
+		# A flatter, more horizontal version of the same left-to-right cut.
+		"w": { "rx": 0.55, "rz": -1.35, "re": 1.05, "lx": 0.25, "lz": -0.25, "tw": 0.58, "tr": 0.08, "hy": -0.2, "dip": 0.04 },
+		"h": { "rx": 0.65, "rz": 1.3, "re": 0.15, "lx": -0.3, "tw": -0.62, "tr": -0.12, "lg": 0.3, "hy": 0.15 },
+		"r": { "rx": 0.5, "rz": 0.6, "re": 0.4, "tw": -0.25, "lg": 0.08 }
+	},
+	# --- TWO-HAND basic swing: the weapon is raised straight overhead in
+	# both hands, then crashes down onto the enemy. Both arms move together
+	# (both shoulders lift back/up on -x, then drive down on +x) to sell the
+	# two-handed grip; the whole body loads back then pitches into it. ---
+	"cleave_down": {
+		"w": { "lx": -2.85, "rx": -2.85, "le": 0.3, "re": 0.3, "lz": 0.12, "rz": -0.12, "tp": 0.32, "hx": -0.35, "dip": 0.05 },
+		"h": { "lx": 1.75, "rx": 1.75, "le": 0.1, "re": 0.1, "lz": 0.05, "rz": -0.05, "tp": -0.55, "lg": 0.42, "hx": 0.28, "dip": 0.17 },
+		"r": { "lx": 1.05, "rx": 1.05, "le": 0.35, "re": 0.35, "tp": -0.2, "lg": 0.12, "dip": 0.05 }
+	},
+	"cleave_down2": {
+		# Same overhead crash with a slight wind-up twist for variety.
+		"w": { "lx": -2.9, "rx": -2.9, "le": 0.45, "re": 0.45, "tw": 0.14, "tp": 0.3, "hx": -0.3, "dip": 0.06 },
+		"h": { "lx": 1.7, "rx": 1.7, "le": 0.12, "re": 0.12, "tw": -0.1, "tp": -0.5, "lg": 0.45, "hx": 0.25, "dip": 0.15 },
+		"r": { "lx": 1.0, "rx": 1.0, "le": 0.4, "re": 0.4, "tp": -0.18, "lg": 0.1 }
+	},
 	# --- one-hand blade: diagonal cut / rising backhand / flat cross-cut ---
 	"slash": {
 		"w": { "rx": -0.5, "rz": 1.1, "re": 1.2, "lx": 0.35, "lz": -0.15, "tw": 0.55, "tp": 0.06, "tr": 0.08, "hy": -0.3, "dip": 0.02 },
@@ -624,6 +657,10 @@ func _duration_for(style: String) -> float:
 	# Timing is part of the variation: heavy overswings are slow and
 	# deliberate, jabs are snappy.
 	match style:
+		"slice": return 0.46
+		"slice_flat": return 0.42
+		"cleave_down": return 0.62      # heavy two-hand overhead: slow, weighty
+		"cleave_down2": return 0.64
 		"chop", "slam_ground": return 0.55
 		"chop_diag": return 0.5
 		"chop_heavy": return 0.7

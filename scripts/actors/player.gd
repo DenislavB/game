@@ -490,23 +490,24 @@ func _tick_autoattack(delta: float) -> void:
 
 func _melee_style() -> String:
 	match current_form():
-		"bear": return "smash"
+		"bear": return "cleave_down"  # both paws raised, crashing down
 		"cat": return "claw"
 	var iid: String = Game.pc["equipment"].get("mainhand", "")
-	var wtype := ""
-	if iid != "":
-		wtype = str(DB.item(iid).get("wtype", ""))
+	var it: Dictionary = DB.item(iid) if iid != "" else {}
+	var wtype: String = str(it.get("wtype", ""))
 	if wtype == "":
 		var cls: Dictionary = DB.classes[Game.pc["class"]]
 		var wdef: Dictionary = cls["weapon"]
 		if Game.pc["class"] == "hunter" and cls.has("melee_weapon"):
 			wdef = cls["melee_weapon"]
 		wtype = str(wdef.get("type", "sword"))
-	match wtype:
-		"axe": return "chop"
-		"mace": return "smash"
-		"dagger": return "stab"
-		_: return "slash"
+	# Two-handers (staves, greatweapons) swing overhead and down; one-handers
+	# cock at the left shoulder and slice across to the right.
+	if it.get("two_hand", false) or wtype == "staff":
+		return "cleave_down"
+	if wtype == "dagger":
+		return "stab"  # thrusting weapon keeps its jab
+	return "slice"
 
 
 func _facing(u: Unit) -> bool:

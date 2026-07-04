@@ -29,6 +29,7 @@ First zone load takes a few seconds — the terrain mesh is generated at runtime
 | Right-click | Interact / loot / attack |
 | 1–0 | Action bar |
 | B / C / L / N | Bags / Character / Quest log / Talents |
+| P | Spellbook (ranks, click-to-use, right-click to place on the bar) |
 | M | Zone map (roads, camps, quest NPCs, elite lairs, your position) |
 | X | Sit (eat & drink faster) |
 | Space | Jump |
@@ -47,7 +48,10 @@ First zone load takes a few seconds — the terrain mesh is generated at runtime
 - **Classic combat math**: attack tables (miss/dodge/crit by level difference), armor mitigation, spell resists, weapon speeds, GCD 1.5s.
 - **60 levels** with a grindy XP curve, gray-mob cutoffs, full heal on ding.
 - **Talents**: 3 trees per class, 1 point/level from 10, tier gating, 31-point capstones that grant abilities (Mortal Strike, Pyroblast, Ice Barrier, Bestial Wrath…).
-- **Trainers** teach new abilities for copper at level milestones — visiting your trainer matters.
+- **Ability ranks**: scaling abilities gain a new rank every 8 levels. Per-level scaling *caps at your trained rank* — skip the trainer and your Fireball falls behind, classic style. Each rank also adds +8% power, and old ranks stay cheap on mana.
+- **Spellbook** (P): the whole class kit in learn order with current ranks, gold callouts when a new rank is waiting at the trainer, and grayed-out future abilities.
+- **Trainers** teach new abilities *and rank upgrades* for copper at level milestones — visiting your trainer matters.
+- **Itemization**: armor classes (Cloth/Leather/Mail/Plate) with per-class wear rules, weapon-type restrictions, quality tiers Poor→Epic with classic colors, secondary stats (Attack Power / Spell Power / Crit) on rare+ gear, and 0.2% epic world drops on any level-appropriate kill (1% from elites).
 - **3 zones** (Guild-Wars-2-style separate maps with travel points):
   - **Sunscorch Mesa** (Orc start, 1–10) — red rock, cacti, harpy plateau, an elite matriarch
   - **Greenhollow Vale** (Human start, 1–10) — pine forest, bandit camps, an elite bandit captain
@@ -96,6 +100,16 @@ The main menu has a built-in **Character Editor** — a live turntable tool for 
 
 **Save to Disk** writes straight back into `data/*.json` (works when running from the Godot editor; exported builds are read-only). **Discard Changes** reloads the data from disk.
 
+## Zone Editor
+
+Next to it on the main menu is the **Zone Editor** — drag-and-drop world editing inside the running game:
+
+- Pick any zone, then fly around it: **WASD** to move, **hold right mouse** to look, **wheel** for fly speed.
+- The palette lists **props, buildings, NPCs, mob spawn areas and gather areas**. Click one and a translucent ghost follows your cursor across the terrain — **left-click drops it** (keep clicking to stamp more), right-click/Esc puts the brush away.
+- **Click any placed object to select it**: drag to move it (snapped to 0.5 m), **R** / **Shift+R** rotates, **+ / −** scales props and buildings or resizes spawn/gather radii, **Delete** removes it.
+- **Ctrl+Z** undoes the last 50 operations. **Save Zone** writes straight back to `data/zones/<id>.json`; **Discard Changes** re-reads it from disk.
+- Spawn and gather areas render as labeled pins with their radius ring; hand-placed props are saved to a `placed_props` list the game renders at exact positions alongside the usual random scatter.
+
 ## Adding content
 
 - **A new quest**: add an entry to `data/quests/<zone>.json` (giver/turnin reference NPC ids from the zone file). That's it — markers, tracker, dialog and rewards are automatic.
@@ -105,9 +119,9 @@ The main menu has a built-in **Character Editor** — a live turntable tool for 
 
 ## Known simplifications (roadmap)
 
-- No armor-class restrictions (cloth/leather/mail/plate) and no ability ranks yet — ability damage scales with level instead.
 - Hunter pet is a fixed wolf via *Call Pet* (no taming/feeding/happiness yet).
 - No corpse runs — death respawns you at the zone graveyard at half health.
-- No swimming, mounts, dungeons, or audio yet.
-- Action bar holds 10 abilities; manage it from the Character window (right-click an ability to place it).
-- Zones 20–60 are design stubs (`data/zone_stubs.json`).
+- No swimming, mounts, or dungeons yet.
+- Action bar holds 10 abilities; manage it from the Character window or Spellbook (right-click an ability to place it).
+- Zones 26–60 are design stubs (`data/zone_stubs.json`).
+- Zone Editor NPCs place as generic villagers — set their role (vendor/trainer stock, quests) in the zone JSON afterwards.

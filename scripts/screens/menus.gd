@@ -4,6 +4,7 @@ extends CanvasLayer
 
 signal start_game
 signal open_editor
+signal open_zone_editor
 
 var menu_root: Control
 var create_root: Control
@@ -74,6 +75,9 @@ func _build_menu() -> void:
 	var editor_b := UI.button("Character Editor", func(): open_editor.emit())
 	editor_b.custom_minimum_size = Vector2(280, 44)
 	v.add_child(editor_b)
+	var zone_editor_b := UI.button("Zone Editor", func(): open_zone_editor.emit())
+	zone_editor_b.custom_minimum_size = Vector2(280, 44)
+	v.add_child(zone_editor_b)
 	var quitb := UI.button("Quit", func(): get_tree().quit())
 	quitb.custom_minimum_size = Vector2(280, 44)
 	v.add_child(quitb)

@@ -12,6 +12,7 @@ var loading_label: Label
 
 
 var editor: CharacterEditor = null
+var zone_editor: ZoneEditor = null
 
 
 func _ready() -> void:
@@ -20,6 +21,7 @@ func _ready() -> void:
 	add_child(menus)
 	menus.start_game.connect(_on_start_game)
 	menus.open_editor.connect(_on_open_editor)
+	menus.open_zone_editor.connect(_on_open_zone_editor)
 	Events.request_zone_travel.connect(_on_zone_travel)
 	Events.request_exit_to_menu.connect(_on_exit_to_menu)
 
@@ -45,6 +47,18 @@ func _on_open_editor() -> void:
 	editor.closed.connect(func():
 		editor.queue_free()
 		editor = null
+		menus.visible = true
+		menus.show_menu())
+
+
+func _on_open_zone_editor() -> void:
+	menus.visible = false
+	zone_editor = ZoneEditor.new()
+	add_child(zone_editor)
+	zone_editor.closed.connect(func():
+		zone_editor.queue_free()
+		zone_editor = null
+		Game.zone_node = null
 		menus.visible = true
 		menus.show_menu())
 

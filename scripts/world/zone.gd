@@ -21,7 +21,10 @@ var _day_sky_horizon: Color
 var _day_fog: Color
 
 
-func build(zone_id: String) -> void:
+func build(zone_id: String, decor_only: bool = false) -> void:
+	## decor_only builds just terrain/sky/water/scattered props — the Zone
+	## Editor uses it and draws all placeable content itself so edits are
+	## live instead of requiring a rebuild.
 	zone_def = DB.zones[zone_id]
 	Game.current_zone_id = zone_id
 	Game.zone_node = self
@@ -34,6 +37,9 @@ func build(zone_id: String) -> void:
 	_build_environment()
 	_build_water()
 	_scatter_props()
+	if decor_only:
+		return
+	_place_set_props()
 	_place_buildings()
 	_place_npcs()
 	_spawn_mobs()
@@ -195,6 +201,22 @@ func _scatter_props() -> void:
 			prop.position = Vector3(p.x, h - 0.1, p.y)
 			prop.rotation.y = _rng.randf() * TAU
 			add_child(prop)
+
+
+func _place_set_props() -> void:
+	## Hand-placed props from the Zone Editor: exact position, rotation
+	## and scale, unlike the randomly scattered ambient "props" sets.
+	for p in zone_def.get("placed_props", []):
+		var x := float(p["x"])
+		var z := float(p["z"])
+		var prop := Props.build_prop(str(p["type"]), _rng)
+		prop.position = Vector3(x, terrain.height_at(x, z) - 0.05, z)
+		prop.rotation.y = deg_to_rad(float(p.get("rot", 0)))
+		if p.has("scale"):
+			prop.scale = Vector3.ONE * float(p["scale"])
+		add_child(prop)
+		if str(p["type"]) == "campfire":
+			rest_spots.append(Vector3(x, 0, z))
 
 
 func _place_buildings() -> void:

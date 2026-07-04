@@ -52,9 +52,10 @@ First zone load takes a few seconds — the terrain mesh is generated at runtime
 - **Spellbook** (P): the whole class kit in learn order with current ranks, gold callouts when a new rank is waiting at the trainer, and grayed-out future abilities.
 - **Trainers** teach new abilities *and rank upgrades* for copper at level milestones — visiting your trainer matters.
 - **Itemization**: armor classes (Cloth/Leather/Mail/Plate) with per-class wear rules, weapon-type restrictions, quality tiers Poor→Epic with classic colors, secondary stats (Attack Power / Spell Power / Crit) on rare+ gear, and 0.2% epic world drops on any level-appropriate kill (1% from elites).
-- **3 zones** (Guild-Wars-2-style separate maps with travel points):
-  - **Sunscorch Mesa** (Orc start, 1–10) — red rock, cacti, harpy plateau, an elite matriarch
-  - **Greenhollow Vale** (Human start, 1–10) — pine forest, bandit camps, an elite bandit captain
+- **Populated, hand-detailed zones**: beyond the random tree/rock scatter, the world now carries dense filler flora (ferns, mushrooms, grass, saplings, logs, reeds/cattails/lilypads at the water's edge) and **set-pieces** — vistas you navigate toward (a giant landmark tree, a druidic standing-stone ring, a broken watchtower, a hilltop overlook) and little narrative tableaus with implied history (an abandoned camp, a wrecked wagon, an old battlefield, a fishing dock, a farm plot, a graveyard). **Fireflies** drift over camps and water after dusk; windmills turn and banners sway.
+- **4 zones** (Guild-Wars-2-style separate maps with travel points):
+  - **Sunscorch Mesa** (Orc start, 1–10) — red rock, cacti, harpy plateau, an oasis, desert ruins, an elite matriarch
+  - **Greenhollow Vale** (Human start, 1–10) — pine forest, bandit camps, a pond, a windmill farmstead, an elite bandit captain
   - **The Dustplains** (contested, 10–20) — a huge sparse savanna with a central caravan hub, centaur-like clans, and two elite group-quest bosses
   - 7 more zones (to level 60) are designed as stubs in `data/zone_stubs.json`.
 - **~40 quests**: kill, collect (drop-chance items), delivery/breadcrumb, exploration, multi-point patrols, elite "bring friends" quests.
@@ -105,7 +106,7 @@ The main menu has a built-in **Character Editor** — a live turntable tool for 
 Next to it on the main menu is the **Zone Editor** — drag-and-drop world editing inside the running game:
 
 - Pick any zone, then fly around it: **WASD** to move, **hold right mouse** to look, **wheel** for fly speed.
-- The palette lists **props, buildings, NPCs, mob spawn areas and gather areas**. Click one and a translucent ghost follows your cursor across the terrain — **left-click drops it** (keep clicking to stamp more), right-click/Esc puts the brush away.
+- The palette lists **props** (including all the new filler flora and landmark props), **buildings**, **scenes** (composite set-pieces — great trees, standing stones, ruined towers, wrecked wagons, fishing docks, farms, camps…), **NPCs, mob spawn areas and gather areas**. Click one and a translucent ghost follows your cursor across the terrain — **left-click drops it** (keep clicking to stamp more), right-click/Esc puts the brush away.
 - **Click any placed object to select it**: drag to move it (snapped to 0.5 m), **R** / **Shift+R** rotates, **+ / −** scales props and buildings or resizes spawn/gather radii, **Delete** removes it.
 - **Ctrl+Z** undoes the last 50 operations. **Save Zone** writes straight back to `data/zones/<id>.json`; **Discard Changes** re-reads it from disk.
 - Spawn and gather areas render as labeled pins with their radius ring; hand-placed props are saved to a `placed_props` list the game renders at exact positions alongside the usual random scatter.

@@ -121,6 +121,53 @@
     {
       "type": "flowers",
       "count": 70
+    },
+    {
+      "type": "fern",
+      "count": 90
+    },
+    {
+      "type": "mushroom",
+      "count": 70
+    },
+    {
+      "type": "tall_grass",
+      "count": 240
+    },
+    {
+      "type": "sapling",
+      "count": 45
+    },
+    {
+      "type": "log",
+      "count": 30
+    },
+    {
+      "type": "stump",
+      "count": 26
+    },
+    {
+      "type": "pebbles",
+      "count": 55
+    },
+    {
+      "type": "bones",
+      "count": 10
+    },
+    {
+      "type": "reeds",
+      "count": 46,
+      "near_water": true
+    },
+    {
+      "type": "cattail",
+      "count": 26,
+      "near_water": true
+    },
+    {
+      "type": "lilypad",
+      "count": 22,
+      "on_water": true
     }
   ],
   "buildings": [
@@ -623,6 +670,124 @@
       "z": 60,
       "r": 18,
       "label": "The Dustplains (10-20)"
+    }
+  ],
+  "scenes": [
+    {
+      "type": "great_tree",
+      "x": -130,
+      "z": -300,
+      "rot": 0
+    },
+    {
+      "type": "standing_stones",
+      "x": 40,
+      "z": -190,
+      "rot": 15
+    },
+    {
+      "type": "ruined_tower",
+      "x": 210,
+      "z": 190,
+      "rot": 30
+    },
+    {
+      "type": "fishing_dock",
+      "x": -40,
+      "z": 188,
+      "rot": 180
+    },
+    {
+      "type": "wrecked_wagon",
+      "x": 30,
+      "z": 45,
+      "rot": 60
+    },
+    {
+      "type": "abandoned_camp",
+      "x": -180,
+      "z": 30,
+      "rot": 200
+    },
+    {
+      "type": "battlefield",
+      "x": 300,
+      "z": -150,
+      "rot": 0
+    },
+    {
+      "type": "farm_plot",
+      "x": 60,
+      "z": 150,
+      "rot": 90
+    },
+    {
+      "type": "wayshrine",
+      "x": -95,
+      "z": -58,
+      "rot": 40
+    },
+    {
+      "type": "overlook",
+      "x": 315,
+      "z": 250,
+      "rot": -30
+    },
+    {
+      "type": "grave_row",
+      "x": -300,
+      "z": -140,
+      "rot": 10
+    },
+    {
+      "type": "bonfire_ring",
+      "x": 150,
+      "z": -110,
+      "rot": 0
+    },
+    {
+      "type": "hunters_blind",
+      "x": -150,
+      "z": 150,
+      "rot": 120
+    },
+    {
+      "type": "great_tree",
+      "x": 250,
+      "z": -60,
+      "rot": 90
+    }
+  ],
+  "ambient_spots": [
+    {
+      "x": -130,
+      "z": -300
+    },
+    {
+      "x": 40,
+      "z": -190
+    }
+  ],
+  "placed_props": [
+    {
+      "type": "windmill",
+      "x": 80,
+      "z": 165,
+      "rot": 30
+    },
+    {
+      "type": "banner",
+      "x": 118,
+      "z": 70,
+      "rot": 0,
+      "color": "#3a5a9a"
+    },
+    {
+      "type": "market_stall",
+      "x": 150,
+      "z": 118,
+      "rot": 200,
+      "color": "#3a6a8a"
     }
   ]
 }

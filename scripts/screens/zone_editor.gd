@@ -28,6 +28,15 @@ const PROP_TYPES := ["tree", "pine", "palm", "acacia", "dead_tree", "bush",
 	"dry_bush", "flowers", "rock", "cactus", "tent", "totem", "well", "campfire"]
 const BUILDING_TYPES := ["human_house", "human_inn", "church", "tower",
 	"orc_hut", "orc_hall", "campfire"]
+const SCENE_TYPES := ["great_tree", "standing_stones", "ruined_tower",
+	"overlook", "waterfall", "abandoned_camp", "wrecked_wagon", "battlefield",
+	"fishing_dock", "wayshrine", "farm_plot", "bonfire_ring", "hunters_blind",
+	"market_row", "grave_row"]
+# New filler/landmark props exposed in the editor palette too.
+const EXTRA_PROP_TYPES := ["mushroom", "fern", "tall_grass", "reeds", "cattail",
+	"lilypad", "pebbles", "bones", "log", "stump", "sapling", "crate", "barrel",
+	"hay_bale", "fence", "signpost", "scarecrow", "standing_stone", "obelisk",
+	"statue", "wagon", "market_stall", "banner", "windmill", "pennant"]
 
 var zone_id := ""
 var zdef: Dictionary = {}        # working copy; written back on Save
@@ -124,6 +133,8 @@ func _rebuild_overlay() -> void:
 		_add_object("spawns", s)
 	for g in zdef.get("gather_nodes", []):
 		_add_object("gather_nodes", g)
+	for sc in zdef.get("scenes", []):
+		_add_object("scenes", sc)
 
 
 func _add_object(cat: String, entry: Dictionary) -> Dictionary:
@@ -145,6 +156,10 @@ func _make_visual(cat: String, entry: Dictionary) -> Node3D:
 			var rng2 := RandomNumberGenerator.new()
 			rng2.seed = int(entry.get("x", 0)) * 31 + int(entry.get("z", 0))
 			return Props.build_prop(str(entry["type"]), rng2)
+		"scenes":
+			var rng3 := RandomNumberGenerator.new()
+			rng3.seed = int(entry.get("x", 0)) * 73856 ^ int(entry.get("z", 0)) * 19349
+			return Scenes.build(str(entry["type"]), rng3)
 		"npcs":
 			return _marker(Color(0.35, 0.95, 0.35), str(entry.get("name", "NPC")), 0.0)
 		"spawns":
@@ -447,6 +462,8 @@ func _brush_entry(at: Vector3) -> Dictionary:
 			return { "type": _brush_type, "x": x, "z": z, "rot": 0 }
 		"placed_props":
 			return { "type": _brush_type, "x": x, "z": z, "rot": 0 }
+		"scenes":
+			return { "type": _brush_type, "x": x, "z": z, "rot": 0 }
 		"npcs":
 			return { "id": "npc_%d" % (Time.get_ticks_msec() % 1000000), "name": "New NPC",
 				"title": "Villager", "kind": "villager", "x": x, "z": z }
@@ -514,7 +531,7 @@ func _build_ui() -> void:
 	side.add_child(side_v)
 	side_v.add_child(UI.label("Palette", 15, UI.COL_GOLD))
 	cat_pick = OptionButton.new()
-	for cat_name in ["Props", "Buildings", "NPCs", "Mob Spawns", "Gather Nodes"]:
+	for cat_name in ["Props", "Buildings", "Scenes", "NPCs", "Mob Spawns", "Gather Nodes"]:
 		cat_pick.add_item(cat_name)
 	cat_pick.item_selected.connect(func(_i): _rebuild_palette())
 	side_v.add_child(cat_pick)
@@ -549,17 +566,22 @@ func _rebuild_palette() -> void:
 		0:
 			for t in PROP_TYPES:
 				entries.append(["placed_props", t, t.capitalize()])
+			for t in EXTRA_PROP_TYPES:
+				entries.append(["placed_props", t, t.capitalize().replace("_", " ")])
 		1:
 			for t in BUILDING_TYPES:
 				entries.append(["buildings", t, t.capitalize()])
 		2:
-			entries.append(["npcs", "villager", "New NPC (edit JSON for role)"])
+			for t in SCENE_TYPES:
+				entries.append(["scenes", t, t.capitalize().replace("_", " ")])
 		3:
+			entries.append(["npcs", "villager", "New NPC (edit JSON for role)"])
+		4:
 			var mob_ids: Array = DB.mobs.keys()
 			mob_ids.sort()
 			for mid in mob_ids:
 				entries.append(["spawns", str(mid), str(DB.mobs[mid].get("name", mid))])
-		4:
+		5:
 			for gid in DB.professions.get("nodes", {}):
 				entries.append(["gather_nodes", str(gid), str(DB.professions["nodes"][gid].get("name", gid))])
 	for e in entries:

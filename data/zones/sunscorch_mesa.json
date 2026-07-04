@@ -132,6 +132,50 @@
       "x": 200,
       "z": 60,
       "r": 60
+    },
+    {
+      "type": "tall_grass",
+      "count": 90,
+      "color": "#9a8a4a"
+    },
+    {
+      "type": "pebbles",
+      "count": 130,
+      "color": "#8a4a2c"
+    },
+    {
+      "type": "bones",
+      "count": 34
+    },
+    {
+      "type": "stump",
+      "count": 12
+    },
+    {
+      "type": "sapling",
+      "count": 16
+    },
+    {
+      "type": "reeds",
+      "count": 34,
+      "near_water": true
+    },
+    {
+      "type": "cattail",
+      "count": 16,
+      "near_water": true
+    },
+    {
+      "type": "lilypad",
+      "count": 12,
+      "on_water": true
+    },
+    {
+      "type": "palm",
+      "count": 8,
+      "x": 200,
+      "z": 60,
+      "r": 55
     }
   ],
   "buildings": [
@@ -616,6 +660,106 @@
       "z": -40,
       "r": 18,
       "label": "The Dustplains (10-20)"
+    }
+  ],
+  "scenes": [
+    {
+      "type": "standing_stones",
+      "x": -110,
+      "z": 300,
+      "rot": 20,
+      "color": "#8a5a3a"
+    },
+    {
+      "type": "ruined_tower",
+      "x": 300,
+      "z": -150,
+      "rot": 40
+    },
+    {
+      "type": "battlefield",
+      "x": -160,
+      "z": -170,
+      "rot": 0
+    },
+    {
+      "type": "bonfire_ring",
+      "x": 0,
+      "z": 150,
+      "rot": 0
+    },
+    {
+      "type": "abandoned_camp",
+      "x": 255,
+      "z": -255,
+      "rot": 160
+    },
+    {
+      "type": "wrecked_wagon",
+      "x": -110,
+      "z": -58,
+      "rot": 80
+    },
+    {
+      "type": "fishing_dock",
+      "x": 200,
+      "z": 28,
+      "rot": 180
+    },
+    {
+      "type": "overlook",
+      "x": 330,
+      "z": -300,
+      "rot": -40
+    },
+    {
+      "type": "statue",
+      "x": 55,
+      "z": -125,
+      "rot": 180
+    },
+    {
+      "type": "hunters_blind",
+      "x": -300,
+      "z": 100,
+      "rot": 90
+    },
+    {
+      "type": "grave_row",
+      "x": -200,
+      "z": -60,
+      "rot": 0
+    },
+    {
+      "type": "wayshrine",
+      "x": -150,
+      "z": 80,
+      "rot": 60
+    },
+    {
+      "type": "obelisk",
+      "x": -60,
+      "z": 330,
+      "rot": 0
+    }
+  ],
+  "ambient_spots": [
+    {
+      "x": 200,
+      "z": 60
+    },
+    {
+      "x": 0,
+      "z": 150
+    }
+  ],
+  "placed_props": [
+    {
+      "type": "banner",
+      "x": 100,
+      "z": -20,
+      "rot": 0,
+      "color": "#8a2a2a"
     }
   ]
 }
